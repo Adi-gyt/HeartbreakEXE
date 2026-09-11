@@ -1,0 +1,348 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel",
+    "neon_city_pixel",
+    "natural_landscape_pixel",
+    "cozy_scene_pixel",
+    "retro_sunset_pixel",
+    "surreal_symmetrical_pixel",
+    "sci_fi_space_pixel",
+    "painterly_environment"
+  ],
+  "images": [
+    {
+      "image_id": "image_24",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "retro_sunset_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "sky_gradient",
+          "bbox": [0.0, 0.0, 1.0, 0.60],
+          "layer_order": 0,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.9,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap for time of day",
+            "saturation adjustments"
+          ],
+          "unsafe_mutations": [
+            "adding heavy structural geometry",
+            "removing the horizontal sunset flow"
+          ]
+        },
+        {
+          "region_name": "large_cumulus_clouds_left",
+          "bbox": [0.0, 0.05, 0.40, 0.50],
+          "layer_order": 1,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shifting",
+            "highlight intensity adjustments"
+          ],
+          "unsafe_mutations": [
+            "drastic shape deformation",
+            "smoothing pixel clusters"
+          ]
+        },
+        {
+          "region_name": "distant_mountains",
+          "bbox": [0.0, 0.45, 1.0, 0.65],
+          "layer_order": 2,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "atmospheric haze tinting",
+            "contrast adjustments"
+          ],
+          "unsafe_mutations": [
+            "bringing into sharp focus",
+            "altering the ridge lines significantly"
+          ]
+        },
+        {
+          "region_name": "asphalt_highway",
+          "bbox": [0.30, 0.65, 0.85, 1.0],
+          "layer_order": 4,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "surface color tinting (e.g. wetness)",
+            "lane marking color changes"
+          ],
+          "unsafe_mutations": [
+            "breaking the perspective curve",
+            "removing the road"
+          ]
+        },
+        {
+          "region_name": "white_car",
+          "bbox": [0.33, 0.75, 0.42, 0.83],
+          "layer_order": 5,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "car body color shift",
+            "taillight intensity"
+          ],
+          "unsafe_mutations": [
+            "changing the perspective angle",
+            "deleting the vehicle"
+          ]
+        },
+        {
+          "region_name": "foreground_desert_terrain_left",
+          "bbox": [0.0, 0.65, 0.35, 1.0],
+          "layer_order": 5,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "sand/dirt hue shift",
+            "shadow tinting"
+          ],
+          "unsafe_mutations": [
+            "removing the texture",
+            "flattening the lighting"
+          ]
+        },
+        {
+          "region_name": "foreground_desert_terrain_right",
+          "bbox": [0.65, 0.65, 1.0, 1.0],
+          "layer_order": 5,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "sand/dirt hue shift",
+            "shadow tinting"
+          ],
+          "unsafe_mutations": [
+            "removing the texture",
+            "flattening the lighting"
+          ]
+        },
+        {
+          "region_name": "primary_saguaro_cactus",
+          "bbox": [0.75, 0.35, 0.85, 0.80],
+          "layer_order": 6,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "color tinting",
+            "minor lighting adjustments"
+          ],
+          "unsafe_mutations": [
+            "removing the arms",
+            "translating horizontally"
+          ]
+        },
+        {
+          "region_name": "billboard_sign",
+          "bbox": [0.85, 0.35, 0.98, 0.65],
+          "layer_order": 6,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "changing the sign content colors",
+            "minor structural tinting"
+          ],
+          "unsafe_mutations": [
+            "removing the sign",
+            "perspective distortion"
+          ]
+        },
+        {
+          "region_name": "utility_pole_left",
+          "bbox": [0.03, 0.20, 0.10, 0.75],
+          "layer_order": 6,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "translation",
+            "thickness alteration",
+            "deletion"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "power_lines",
+          "approximate_bbox": [0.0, 0.0, 0.25, 0.70],
+          "orientation": "diagonal looping from top left towards the horizon",
+          "sparsity": "high",
+          "typical_size": "1-pixel thin dark lines",
+          "color_characteristics": "dark silhouette",
+          "confidence": 0.95,
+          "mutation_safety": "exclude"
+        },
+        {
+          "pattern_name": "distant_city_lights",
+          "approximate_bbox": [0.30, 0.58, 0.80, 0.68],
+          "orientation": "horizontal scattered clusters",
+          "sparsity": "high",
+          "typical_size": "1-2 pixel bright dots",
+          "color_characteristics": "warm orange and red",
+          "confidence": 0.9,
+          "mutation_safety": "color+light_safe"
+        },
+        {
+          "pattern_name": "scattered_desert_bushes",
+          "approximate_bbox": [0.0, 0.65, 1.0, 1.0],
+          "orientation": "randomly scattered along terrain",
+          "sparsity": "medium",
+          "typical_size": "small irregular dark blobs",
+          "color_characteristics": "deep green/brown silhouettes",
+          "confidence": 0.9,
+          "mutation_safety": "color_safe"
+        },
+        {
+          "pattern_name": "horizontal_cirrus_clouds",
+          "approximate_bbox": [0.20, 0.10, 0.95, 0.45],
+          "orientation": "horizontal dashes",
+          "sparsity": "medium",
+          "typical_size": "thin horizontal bands",
+          "color_characteristics": "bright orange/pink highlights",
+          "confidence": 0.95,
+          "mutation_safety": "color_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#30435b",
+            "role": "upper sky ambient",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#c45c4f",
+            "role": "mid sky and darker cloud highlights",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#f5aa62",
+            "role": "bright sunset horizon and lower clouds",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#403e5c",
+            "role": "distant mountains and deep shadows",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#1b1924",
+            "role": "foreground silhouettes (cacti, bushes, utility pole)",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "moderate",
+        "palette_temperature": "warm dominant (sunset), transitioning to cool upper sky",
+        "contrast_level": "high (bright sunset vs dark foreground silhouettes)",
+        "saturation_level": "high in the sunset colors, low in the shadows"
+      },
+      "lighting": {
+        "direction": "bottom center/right (sun setting below the horizon)",
+        "ambient": "warm dusty evening",
+        "warm_cool_balance": "predominantly warm with cool deep shadows",
+        "practical_light_sources": [
+          {
+            "description": "car taillights",
+            "bbox": [0.33, 0.78, 0.42, 0.83],
+            "approximate_color": "#ff0000",
+            "relative_intensity": "low",
+            "affected_regions": ["asphalt_highway"]
+          },
+          {
+            "description": "distant city lights",
+            "bbox": [0.30, 0.58, 0.80, 0.68],
+            "approximate_color": "#f5aa62",
+            "relative_intensity": "low",
+            "affected_regions": ["distant_mountains base"]
+          }
+        ],
+        "important_glows": "broad atmospheric horizontal glow across the sunset horizon",
+        "reflections": "minor specular highlights on the car body"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "dusty desert sunset",
+          "atmospheric perspective (mountains fade into the sky color)",
+          "distant heat haze/blur"
+        ],
+        "safe_changes": [
+          "shifting palette to night or early dawn",
+          "increasing the brightness of city lights"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "visible on the car, cactus, billboard, and utility pole",
+        "soft_edges": "none, purely pixelated",
+        "outlines": "none",
+        "clustered_shading": "used heavily in the clouds and desert terrain to create texture",
+        "gradients": "achieved through distinct horizontal color steps and dithering in the sky",
+        "dithering": "checkerboard dithering used extensively in the sky transitions and cloud shading",
+        "texture": "rough desert ground, smooth asphalt, fluffy clouds",
+        "flat_regions": "the deepest shadows on the bushes and cactus",
+        "native_pixel_scale_feel": "medium resolution, classic 90s adventure game aesthetic"
+      },
+      "region_relationships": [
+        "asphalt_highway curves into the distance, providing leading lines",
+        "white_car is situated on the asphalt_highway",
+        "utility_pole_left and primary_saguaro_cactus act as foreground framing elements",
+        "distant_mountains sit behind the terrain and road, but in front of the sky_gradient"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "the perspective curve of the road",
+          "horizontal horizon line division",
+          "vertical framing elements (pole left, cactus/sign right)"
+        ],
+        "safe_to_change": [
+          "sky palette",
+          "cloud formations (maintaining volume)",
+          "car color"
+        ],
+        "cautious_change": [
+          "mountain ridge silhouettes",
+          "road width"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "medium",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

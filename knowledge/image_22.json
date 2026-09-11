@@ -1,0 +1,260 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel",
+    "neon_city_pixel",
+    "natural_landscape_pixel",
+    "cozy_scene_pixel",
+    "retro_sunset_pixel",
+    "surreal_symmetrical_pixel",
+    "sci_fi_space_pixel",
+    "painterly_environment"
+  ],
+  "images": [
+    {
+      "image_id": "image_22",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "painterly_environment",
+      "semantic_regions": [
+        {
+          "region_name": "background_sky_light",
+          "bbox": [0.0, 0.0, 0.45, 0.35],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.9,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "light color shift",
+            "intensity adjustment"
+          ],
+          "unsafe_mutations": [
+            "removing the light source completely"
+          ]
+        },
+        {
+          "region_name": "distant_bamboo_forest",
+          "bbox": [0.0, 0.0, 1.0, 0.70],
+          "layer_order": 1,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shift for season/time of day",
+            "contrast adjustment"
+          ],
+          "unsafe_mutations": [
+            "removing the vertical structure",
+            "blurring the distinct stalks"
+          ]
+        },
+        {
+          "region_name": "left_wooden_fence",
+          "bbox": [0.0, 0.45, 0.25, 0.82],
+          "layer_order": 3,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "wood color tinting",
+            "shadow intensity adjustments"
+          ],
+          "unsafe_mutations": [
+            "breaking the perspective lines",
+            "removing the fence structure"
+          ]
+        },
+        {
+          "region_name": "right_wooden_fence",
+          "bbox": [0.25, 0.25, 1.0, 0.85],
+          "layer_order": 3,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "wood color tinting",
+            "highlight intensity adjustments"
+          ],
+          "unsafe_mutations": [
+            "breaking the perspective lines",
+            "removing the primary foreground structure"
+          ]
+        },
+        {
+          "region_name": "illuminated_ground_path",
+          "bbox": [0.0, 0.78, 1.0, 1.0],
+          "layer_order": 2,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "surface texture tinting",
+            "shadow cast angle adjustments",
+            "highlight intensity"
+          ],
+          "unsafe_mutations": [
+            "removing the ground plane perspective",
+            "deleting the cast shadows"
+          ]
+        },
+        {
+          "region_name": "overhead_canopy_leaves",
+          "bbox": [0.0, 0.0, 1.0, 0.45],
+          "layer_order": 2,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.5,
+          "confidence": 0.9,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "leaf color shifts (e.g. to autumn yellow/red)",
+            "lighting contrast adjustments"
+          ],
+          "unsafe_mutations": [
+            "drastic shape changes to the clusters",
+            "smoothing out the leafy texture"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "god_rays",
+          "approximate_bbox": [0.0, 0.0, 0.75, 0.75],
+          "orientation": "diagonal from top-left to bottom-right",
+          "sparsity": "medium",
+          "typical_size": "broad, soft diagonal bands",
+          "color_characteristics": "semi-transparent pale blue/white",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "cast_fence_shadows",
+          "approximate_bbox": [0.25, 0.78, 1.0, 0.95],
+          "orientation": "horizontal/diagonal across the path",
+          "sparsity": "low",
+          "typical_size": "wide dark bands",
+          "color_characteristics": "dark blue/gray matching the ambient path color",
+          "confidence": 0.9,
+          "mutation_safety": "color+light_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#305d76",
+            "role": "mid-tone atmospheric blue (bamboo and sky)",
+            "approximate_area_fraction": 0.35,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#a3e5f8",
+            "role": "bright light source and god rays",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#1a2a35",
+            "role": "deep shadows in the forest and path",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#8c5635",
+            "role": "warm wooden fence highlights",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.90
+          },
+          {
+            "hex": "#2c1c14",
+            "role": "deep shadows on the wooden fence",
+            "approximate_area_fraction": 0.10,
+            "confidence": 0.90
+          }
+        ],
+        "estimated_palette_size": "moderate to high (painterly gradients)",
+        "palette_temperature": "cool dominant with stark warm accents on the fence",
+        "contrast_level": "high (bright light source vs deep forest shadows)",
+        "saturation_level": "moderate"
+      },
+      "lighting": {
+        "direction": "top left, casting strong diagonal rays and shadows towards bottom right",
+        "ambient": "cool misty blue",
+        "warm_cool_balance": "cool environment with warm direct light hitting specific surfaces (fence)",
+        "practical_light_sources": [
+          {
+            "description": "sunlight breaking through canopy",
+            "bbox": [0.0, 0.0, 0.40, 0.20],
+            "approximate_color": "#ffffff",
+            "relative_intensity": "very high",
+            "affected_regions": [
+              "background_sky_light",
+              "overhead_canopy_leaves",
+              "distant_bamboo_forest",
+              "illuminated_ground_path",
+              "right_wooden_fence"
+            ]
+          }
+        ],
+        "important_glows": "strong volumetric light scattering (god rays) through the atmosphere",
+        "reflections": "specular highlights visible on the path surface indicating slight wetness or smooth dirt"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "dense morning mist/fog",
+          "volumetric lighting (god rays)",
+          "depth fading (atmospheric perspective)"
+        ],
+        "safe_changes": [
+          "color of the atmospheric scattering (e.g., golden hour or deep night)",
+          "fog density",
+          "intensity of the god rays"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "softened; the image leans heavily towards a painterly or high-res 3D render style rather than strict retro pixel art",
+        "soft_edges": "prevalent throughout, especially in the light rays and distant fog",
+        "outlines": "none",
+        "clustered_shading": "used to define the bamboo leaves and wood grain",
+        "gradients": "smooth and complex, representing volumetric light and fog",
+        "dithering": "not distinctly visible; relies on smooth color blending",
+        "texture": "wood grain on the fence, leafy clusters in the canopy, smooth fog",
+        "flat_regions": "none",
+        "native_pixel_scale_feel": "high resolution, painted/rendered aesthetic"
+      },
+      "region_relationships": [
+        "left_wooden_fence and right_wooden_fence define a central perspective path",
+        "distant_bamboo_forest acts as a solid backdrop behind the fences",
+        "overhead_canopy_leaves occlude the primary light source, creating the god rays",
+        "right_wooden_fence casts shadows onto illuminated_ground_path"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "one-point perspective structure defined by the fences and path",
+          "verticality of the bamboo forest backdrop",
+          "directional lighting angle creating the god rays"
+        ],
+        "safe_to_change": [
+          "color palette of the light and fog",
+          "wood tone of the fences",
+          "leaf colors"
+        ],
+        "cautious_change": [
+          "fence geometry",
+          "bamboo density"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "high (intensity and color, not direction)",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

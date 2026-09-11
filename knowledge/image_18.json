@@ -1,0 +1,311 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel",
+    "neon_city_pixel",
+    "natural_landscape_pixel",
+    "cozy_scene_pixel",
+    "retro_sunset_pixel",
+    "surreal_symmetrical_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_18",
+      "dimensions": {
+        "width": 736,
+        "height": 552
+      },
+      "style_family": "surreal_symmetrical_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "upper_sky",
+          "bbox": [0.0, 0.0, 1.0, 0.25],
+          "layer_order": 0,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.8,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap",
+            "star density changes"
+          ],
+          "unsafe_mutations": [
+            "adding large geometric structures"
+          ]
+        },
+        {
+          "region_name": "upper_clouds",
+          "bbox": [0.0, 0.15, 1.0, 0.45],
+          "layer_order": 1,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shift",
+            "contrast adjustment"
+          ],
+          "unsafe_mutations": [
+            "drastic shape deformation breaking the horizontal flow"
+          ]
+        },
+        {
+          "region_name": "upper_moon",
+          "bbox": [0.28, 0.18, 0.35, 0.28],
+          "layer_order": 1,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "color tinting"
+          ],
+          "unsafe_mutations": [
+            "moving without moving lower moon to match symmetry",
+            "changing shape to non-crescent"
+          ]
+        },
+        {
+          "region_name": "upper_portal_and_stairs",
+          "bbox": [0.42, 0.28, 0.52, 0.48],
+          "layer_order": 3,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "interior portal color shift"
+          ],
+          "unsafe_mutations": [
+            "breaking structural symmetry with lower portal",
+            "removing the silhouette figure inside"
+          ]
+        },
+        {
+          "region_name": "central_dark_landscape",
+          "bbox": [0.0, 0.25, 1.0, 0.75],
+          "layer_order": 2,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "minor edge jaggedness tweaks",
+            "tinting the deep purple/black base color"
+          ],
+          "unsafe_mutations": [
+            "brightening to remove silhouette effect",
+            "breaking the horizontal symmetry line at y=0.5"
+          ]
+        },
+        {
+          "region_name": "lower_portal_and_stairs",
+          "bbox": [0.42, 0.52, 0.52, 0.72],
+          "layer_order": 3,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "interior portal color shift"
+          ],
+          "unsafe_mutations": [
+            "breaking structural symmetry with upper portal",
+            "removing the silhouette figure inside"
+          ]
+        },
+        {
+          "region_name": "lower_moon",
+          "bbox": [0.55, 0.72, 0.65, 0.82],
+          "layer_order": 1,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "color tinting"
+          ],
+          "unsafe_mutations": [
+            "moving without moving upper moon to match symmetry",
+            "changing shape to non-crescent"
+          ]
+        },
+        {
+          "region_name": "lower_clouds",
+          "bbox": [0.0, 0.55, 1.0, 0.85],
+          "layer_order": 1,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shift",
+            "contrast adjustment"
+          ],
+          "unsafe_mutations": [
+            "drastic shape deformation breaking the horizontal flow"
+          ]
+        },
+        {
+          "region_name": "lower_sky",
+          "bbox": [0.0, 0.75, 1.0, 1.0],
+          "layer_order": 0,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.8,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap",
+            "star density changes"
+          ],
+          "unsafe_mutations": [
+            "adding large geometric structures"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "upper_stars",
+          "approximate_bbox": [0.0, 0.0, 1.0, 0.25],
+          "orientation": "scattered",
+          "sparsity": "high",
+          "typical_size": "1-5 pixels, some cross-shaped",
+          "color_characteristics": "cyan and white",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "lower_stars",
+          "approximate_bbox": [0.0, 0.75, 1.0, 1.0],
+          "orientation": "scattered",
+          "sparsity": "high",
+          "typical_size": "1-5 pixels, some cross-shaped",
+          "color_characteristics": "pink and white",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#403e7c",
+            "role": "upper sky base",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#5af3de",
+            "role": "upper cloud highlights and stars",
+            "approximate_area_fraction": 0.10,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#6e2968",
+            "role": "lower sky base",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#f58fb3",
+            "role": "lower cloud highlights and stars",
+            "approximate_area_fraction": 0.10,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#271b3d",
+            "role": "central landscape silhouette",
+            "approximate_area_fraction": 0.40,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#ffffff",
+            "role": "moons and brightest stars",
+            "approximate_area_fraction": 0.02,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "restricted (two distinct color ramps: blue/cyan and purple/pink)",
+        "palette_temperature": "split (cool top, warm bottom)",
+        "contrast_level": "high (bright clouds/stars vs dark central landscape)",
+        "saturation_level": "high"
+      },
+      "lighting": {
+        "direction": "ambient with glowing elements (moons, stars, portals)",
+        "ambient": "surreal dual-tone twilight",
+        "warm_cool_balance": "perfectly split horizontally (cool above, warm below)",
+        "practical_light_sources": [
+          {
+            "description": "upper portal interior",
+            "bbox": [0.45, 0.28, 0.49, 0.38],
+            "approximate_color": "#ff50b0",
+            "relative_intensity": "medium",
+            "affected_regions": [
+              "upper_portal_and_stairs"
+            ]
+          },
+          {
+            "description": "lower portal interior",
+            "bbox": [0.45, 0.62, 0.49, 0.72],
+            "approximate_color": "#5af3de",
+            "relative_intensity": "medium",
+            "affected_regions": [
+              "lower_portal_and_stairs"
+            ]
+          }
+        ],
+        "important_glows": "No soft bloom; light intensity is conveyed through solid color banding.",
+        "reflections": "The entire image is composed around a central horizontal axis of reflection, though the details are not perfectly mirrored (e.g., moon placement, star patterns)."
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "surreal symmetry",
+          "starry night",
+          "dense cloud cover"
+        ],
+        "safe_changes": [
+          "swapping the top/bottom color palettes",
+          "changing star density",
+          "shifting hue of the central silhouette slightly"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on the central landscape silhouette, stairs, and portals",
+        "soft_edges": "none (pure pixel art)",
+        "outlines": "dark pixel outlines used on the portals and some cloud shapes",
+        "clustered_shading": "heavy use in the clouds to create volumetric puffy shapes",
+        "gradients": "represented via strict color stepping and banding in the clouds and portals",
+        "dithering": "minimal, relies mostly on solid color clusters",
+        "texture": "chunky, stylized clouds; jagged edges for the landscape silhouette",
+        "flat_regions": "the central dark landscape is mostly flat color",
+        "native_pixel_scale_feel": "low resolution, retro pixel art aesthetic"
+      },
+      "region_relationships": [
+        "central_dark_landscape occludes upper_clouds and lower_clouds",
+        "upper_portal_and_stairs and lower_portal_and_stairs sit within the central_dark_landscape",
+        "upper_moon and lower_moon overlap the respective sky and cloud regions"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "the central horizontal axis of reflection (y approx 0.5)",
+          "the central placement of the portals and stairs",
+          "the heavy dark silhouette separating the two bright halves"
+        ],
+        "safe_to_change": [
+          "color palettes (maintaining the top/bottom contrast)",
+          "exact cloud shapes (while maintaining general volume)",
+          "star placement"
+        ],
+        "cautious_change": [
+          "portal geometry",
+          "landscape silhouette jaggedness"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high (must respect symmetrical logic)",
+        "lighting_mutation": "low",
+        "atmosphere_mutation": "medium",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

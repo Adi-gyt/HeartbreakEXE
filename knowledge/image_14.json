@@ -1,0 +1,222 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_14",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "cinematic_moody_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "sky_background",
+          "bbox": [0.0, 0.0, 1.0, 0.85],
+          "layer_order": 0,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.8,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["sky color shift", "brightness adjustment"],
+          "unsafe_mutations": ["adding complex structures", "removing gradient banding"]
+        },
+        {
+          "region_name": "traffic_light_housing",
+          "bbox": [0.35, 0.08, 0.46, 0.48],
+          "layer_order": 2,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["minor tinting of the black housing"],
+          "unsafe_mutations": ["deforming the rectangular shape", "removing entirely"]
+        },
+        {
+          "region_name": "red_light_bulb",
+          "bbox": [0.38, 0.11, 0.44, 0.20],
+          "layer_order": 3,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["turning off (changing to dark red/black)", "color shift to green/yellow"],
+          "unsafe_mutations": ["moving outside the housing"]
+        },
+        {
+          "region_name": "yellow_light_bulb",
+          "bbox": [0.38, 0.23, 0.44, 0.32],
+          "layer_order": 3,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["turning off (changing to dark yellow/black)", "color shift to green/red"],
+          "unsafe_mutations": ["moving outside the housing"]
+        },
+        {
+          "region_name": "traffic_light_arm",
+          "bbox": [0.46, 0.15, 1.0, 0.30],
+          "layer_order": 2,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": ["none"],
+          "unsafe_mutations": ["bending", "translation", "thickness alteration"]
+        },
+        {
+          "region_name": "distant_street_lamp",
+          "bbox": [0.65, 0.38, 0.88, 0.80],
+          "layer_order": 1,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["lighting the bulb"],
+          "unsafe_mutations": ["drastic shape change", "removal"]
+        },
+        {
+          "region_name": "power_pole_structure",
+          "bbox": [0.60, 0.58, 0.75, 0.80],
+          "layer_order": 1,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.2,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["minor height tweaks"],
+          "unsafe_mutations": ["removal"]
+        },
+        {
+          "region_name": "foreground_tree_silhouette",
+          "bbox": [0.0, 0.35, 1.0, 1.0],
+          "layer_order": 4,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["minor edge tweaking", "tinting to very dark blue/green"],
+          "unsafe_mutations": ["brightening significantly", "removing jagged pixel nature"]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "power_lines",
+          "approximate_bbox": [0.60, 0.55, 1.0, 0.85],
+          "orientation": "diagonal looping",
+          "sparsity": "high",
+          "typical_size": "1-pixel thin lines",
+          "color_characteristics": "dark silhouette against sky",
+          "confidence": 0.9,
+          "mutation_safety": "exclude"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#2a434c",
+            "role": "ambient sky base",
+            "approximate_area_fraction": 0.50,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#091215",
+            "role": "foreground silhouettes and structural outlines",
+            "approximate_area_fraction": 0.40,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#d33a31",
+            "role": "lit red traffic bulb",
+            "approximate_area_fraction": 0.02,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#e59e35",
+            "role": "lit yellow traffic bulb",
+            "approximate_area_fraction": 0.02,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "highly restricted (monochromatic blue-gray with warm accents)",
+        "palette_temperature": "cool dominant with stark warm local lights",
+        "contrast_level": "high (between sky and silhouette, and lights vs dark housing)",
+        "saturation_level": "low overall, high on traffic lights"
+      },
+      "lighting": {
+        "direction": "local light from traffic signal",
+        "ambient": "dark blue/gray dusk or overcast night",
+        "warm_cool_balance": "sharp contrast between warm signal lights and cool ambient sky",
+        "practical_light_sources": [
+          {
+            "description": "red traffic light",
+            "bbox": [0.38, 0.11, 0.44, 0.20],
+            "approximate_color": "#d33a31",
+            "relative_intensity": "high",
+            "affected_regions": ["traffic_light_housing (inner rim)"]
+          },
+          {
+            "description": "yellow traffic light",
+            "bbox": [0.38, 0.23, 0.44, 0.32],
+            "approximate_color": "#e59e35",
+            "relative_intensity": "high",
+            "affected_regions": ["traffic_light_housing (inner rim)"]
+          }
+        ],
+        "important_glows": "none, light is contained strictly within the bulb shapes (hard pixel edges)",
+        "reflections": "none"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "overcast dusk/night",
+          "slight atmospheric depth (silhouettes get slightly lighter near the top edge)"
+        ],
+        "safe_changes": [
+          "sky palette shifting",
+          "adding fog",
+          "adding rain"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "extremely prominent on all silhouettes, power lines, and traffic light structure",
+        "soft_edges": "none (pure pixel art)",
+        "outlines": "used subtly within the traffic light housing to define the bulbs",
+        "clustered_shading": "used on the traffic light housing to give it a slight cylindrical volume",
+        "gradients": "represented via strict horizontal color banding in the sky and tree silhouette edges",
+        "dithering": "minimal, prefers distinct color blocks",
+        "texture": "jagged, stair-stepped pixel edges on the tree canopy",
+        "flat_regions": "the main body of the tree silhouette and the upper sky",
+        "native_pixel_scale_feel": "low resolution, retro game style"
+      },
+      "region_relationships": [
+        "traffic_light_arm extends into the scene from off-screen right",
+        "traffic_light_housing hangs from traffic_light_arm",
+        "foreground_tree_silhouette occludes the lower portion of the distant_street_lamp and power_pole_structure",
+        "power_lines connect between power_pole_structure and off-screen right"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "prominent central placement of the traffic light",
+          "heavy black foreground framing at the bottom",
+          "the stark contrast between lit bulbs and dark silhouette"
+        ],
+        "safe_to_change": [
+          "sky palette (e.g., turning to a purple dusk or black night)",
+          "which traffic lights are illuminated (red, yellow, green)"
+        ],
+        "cautious_change": [
+          "tree canopy jaggedness",
+          "power line curves"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "high (traffic light states)",
+        "atmosphere_mutation": "medium",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

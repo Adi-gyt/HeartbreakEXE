@@ -1,0 +1,254 @@
+{
+"dataset_version": "1.0",
+"style_families": [
+"retro_sunset_pixel"
+],
+"images": [
+{
+"image_id": "image_04",
+"dimensions": {
+"width": 640,
+"height": 400
+},
+"style_family": "retro_sunset_pixel",
+"semantic_regions": [
+{
+"region_name": "sky_gradient",
+"bbox": [0.0, 0.0, 1.0, 0.90],
+"layer_order": 0,
+"visual_importance": 0.8,
+"mutation_priority": 0.9,
+"confidence": 1.0,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["palette swap for time of day", "saturation adjustment", "banding width alteration"],
+"unsafe_mutations": ["adding complex geometry", "removing horizontal gradient structure"]
+},
+{
+"region_name": "cloud_bands",
+"bbox": [0.0, 0.10, 1.0, 0.70],
+"layer_order": 1,
+"visual_importance": 0.7,
+"mutation_priority": 0.8,
+"confidence": 0.95,
+"mutation_safety": "color_safe",
+"safe_mutations": ["hue shift", "contrast adjustment against sky"],
+"unsafe_mutations": ["changing horizontal flow to vertical", "smoothing out pixel clusters"]
+},
+{
+"region_name": "building_right",
+"bbox": [0.82, 0.0, 1.0, 0.85],
+"layer_order": 3,
+"visual_importance": 0.75,
+"mutation_priority": 0.3,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["window light color changes", "silhouette tinting (e.g., to dark blue)"],
+"unsafe_mutations": ["altering perspective", "structural deformation"]
+},
+{
+"region_name": "neon_sign_structure",
+"bbox": [0.61, 0.31, 0.82, 0.80],
+"layer_order": 2,
+"visual_importance": 0.9,
+"mutation_priority": 0.2,
+"confidence": 0.9,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["neon letter color shift", "glow intensity change"],
+"unsafe_mutations": ["deforming text", "deleting scaffolding"]
+},
+{
+"region_name": "central_utility_pole",
+"bbox": [0.46, 0.0, 0.65, 0.85],
+"layer_order": 2,
+"visual_importance": 0.8,
+"mutation_priority": 0.1,
+"confidence": 0.95,
+"mutation_safety": "exclude",
+"safe_mutations": ["none"],
+"unsafe_mutations": ["moving horizontally", "altering verticality", "deletion"]
+},
+{
+"region_name": "street_lamp_left",
+"bbox": [0.0, 0.30, 0.20, 0.39],
+"layer_order": 2,
+"visual_importance": 0.6,
+"mutation_priority": 0.4,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["bulb color change", "glow radius adjustment"],
+"unsafe_mutations": ["changing curvature of the pole", "removal"]
+},
+{
+"region_name": "billboard_silhouette",
+"bbox": [0.31, 0.70, 0.44, 0.85],
+"layer_order": 3,
+"visual_importance": 0.5,
+"mutation_priority": 0.2,
+"confidence": 0.9,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["minor scaling"],
+"unsafe_mutations": ["deleting posts", "making it non-silhouette"]
+},
+{
+"region_name": "foreground_vegetation_left",
+"bbox": [0.0, 0.55, 0.48, 1.0],
+"layer_order": 4,
+"visual_importance": 0.7,
+"mutation_priority": 0.3,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["tinting black to dark atmospheric color"],
+"unsafe_mutations": ["removing jagged leaf edge pixelation", "adding bright interior details"]
+},
+{
+"region_name": "foreground_vegetation_right",
+"bbox": [0.48, 0.80, 1.0, 1.0],
+"layer_order": 4,
+"visual_importance": 0.6,
+"mutation_priority": 0.3,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["tinting black to dark atmospheric color"],
+"unsafe_mutations": ["removing jagged leaf edge pixelation", "adding bright interior details"]
+}
+],
+"pattern_regions": [
+{
+"pattern_name": "power_lines",
+"approximate_bbox": [0.0, 0.0, 0.82, 0.85],
+"orientation": "diagonal and intersecting",
+"sparsity": "high",
+"typical_size": "1-2 pixel thick lines",
+"color_characteristics": "pure black silhouette",
+"confidence": 1.0,
+"mutation_safety": "exclude"
+},
+{
+"pattern_name": "stars",
+"approximate_bbox": [0.0, 0.0, 1.0, 0.25],
+"orientation": "scattered",
+"sparsity": "very high",
+"typical_size": "1 pixel dots",
+"color_characteristics": "light blue/white",
+"confidence": 0.9,
+"mutation_safety": "atmosphere_only"
+},
+{
+"pattern_name": "building_windows",
+"approximate_bbox": [0.84, 0.10, 0.99, 0.65],
+"orientation": "grid",
+"sparsity": "low",
+"typical_size": "small rectangles",
+"color_characteristics": "dark blue/purple reflections and lit interior colors",
+"confidence": 0.95,
+"mutation_safety": "color+light_safe"
+}
+],
+"palette": {
+"important_colors": [
+{
+"hex": "#0a1f8f",
+"role": "upper sky ambient",
+"approximate_area_fraction": 0.25,
+"confidence": 0.95
+},
+{
+"hex": "#762e91",
+"role": "mid sky and clouds",
+"approximate_area_fraction": 0.30,
+"confidence": 0.9
+},
+{
+"hex": "#ff8b54",
+"role": "lower horizon sunset glow",
+"approximate_area_fraction": 0.10,
+"confidence": 0.95
+},
+{
+"hex": "#000000",
+"role": "foreground silhouettes and structural outlines",
+"approximate_area_fraction": 0.30,
+"confidence": 1.0
+},
+{
+"hex": "#c41515",
+"role": "neon sign lighting",
+"approximate_area_fraction": 0.02,
+"confidence": 0.9
+}
+],
+"estimated_palette_size": "highly restricted",
+"palette_temperature": "warm horizon transitioning to cool zenith",
+"contrast_level": "extreme (pure black vs bright sunset)",
+"saturation_level": "high"
+},
+"lighting": {
+"direction": "bottom center (sun below horizon)",
+"ambient": "dusk sunset gradient",
+"warm_cool_balance": "balanced split (warm bottom, cool top)",
+"practical_light_sources": [
+{
+"description": "street lamp",
+"bbox": [0.15, 0.34, 0.19, 0.36],
+"approximate_color": "#ffdda6",
+"relative_intensity": "low",
+"affected_regions": ["street_lamp_left"]
+},
+{
+"description": "neon sign",
+"bbox": [0.61, 0.31, 0.82, 0.55],
+"approximate_color": "#c41515",
+"relative_intensity": "medium",
+"affected_regions": ["neon_sign_structure"]
+}
+],
+"important_glows": "broad atmospheric horizontal glow at the bottom edge of the sky",
+"reflections": "building windows reflect some of the ambient sky color"
+},
+"atmosphere": {
+"identified_effects": ["clear dusk", "sunset gradient"],
+"safe_changes": ["palette shifting to represent dawn or night", "adding fog overlay", "increasing star count"]
+},
+"pixel_characteristics": {
+"hard_pixel_edges": "extremely prominent on all silhouettes and power lines",
+"soft_edges": "none (pure pixel art)",
+"outlines": "none used for objects against sky, relying entirely on silhouette",
+"clustered_shading": "used heavily in the cloud structures",
+"gradients": "represented via strict horizontal color banding",
+"dithering": "minimal, prefers distinct color bands over checkerboard dithering",
+"texture": "flat color patches making up organic shapes in clouds and trees",
+"flat_regions": "all black foreground elements",
+"native_pixel_scale_feel": "low resolution (classic retro point-and-click adventure scale)"
+},
+"region_relationships": [
+"central_utility_pole occludes sky_gradient and cloud_bands",
+"power_lines occlude all background elements",
+"foreground_vegetation_left occludes street_lamp_left base and billboard_silhouette base",
+"building_right occludes sky_gradient on the right edge",
+"neon_sign_structure is mounted on central_utility_pole/scaffolding"
+],
+"composition_constraints": {
+"must_remain_stable": [
+"heavy black foreground framing at the bottom and sides",
+"unobstructed horizontal flow of the sunset gradient",
+"interlocking diagonal web of power lines"
+],
+"safe_to_change": [
+"sky and cloud palette",
+"window illumination states",
+"neon sign color"
+],
+"cautious_change": [
+"cloud cluster formations",
+"tree canopy silhouettes"
+]
+},
+"generator_recommendations": {
+"color_mutation": "high",
+"lighting_mutation": "medium",
+"atmosphere_mutation": "high",
+"shape_mutation": "low"
+}
+}
+]
+}

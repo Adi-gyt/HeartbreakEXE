@@ -1,0 +1,264 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_16",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "cinematic_moody_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "night_sky",
+          "bbox": [0.0, 0.0, 1.0, 1.0],
+          "layer_order": 0,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.8,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["palette swap for time of day", "brightness adjustment"],
+          "unsafe_mutations": ["adding complex structures"]
+        },
+        {
+          "region_name": "moon",
+          "bbox": [0.02, 0.04, 0.07, 0.12],
+          "layer_order": 1,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["color tinting", "brightness adjustment"],
+          "unsafe_mutations": ["non-circular deformation", "removal"]
+        },
+        {
+          "region_name": "cloud_formation",
+          "bbox": [0.08, 0.0, 1.0, 0.68],
+          "layer_order": 2,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": ["hue shift", "contrast adjustment between layers"],
+          "unsafe_mutations": ["smoothing pixel clusters", "drastic shape alteration"]
+        },
+        {
+          "region_name": "tree_structure",
+          "bbox": [0.0, 0.15, 0.45, 1.0],
+          "layer_order": 4,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["leaf color tinting", "minor branch adjustment"],
+          "unsafe_mutations": ["removing jagged pixel nature", "brightening silhouette"]
+        },
+        {
+          "region_name": "cat_silhouette",
+          "bbox": [0.0, 0.74, 0.05, 0.94],
+          "layer_order": 5,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["minor pose tweaking"],
+          "unsafe_mutations": ["breaking silhouette", "removal"]
+        },
+        {
+          "region_name": "utility_pole_left",
+          "bbox": [0.48, 0.43, 0.63, 1.0],
+          "layer_order": 3,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": ["none"],
+          "unsafe_mutations": ["bending", "translation", "thickness alteration"]
+        },
+        {
+          "region_name": "utility_pole_right",
+          "bbox": [0.75, 0.18, 0.88, 1.0],
+          "layer_order": 3,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": ["none"],
+          "unsafe_mutations": ["bending", "translation", "thickness alteration"]
+        },
+        {
+          "region_name": "street_light_cone_left",
+          "bbox": [0.46, 0.71, 0.54, 1.0],
+          "layer_order": 2,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.6,
+          "confidence": 0.9,
+          "mutation_safety": "atmosphere_only",
+          "safe_mutations": ["color shift", "intensity adjustment", "opacity changes"],
+          "unsafe_mutations": ["making it opaque", "removing directional angle"]
+        },
+        {
+          "region_name": "street_light_cone_right",
+          "bbox": [0.70, 0.50, 0.85, 1.0],
+          "layer_order": 2,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.6,
+          "confidence": 0.9,
+          "mutation_safety": "atmosphere_only",
+          "safe_mutations": ["color shift", "intensity adjustment", "opacity changes"],
+          "unsafe_mutations": ["making it opaque", "removing directional angle"]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "power_lines",
+          "approximate_bbox": [0.0, 0.05, 1.0, 0.65],
+          "orientation": "diagonal looping",
+          "sparsity": "high",
+          "typical_size": "1-pixel thin lines",
+          "color_characteristics": "dark silhouette against sky",
+          "confidence": 0.95,
+          "mutation_safety": "exclude"
+        },
+        {
+          "pattern_name": "tree_leaves",
+          "approximate_bbox": [0.0, 0.15, 0.45, 1.0],
+          "orientation": "scattered clusters",
+          "sparsity": "medium",
+          "typical_size": "small irregular clumps",
+          "color_characteristics": "muted purples and blues",
+          "confidence": 0.9,
+          "mutation_safety": "color_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#2a4263",
+            "role": "ambient sky base",
+            "approximate_area_fraction": 0.40,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#62738c",
+            "role": "cloud highlights",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#4a4c6a",
+            "role": "cloud shadows and midtones",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#302636",
+            "role": "tree and pole silhouettes",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#d3e2db",
+            "role": "moon and street lamp bulbs",
+            "approximate_area_fraction": 0.02,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#0f0f11",
+            "role": "deepest shadows and cat silhouette",
+            "approximate_area_fraction": 0.03,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "restricted",
+        "palette_temperature": "cool dominant with pale yellow/white accents",
+        "contrast_level": "moderate to high (between light sources and silhouettes)",
+        "saturation_level": "low"
+      },
+      "lighting": {
+        "direction": "local downward cones from street lamps, faint ambient moonlight",
+        "ambient": "cool muted blue/purple night",
+        "warm_cool_balance": "cool heavy",
+        "practical_light_sources": [
+          {
+            "description": "street lamp left",
+            "bbox": [0.49, 0.70, 0.51, 0.72],
+            "approximate_color": "#d3e2db",
+            "relative_intensity": "medium",
+            "affected_regions": ["street_light_cone_left"]
+          },
+          {
+            "description": "street lamp right",
+            "bbox": [0.76, 0.50, 0.79, 0.52],
+            "approximate_color": "#d3e2db",
+            "relative_intensity": "medium",
+            "affected_regions": ["street_light_cone_right"]
+          },
+          {
+            "description": "moon",
+            "bbox": [0.02, 0.04, 0.07, 0.12],
+            "approximate_color": "#d3e2db",
+            "relative_intensity": "low",
+            "affected_regions": ["cloud_formation"]
+          }
+        ],
+        "important_glows": "semi-transparent dithered light cones originating from street lamps",
+        "reflections": "none"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "haze visible in the light cones",
+          "calm night atmosphere"
+        ],
+        "safe_changes": [
+          "sky palette shifting",
+          "adding fog",
+          "adding rain or snow"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on silhouettes, power lines, and tree branches",
+        "soft_edges": "simulated through dithering in the light cones and clouds",
+        "outlines": "none",
+        "clustered_shading": "used extensively in the clouds to give them volume",
+        "gradients": "represented via selective dithering and color stepping",
+        "dithering": "checkerboard pattern used heavily in the clouds and light cones",
+        "texture": "jagged pixels for the tree, clustered shapes for clouds",
+        "flat_regions": "the main sky background and deeper silhouettes",
+        "native_pixel_scale_feel": "medium resolution, traditional pixel art aesthetic"
+      },
+      "region_relationships": [
+        "tree_structure occludes night_sky and cloud_formation",
+        "cat_silhouette sits on tree_structure",
+        "utility_pole_left and utility_pole_right occlude cloud_formation",
+        "power_lines connect utility_pole_left and utility_pole_right, overlapping clouds",
+        "street_light_cone_left and street_light_cone_right overlay the background"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "verticality of the utility poles",
+          "framing provided by the tree on the left",
+          "diagonal swoop of the power lines"
+        ],
+        "safe_to_change": [
+          "cloud shape variations",
+          "moon position",
+          "light cone opacity"
+        ],
+        "cautious_change": [
+          "tree branch complexity",
+          "cat pose"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

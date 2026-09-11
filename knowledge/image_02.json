@@ -1,0 +1,258 @@
+{
+"dataset_version": "1.0",
+"style_families": [
+"cinematic_moody_pixel"
+],
+"images": [
+{
+"image_id": "image_02",
+"dimensions": {
+"width": 736,
+"height": 490
+},
+"style_family": "cinematic_moody_pixel",
+"semantic_regions": [
+{
+"region_name": "sky_and_fog",
+"bbox": [0.0, 0.0, 1.0, 0.72],
+"layer_order": 0,
+"visual_importance": 0.9,
+"mutation_priority": 0.8,
+"confidence": 1.0,
+"mutation_safety": "atmosphere_only",
+"safe_mutations": ["hue shift", "density change", "saturation adjustment"],
+"unsafe_mutations": ["structural geometry addition", "high frequency noise"]
+},
+{
+"region_name": "bus_stop_roof",
+"bbox": [0.12, 0.32, 0.85, 0.39],
+"layer_order": 2,
+"visual_importance": 0.8,
+"mutation_priority": 0.2,
+"confidence": 1.0,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["minor structural warping", "silhouette softening"],
+"unsafe_mutations": ["deletion", "color inversion", "major deformation"]
+},
+{
+"region_name": "left_pillar",
+"bbox": [0.15, 0.39, 0.18, 0.74],
+"layer_order": 2,
+"visual_importance": 0.6,
+"mutation_priority": 0.1,
+"confidence": 0.95,
+"mutation_safety": "exclude",
+"safe_mutations": ["none"],
+"unsafe_mutations": ["any translation", "deletion"]
+},
+{
+"region_name": "center_pillars",
+"bbox": [0.37, 0.39, 0.61, 0.74],
+"layer_order": 2,
+"visual_importance": 0.7,
+"mutation_priority": 0.1,
+"confidence": 0.95,
+"mutation_safety": "exclude",
+"safe_mutations": ["none"],
+"unsafe_mutations": ["any translation", "deletion", "thickness alteration"]
+},
+{
+"region_name": "right_pillar",
+"bbox": [0.78, 0.39, 0.81, 0.74],
+"layer_order": 2,
+"visual_importance": 0.6,
+"mutation_priority": 0.1,
+"confidence": 0.95,
+"mutation_safety": "exclude",
+"safe_mutations": ["none"],
+"unsafe_mutations": ["any translation", "deletion"]
+},
+{
+"region_name": "person_silhouette",
+"bbox": [0.30, 0.60, 0.37, 0.74],
+"layer_order": 3,
+"visual_importance": 0.95,
+"mutation_priority": 0.3,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["minor posture adjustment", "slight scale change"],
+"unsafe_mutations": ["removal", "internal lighting details (must remain silhouette)"]
+},
+{
+"region_name": "left_bench",
+"bbox": [0.20, 0.65, 0.33, 0.74],
+"layer_order": 2,
+"visual_importance": 0.7,
+"mutation_priority": 0.2,
+"confidence": 0.9,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["minor length adjustment"],
+"unsafe_mutations": ["height change", "deletion"]
+},
+{
+"region_name": "right_bench",
+"bbox": [0.60, 0.65, 0.78, 0.74],
+"layer_order": 2,
+"visual_importance": 0.7,
+"mutation_priority": 0.2,
+"confidence": 0.9,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["minor length adjustment"],
+"unsafe_mutations": ["height change", "deletion"]
+},
+{
+"region_name": "trash_receptacle",
+"bbox": [0.85, 0.60, 0.92, 0.74],
+"layer_order": 3,
+"visual_importance": 0.5,
+"mutation_priority": 0.4,
+"confidence": 0.85,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["width change", "height change"],
+"unsafe_mutations": ["removal of silhouette nature"]
+},
+{
+"region_name": "road_surface",
+"bbox": [0.0, 0.74, 1.0, 1.0],
+"layer_order": 1,
+"visual_importance": 0.8,
+"mutation_priority": 0.8,
+"confidence": 1.0,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["reflection intensity", "hue shift", "texture noise increase (rain)"],
+"unsafe_mutations": ["horizon line translation"]
+},
+{
+"region_name": "distant_cityscape",
+"bbox": [0.80, 0.40, 1.0, 0.74],
+"layer_order": 0,
+"visual_importance": 0.5,
+"mutation_priority": 0.7,
+"confidence": 0.8,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["building height changes", "window light color shift"],
+"unsafe_mutations": ["bringing into sharp focus"]
+}
+],
+"pattern_regions": [
+{
+"pattern_name": "distant_streetlights",
+"approximate_bbox": [0.45, 0.45, 0.80, 0.65],
+"orientation": "horizontal_scatter",
+"sparsity": "high",
+"typical_size": "small dot",
+"color_characteristics": "warm orange/yellow glow",
+"confidence": 0.95,
+"mutation_safety": "color+light_safe"
+},
+{
+"pattern_name": "road_reflections",
+"approximate_bbox": [0.0, 0.74, 1.0, 1.0],
+"orientation": "horizontal",
+"sparsity": "medium",
+"typical_size": "horizontal streaks",
+"color_characteristics": "cyan and orange matching light sources",
+"confidence": 0.9,
+"mutation_safety": "color+light_safe"
+}
+],
+"palette": {
+"important_colors": [
+{
+"hex": "#00ffd5",
+"role": "primary light source (left)",
+"approximate_area_fraction": 0.15,
+"confidence": 1.0
+},
+{
+"hex": "#0f3a40",
+"role": "ambient atmospheric fog",
+"approximate_area_fraction": 0.40,
+"confidence": 0.9
+},
+{
+"hex": "#ff7e00",
+"role": "secondary distant lights",
+"approximate_area_fraction": 0.05,
+"confidence": 0.95
+},
+{
+"hex": "#11181c",
+"role": "foreground silhouettes",
+"approximate_area_fraction": 0.20,
+"confidence": 0.95
+}
+],
+"estimated_palette_size": "restricted",
+"palette_temperature": "cool dominant with warm accents",
+"contrast_level": "high",
+"saturation_level": "high in light sources, low in shadows"
+},
+"lighting": {
+"direction": "left to right",
+"ambient": "dark moody teal",
+"warm_cool_balance": "cool heavy",
+"practical_light_sources": [
+{
+"description": "off-screen intense street lamp",
+"approximate_color": "#00ffd5",
+"relative_intensity": "very high",
+"affected_regions": ["sky_and_fog", "road_surface", "left_pillar"]
+},
+{
+"description": "distant warm street lamps",
+"approximate_color": "#ff7e00",
+"relative_intensity": "medium",
+"affected_regions": ["sky_and_fog", "road_surface"]
+}
+],
+"important_glows": "heavy bloom on all light sources due to atmosphere",
+"reflections": "specular horizontal reflections on wet road surface"
+},
+"atmosphere": {
+"identified_effects": ["heavy fog", "mist", "light diffusion", "wet surface"],
+"safe_changes": ["fog density can be increased or decreased", "hue of fog can be safely shifted", "rain streaks can be overlaid"]
+},
+"pixel_characteristics": {
+"hard_pixel_edges": "present on structural silhouettes",
+"soft_edges": "heavy use of gradients and bloom in the sky/fog",
+"outlines": "none",
+"clustered_shading": "minimal, silhouette driven",
+"gradients": "smooth atmospheric gradients in background",
+"dithering": "minimal to none visible",
+"texture": "smooth, almost modern-rendered low poly/pixel hybrid",
+"flat_regions": "silhouettes are nearly flat colored",
+"native_pixel_scale_feel": "medium-high resolution pixel art or downscaled render"
+},
+"region_relationships": [
+"person_silhouette occludes left_bench",
+"bus_stop_roof occludes sky_and_fog",
+"distant_cityscape behind sky_and_fog",
+"off-screen left light illuminates road_surface",
+"road_surface reflects distant_streetlights"
+],
+"composition_constraints": {
+"must_remain_stable": [
+"horizon alignment (y approx 0.74)",
+"bus stop frame geometry",
+"character seated posture"
+],
+"safe_to_change": [
+"fog color",
+"distant light positions",
+"road reflection intensity"
+],
+"cautious_change": [
+"character proportions",
+"bench length"
+]
+},
+"generator_recommendations": {
+"color_mutation": "high",
+"lighting_mutation": "medium",
+"atmosphere_mutation": "high",
+"shape_mutation": "low"
+}
+}
+]
+}

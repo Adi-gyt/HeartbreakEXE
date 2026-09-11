@@ -1,0 +1,226 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_12",
+      "dimensions": {
+        "width": 736,
+        "height": 381
+      },
+      "style_family": "cinematic_moody_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "sky_background",
+          "bbox": [0.0, 0.0, 1.0, 0.75],
+          "layer_order": 0,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.8,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["sky color shift", "brightness adjustment"],
+          "unsafe_mutations": ["adding complex structures"]
+        },
+        {
+          "region_name": "giant_moon_structure",
+          "bbox": [0.25, 0.05, 0.98, 0.75],
+          "layer_order": 1,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["crater detail color shift", "highlight color adjustment"],
+          "unsafe_mutations": ["altering the main circular arc", "removing the deep crater detail"]
+        },
+        {
+          "region_name": "crashed_ship_main_body",
+          "bbox": [0.12, 0.45, 0.38, 0.75],
+          "layer_order": 3,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["hull color tinting", "shadow intensity changes"],
+          "unsafe_mutations": ["drastic geometric distortion", "removing the cockpit shape"]
+        },
+        {
+          "region_name": "ship_antenna_flag",
+          "bbox": [0.18, 0.30, 0.32, 0.60],
+          "layer_order": 4,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.3,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["flag color shift", "slight bending of pole"],
+          "unsafe_mutations": ["removal of the antenna"]
+        },
+        {
+          "region_name": "ship_debris_right",
+          "bbox": [0.42, 0.65, 0.55, 0.75],
+          "layer_order": 3,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.4,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["hull color tinting", "shadow intensity changes"],
+          "unsafe_mutations": ["drastic geometric distortion", "removal"]
+        },
+        {
+          "region_name": "character_silhouette",
+          "bbox": [0.32, 0.50, 0.38, 0.65],
+          "layer_order": 5,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["minor cape fluttering", "subtle pose adjustments"],
+          "unsafe_mutations": ["breaking the silhouette", "drastic scale change"]
+        },
+        {
+          "region_name": "foreground_grass_field",
+          "bbox": [0.0, 0.75, 1.0, 1.0],
+          "layer_order": 6,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": ["hue shift to simulate seasons", "brightness adjustments"],
+          "unsafe_mutations": ["removing vertical grassy texture", "flattening to a single color"]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "grass_blades",
+          "approximate_bbox": [0.0, 0.75, 1.0, 1.0],
+          "orientation": "vertical",
+          "sparsity": "low",
+          "typical_size": "thin vertical lines",
+          "color_characteristics": "earthy browns, greens, and yellows",
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive"
+        },
+        {
+          "pattern_name": "faint_stars",
+          "approximate_bbox": [0.0, 0.0, 1.0, 0.40],
+          "orientation": "scattered",
+          "sparsity": "very high",
+          "typical_size": "1-2 pixels",
+          "color_characteristics": "pale blue/white dots",
+          "confidence": 0.9,
+          "mutation_safety": "atmosphere_only"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#40647c",
+            "role": "ambient sky color and shadow tint",
+            "approximate_area_fraction": 0.40,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#e1e4de",
+            "role": "illuminated surface of the giant moon",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#304351",
+            "role": "shadowed areas of the giant moon",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#8c7247",
+            "role": "foreground grass base color",
+            "approximate_area_fraction": 0.10,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#c8524d",
+            "role": "character cape and flag accent color",
+            "approximate_area_fraction": 0.02,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#1b2123",
+            "role": "ship and character silhouettes",
+            "approximate_area_fraction": 0.03,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "moderate",
+        "palette_temperature": "cool dominant with earthy foreground and red accents",
+        "contrast_level": "high contrast between moon highlight and shadows",
+        "saturation_level": "low to moderate"
+      },
+      "lighting": {
+        "direction": "left to right",
+        "ambient": "cool dusky blue",
+        "warm_cool_balance": "cool heavy",
+        "practical_light_sources": [
+          {
+            "description": "primary sun (off-screen left)",
+            "approximate_color": "#ffffff",
+            "relative_intensity": "high",
+            "affected_regions": ["giant_moon_structure", "crashed_ship_main_body", "ship_debris_right", "foreground_grass_field"]
+          }
+        ],
+        "important_glows": "none, clear stark lighting",
+        "reflections": "none"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "clear atmosphere",
+          "slight atmospheric perspective on the dark side of the moon"
+        ],
+        "safe_changes": [
+          "adding clouds",
+          "changing sky color for sunset/sunrise",
+          "adding mist near the ground"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "visible on character, ship, and grass blades",
+        "soft_edges": "some smooth gradients on the moon, likely painterly style rather than strict pixel art",
+        "outlines": "none",
+        "clustered_shading": "used on the moon's craters and ship details",
+        "gradients": "smooth transitions in sky and moon shadows",
+        "dithering": "minimal",
+        "texture": "painterly feel, dense vertical strokes for grass",
+        "flat_regions": "deep shadows on the ship",
+        "native_pixel_scale_feel": "high resolution, painterly or vector-like appearance"
+      },
+      "region_relationships": [
+        "character_silhouette stands upon crashed_ship_main_body",
+        "crashed_ship_main_body and ship_debris_right occlude giant_moon_structure",
+        "foreground_grass_field occludes the lower portions of the ship and moon",
+        "giant_moon_structure is behind all foreground and midground elements"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "the massive scale of the moon relative to the character and ship",
+          "horizontal division between grass field and sky/moon",
+          "character positioned centrally as a focal point"
+        ],
+        "safe_to_change": [
+          "sky palette",
+          "grass colors (seasonality)",
+          "accent color of cape/flag"
+        ],
+        "cautious_change": [
+          "moon surface details",
+          "ship geometry"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

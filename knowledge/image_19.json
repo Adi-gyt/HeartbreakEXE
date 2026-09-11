@@ -1,0 +1,319 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel",
+    "neon_city_pixel",
+    "natural_landscape_pixel",
+    "cozy_scene_pixel",
+    "retro_sunset_pixel",
+    "surreal_symmetrical_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_19",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "retro_sunset_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "sky_gradient_upper",
+          "bbox": [0.0, 0.0, 1.0, 0.40],
+          "layer_order": 0,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.8,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap for time of day",
+            "saturation adjustment"
+          ],
+          "unsafe_mutations": [
+            "adding complex geometry",
+            "removing horizontal gradient structure"
+          ]
+        },
+        {
+          "region_name": "sky_gradient_lower",
+          "bbox": [0.0, 0.40, 1.0, 0.95],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.9,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap for time of day (sunrise/sunset colors)",
+            "banding width alteration"
+          ],
+          "unsafe_mutations": [
+            "removing gradient structure",
+            "changing horizontal flow"
+          ]
+        },
+        {
+          "region_name": "massive_central_cloud",
+          "bbox": [0.30, 0.0, 0.85, 0.70],
+          "layer_order": 1,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shift for lighting changes",
+            "contrast adjustment"
+          ],
+          "unsafe_mutations": [
+            "drastic shape deformation",
+            "smoothing out the pixelated clusters"
+          ]
+        },
+        {
+          "region_name": "lower_horizon_clouds",
+          "bbox": [0.0, 0.50, 1.0, 0.95],
+          "layer_order": 2,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shift to match sunset/sunrise",
+            "highlight intensity adjustment"
+          ],
+          "unsafe_mutations": [
+            "changing horizontal flow",
+            "blurring pixel edges"
+          ]
+        },
+        {
+          "region_name": "power_tower_large_left",
+          "bbox": [0.0, 0.35, 0.25, 0.95],
+          "layer_order": 4,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "translation",
+            "thickness alteration",
+            "deletion",
+            "changing perspective"
+          ]
+        },
+        {
+          "region_name": "power_tower_medium_center",
+          "bbox": [0.25, 0.55, 0.45, 0.95],
+          "layer_order": 4,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "translation",
+            "thickness alteration",
+            "deletion",
+            "changing perspective"
+          ]
+        },
+        {
+          "region_name": "power_tower_small_right1",
+          "bbox": [0.48, 0.70, 0.60, 0.95],
+          "layer_order": 4,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.1,
+          "confidence": 0.9,
+          "mutation_safety": "exclude",
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "translation",
+            "thickness alteration",
+            "deletion"
+          ]
+        },
+        {
+          "region_name": "power_tower_small_right2",
+          "bbox": [0.65, 0.80, 0.75, 0.95],
+          "layer_order": 4,
+          "visual_importance": 0.5,
+          "mutation_priority": 0.1,
+          "confidence": 0.9,
+          "mutation_safety": "exclude",
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "translation",
+            "thickness alteration",
+            "deletion"
+          ]
+        },
+        {
+          "region_name": "shooting_star",
+          "bbox": [0.65, 0.10, 0.85, 0.50],
+          "layer_order": 3,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only",
+          "safe_mutations": [
+            "color change",
+            "length adjustment",
+            "brightness"
+          ],
+          "unsafe_mutations": [
+            "changing the angle significantly",
+            "making it curved"
+          ]
+        },
+        {
+          "region_name": "foreground_ground_silhouette",
+          "bbox": [0.0, 0.92, 1.0, 1.0],
+          "layer_order": 5,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "adding bright lights",
+            "removing the flat baseline"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "stars",
+          "approximate_bbox": [0.0, 0.0, 1.0, 0.40],
+          "orientation": "scattered",
+          "sparsity": "high",
+          "typical_size": "1-3 pixels, some cross-shaped",
+          "color_characteristics": "white/cyan",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "power_lines",
+          "approximate_bbox": [0.0, 0.35, 1.0, 0.95],
+          "orientation": "diagonal and intersecting connecting the towers",
+          "sparsity": "high",
+          "typical_size": "1-pixel thin lines",
+          "color_characteristics": "dark gray/black silhouettes",
+          "confidence": 0.95,
+          "mutation_safety": "exclude"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#27486e",
+            "role": "upper sky base",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#3d5f7b",
+            "role": "mid sky and dark cloud base",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#e0a59a",
+            "role": "warm cloud highlights (lower half)",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#f6dfd2",
+            "role": "lower sky horizon glow",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#202533",
+            "role": "foreground silhouettes (towers, ground, lines)",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#ffffff",
+            "role": "stars and shooting star core",
+            "approximate_area_fraction": 0.02,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "restricted",
+        "palette_temperature": "warm horizon transitioning to cool upper sky",
+        "contrast_level": "high (between dark foreground structures and bright sunset/clouds)",
+        "saturation_level": "moderate"
+      },
+      "lighting": {
+        "direction": "bottom (sun below horizon)",
+        "ambient": "dusk sunset gradient",
+        "warm_cool_balance": "balanced split (warm lower, cool upper)",
+        "practical_light_sources": [],
+        "important_glows": "broad atmospheric horizontal glow at the bottom edge of the sky",
+        "reflections": "none"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "clear dusk/sunset",
+          "sunset gradient",
+          "dramatic cloud illumination from below"
+        ],
+        "safe_changes": [
+          "palette shifting to represent dawn or night",
+          "adding subtle star field in the darkest blue areas"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "extremely prominent on all silhouettes (towers, power lines)",
+        "soft_edges": "none (pure pixel art)",
+        "outlines": "none used for objects against sky, relying entirely on silhouette",
+        "clustered_shading": "used heavily in the cloud structures to define shape and light falloff",
+        "gradients": "represented via strict horizontal color banding in the sky background",
+        "dithering": "stylized checkerboard dithering used extensively in the sky gradient transitions and cloud shading",
+        "texture": "flat color patches making up organic shapes in clouds, rigid lines for wires/towers",
+        "flat_regions": "all black foreground elements (ground, towers)",
+        "native_pixel_scale_feel": "low resolution, retro pixel art aesthetic"
+      },
+      "region_relationships": [
+        "power_tower_large_left and other towers occlude all sky and cloud elements",
+        "power_lines crisscross over all background elements connecting the towers",
+        "shooting_star is in front of the massive_central_cloud but behind the power_lines",
+        "foreground_ground_silhouette anchors the bottom of the image, occluding the lowest horizon"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "the perspective progression of the power towers (large left to small right)",
+          "unobstructed diagonal flow of the power lines",
+          "strong contrast between the dark foreground structures and vibrant sky"
+        ],
+        "safe_to_change": [
+          "sky and cloud palette",
+          "shooting star presence/color",
+          "star positions"
+        ],
+        "cautious_change": [
+          "power line exact routing",
+          "cloud cluster formations (within existing boundaries)"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "low (lighting is baked into the sky color)",
+        "atmosphere_mutation": "medium",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

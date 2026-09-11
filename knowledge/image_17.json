@@ -1,0 +1,259 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel",
+    "neon_city_pixel",
+    "natural_landscape_pixel",
+    "cozy_scene_pixel",
+    "retro_sunset_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_17",
+      "dimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "style_family": "retro_sunset_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "sky_gradient",
+          "bbox": [0.0, 0.0, 1.0, 1.0],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.9,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap for time of day",
+            "saturation adjustment",
+            "banding width alteration"
+          ],
+          "unsafe_mutations": [
+            "adding complex geometry",
+            "removing horizontal gradient structure"
+          ]
+        },
+        {
+          "region_name": "high_altitude_clouds",
+          "bbox": [0.0, 0.0, 1.0, 0.40],
+          "layer_order": 1,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shift",
+            "density changes",
+            "minor clustering adjustments"
+          ],
+          "unsafe_mutations": [
+            "drastic shape deformation",
+            "blurring the pixel boundaries"
+          ]
+        },
+        {
+          "region_name": "low_horizon_clouds",
+          "bbox": [0.40, 0.50, 0.95, 1.0],
+          "layer_order": 1,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.7,
+          "confidence": 0.9,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shift",
+            "contrast adjustment against sky"
+          ],
+          "unsafe_mutations": [
+            "changing flow direction",
+            "smoothing pixel clusters"
+          ]
+        },
+        {
+          "region_name": "building_left",
+          "bbox": [0.0, 0.50, 0.55, 1.0],
+          "layer_order": 3,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "tinting silhouette color",
+            "window illumination state changes"
+          ],
+          "unsafe_mutations": [
+            "structural deformation",
+            "perspective changes"
+          ]
+        },
+        {
+          "region_name": "building_right",
+          "bbox": [0.85, 0.05, 1.0, 1.0],
+          "layer_order": 3,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "tinting silhouette color"
+          ],
+          "unsafe_mutations": [
+            "structural deformation",
+            "perspective changes"
+          ]
+        },
+        {
+          "region_name": "left_utility_pole",
+          "bbox": [0.05, 0.0, 0.12, 1.0],
+          "layer_order": 4,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "translation",
+            "thickness alteration",
+            "deletion"
+          ]
+        },
+        {
+          "region_name": "right_utility_pole",
+          "bbox": [0.55, 0.58, 0.75, 1.0],
+          "layer_order": 2,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "translation",
+            "thickness alteration",
+            "deletion"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "power_lines",
+          "approximate_bbox": [0.0, 0.0, 1.0, 1.0],
+          "orientation": "diagonal and intersecting",
+          "sparsity": "high",
+          "typical_size": "1-pixel thin lines",
+          "color_characteristics": "pure black silhouette against sky",
+          "confidence": 0.95,
+          "mutation_safety": "exclude"
+        },
+        {
+          "pattern_name": "scattered_small_clouds",
+          "approximate_bbox": [0.10, 0.15, 0.75, 0.55],
+          "orientation": "diagonal flow matching perspective",
+          "sparsity": "medium",
+          "typical_size": "small horizontal dashes",
+          "color_characteristics": "white/light purple",
+          "confidence": 0.9,
+          "mutation_safety": "color_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#281e5d",
+            "role": "upper sky ambient",
+            "approximate_area_fraction": 0.35,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#7d3e7d",
+            "role": "mid sky transition",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#fc5a31",
+            "role": "vibrant lower clouds and horizon glow",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#0e0915",
+            "role": "foreground silhouettes (buildings, poles, wires)",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#ffffff",
+            "role": "high altitude cloud highlights",
+            "approximate_area_fraction": 0.05,
+            "confidence": 0.9
+          }
+        ],
+        "estimated_palette_size": "highly restricted",
+        "palette_temperature": "warm horizon transitioning to cool zenith",
+        "contrast_level": "extreme (pure black vs vibrant sunset)",
+        "saturation_level": "very high in the orange/red hues"
+      },
+      "lighting": {
+        "direction": "bottom right (sun below horizon)",
+        "ambient": "dusk sunset gradient",
+        "warm_cool_balance": "balanced split (warm lower right, cool upper left)",
+        "practical_light_sources": [],
+        "important_glows": "broad atmospheric horizontal glow at the bottom edge of the sky",
+        "reflections": "none"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "clear dusk",
+          "sunset gradient",
+          "dramatic cloud illumination"
+        ],
+        "safe_changes": [
+          "palette shifting to represent dawn or night",
+          "adding subtle star field in the darkest blue areas"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "extremely prominent on all silhouettes and power lines",
+        "soft_edges": "none (pure pixel art)",
+        "outlines": "none used for objects against sky, relying entirely on silhouette",
+        "clustered_shading": "used heavily in the cloud structures to define shape and light falloff",
+        "gradients": "represented via strict horizontal color banding in the sky background",
+        "dithering": "stylized checkerboard dithering used extensively in the sky gradient transitions and cloud shading",
+        "texture": "flat color patches making up organic shapes in clouds, rigid lines for wires",
+        "flat_regions": "all black foreground elements",
+        "native_pixel_scale_feel": "low resolution, retro pixel art aesthetic"
+      },
+      "region_relationships": [
+        "left_utility_pole occludes building_left and sky_gradient",
+        "building_left and building_right occlude the lower sky and clouds",
+        "power_lines crisscross over all sky and cloud elements",
+        "right_utility_pole is positioned between building_left and building_right in terms of screen space, occluding clouds behind it"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "heavy black foreground framing at the sides and bottom",
+          "unobstructed diagonal flow of the power lines",
+          "strong contrast between the dark foreground and vibrant sky"
+        ],
+        "safe_to_change": [
+          "sky and cloud palette",
+          "cloud cluster formations (within existing boundaries)"
+        ],
+        "cautious_change": [
+          "power line exact routing",
+          "building silhouettes"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "low (lighting is baked into the sky color)",
+        "atmosphere_mutation": "medium",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

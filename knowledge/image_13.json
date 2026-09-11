@@ -1,0 +1,223 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_13",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "cinematic_moody_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "rainy_background_sky",
+          "bbox": [0.0, 0.0, 1.0, 0.65],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.9,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["hue shift", "brightness adjustments", "gradient banding alteration"],
+          "unsafe_mutations": ["adding clear sky features", "removing vertical rain streaks"]
+        },
+        {
+          "region_name": "primary_street_lamp",
+          "bbox": [0.35, 0.03, 0.45, 0.12],
+          "layer_order": 2,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["bulb color change", "glow radius adjustment"],
+          "unsafe_mutations": ["removing the light source", "drastic structural change"]
+        },
+        {
+          "region_name": "lamp_post_pole",
+          "bbox": [0.39, 0.12, 0.41, 0.85],
+          "layer_order": 2,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": ["none"],
+          "unsafe_mutations": ["bending", "translation", "thickness alteration"]
+        },
+        {
+          "region_name": "phone_booth_structure",
+          "bbox": [0.10, 0.35, 0.35, 0.88],
+          "layer_order": 3,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["window light state changes", "subtle color tinting"],
+          "unsafe_mutations": ["structural deformation", "perspective changes"]
+        },
+        {
+          "region_name": "wet_street_surface",
+          "bbox": [0.35, 0.65, 1.0, 1.0],
+          "layer_order": 1,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["reflection intensity", "hue shift", "water ripple texture tweaks"],
+          "unsafe_mutations": ["disrupting perspective lines", "removing reflective property"]
+        },
+        {
+          "region_name": "foreground_sidewalk",
+          "bbox": [0.0, 0.80, 0.50, 1.0],
+          "layer_order": 2,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.4,
+          "confidence": 0.9,
+          "mutation_safety": "color_safe",
+          "safe_mutations": ["tile line visibility", "puddle shape adjustments"],
+          "unsafe_mutations": ["perspective alteration"]
+        },
+        {
+          "region_name": "distant_street_lamp",
+          "bbox": [0.73, 0.40, 0.77, 0.45],
+          "layer_order": 1,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.3,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["bulb color change"],
+          "unsafe_mutations": ["removal"]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "heavy_rain_streaks",
+          "approximate_bbox": [0.0, 0.0, 1.0, 0.80],
+          "orientation": "vertical/slight diagonal",
+          "sparsity": "high",
+          "typical_size": "long thin streaks 1 pixel wide",
+          "color_characteristics": "semi-transparent cyan and purple depending on background light",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "street_reflections",
+          "approximate_bbox": [0.35, 0.65, 1.0, 1.0],
+          "orientation": "horizontal dashed lines aligned with perspective",
+          "sparsity": "medium",
+          "typical_size": "horizontal broken streaks",
+          "color_characteristics": "cyan and purple reflections matching light sources",
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#42f5d7",
+            "role": "primary light source (cyan lamp) and strong reflections",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#a352d1",
+            "role": "secondary light source (purple distant lamps) and ambient fog",
+            "approximate_area_fraction": 0.30,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#301d5c",
+            "role": "mid-tone background and sky base",
+            "approximate_area_fraction": 0.35,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#131024",
+            "role": "deep shadows on phone booth and foreground",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "restricted (vaporwave/synthwave palette)",
+        "palette_temperature": "cool dominant (cyan and purple)",
+        "contrast_level": "high",
+        "saturation_level": "high in light sources, moderate in shadows"
+      },
+      "lighting": {
+        "direction": "local downward cone from primary lamp, ambient glow from distant lamps",
+        "ambient": "dark purple rainy night",
+        "warm_cool_balance": "entirely cool palette (cyan vs purple)",
+        "practical_light_sources": [
+          {
+            "description": "primary cyan street lamp",
+            "bbox": [0.35, 0.03, 0.45, 0.12],
+            "approximate_color": "#42f5d7",
+            "relative_intensity": "high",
+            "affected_regions": ["rainy_background_sky", "phone_booth_structure", "wet_street_surface", "foreground_sidewalk"]
+          },
+          {
+            "description": "distant purple street lamps",
+            "bbox": [0.73, 0.40, 0.77, 0.45],
+            "approximate_color": "#a352d1",
+            "relative_intensity": "medium",
+            "affected_regions": ["rainy_background_sky", "wet_street_surface"]
+          }
+        ],
+        "important_glows": "strong conical bloom around the primary lamp, created via pixel stepping",
+        "reflections": "specular horizontal reflections on the wet street and sidewalk"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "heavy rain",
+          "wet surfaces",
+          "light diffusion in fog/rain"
+        ],
+        "safe_changes": [
+          "rain intensity",
+          "fog density",
+          "overall palette hue shift"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "visible on phone booth structure and lamp post",
+        "soft_edges": "simulated through stepped color banding in the light cone",
+        "outlines": "dark pixel outlines used on phone booth details",
+        "clustered_shading": "minimal, relies mostly on flat colors and stepped gradients",
+        "gradients": "represented via strict color banding and dithering in the light glow",
+        "dithering": "checkerboard dithering used extensively in the cyan light cone",
+        "texture": "vertical noise for rain, horizontal dashes for wet reflections",
+        "flat_regions": "darkest shadow areas on the phone booth",
+        "native_pixel_scale_feel": "low resolution, distinct chunky pixels"
+      },
+      "region_relationships": [
+        "primary_street_lamp casts light cone over phone_booth_structure and rainy_background_sky",
+        "phone_booth_structure occludes rainy_background_sky",
+        "primary_street_lamp and distant_street_lamp reflect on wet_street_surface",
+        "rain streaks overlay all other regions"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "verticality of the lamp post and phone booth",
+          "perspective lines of the street and sidewalk",
+          "the conical shape of the primary light spill"
+        ],
+        "safe_to_change": [
+          "lamp colors (e.g., cyan to orange)",
+          "rain density",
+          "reflection intensity"
+        ],
+        "cautious_change": [
+          "phone booth geometry",
+          "street perspective"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "high",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

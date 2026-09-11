@@ -1,0 +1,285 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "natural_landscape_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_23",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "natural_landscape_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "background_forest_canopy",
+          "bbox": [0.0, 0.0, 1.0, 0.40],
+          "layer_order": 0,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "hue shift for time of day/season",
+            "contrast adjustment"
+          ],
+          "unsafe_mutations": [
+            "removing leafy texture",
+            "adding sharp structural geometry"
+          ]
+        },
+        {
+          "region_name": "god_rays",
+          "bbox": [0.15, 0.0, 0.85, 0.70],
+          "layer_order": 2,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.9,
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only",
+          "safe_mutations": [
+            "color tinting (e.g. golden hour)",
+            "intensity adjustment",
+            "angle shift slightly"
+          ],
+          "unsafe_mutations": [
+            "making opaque",
+            "removing the diagonal banding"
+          ]
+        },
+        {
+          "region_name": "massive_tree_trunk_left",
+          "bbox": [0.0, 0.0, 0.25, 0.80],
+          "layer_order": 3,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "bark color tinting",
+            "moss highlight color changes"
+          ],
+          "unsafe_mutations": [
+            "removing the silhouette",
+            "drastic shape deformation"
+          ]
+        },
+        {
+          "region_name": "dark_tree_silhouette_right",
+          "bbox": [0.75, 0.0, 1.0, 0.75],
+          "layer_order": 3,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "minor edge tweaking",
+            "shadow tinting"
+          ],
+          "unsafe_mutations": [
+            "brightening significantly",
+            "removal"
+          ]
+        },
+        {
+          "region_name": "central_sword",
+          "bbox": [0.41, 0.25, 0.52, 0.65],
+          "layer_order": 4,
+          "visual_importance": 1.0,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "blade reflection color change",
+            "hilt jewel color swap"
+          ],
+          "unsafe_mutations": [
+            "bending",
+            "translation",
+            "thickness alteration"
+          ]
+        },
+        {
+          "region_name": "stone_pedestal_with_moss",
+          "bbox": [0.28, 0.60, 0.65, 0.85],
+          "layer_order": 3,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "moss hue shift",
+            "stone color tinting"
+          ],
+          "unsafe_mutations": [
+            "removing the cubic structure",
+            "smoothing the pixelated moss"
+          ]
+        },
+        {
+          "region_name": "foreground_water_pool",
+          "bbox": [0.25, 0.85, 0.75, 1.0],
+          "layer_order": 1,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.6,
+          "confidence": 0.9,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "water color shift",
+            "reflection distortion adjustments"
+          ],
+          "unsafe_mutations": [
+            "removing reflective properties"
+          ]
+        },
+        {
+          "region_name": "foreground_vegetation",
+          "bbox": [0.0, 0.80, 1.0, 1.0],
+          "layer_order": 5,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "highlight color shifts (e.g., green to autumn colors)"
+          ],
+          "unsafe_mutations": [
+            "smoothing out the pixelated leaf clusters",
+            "removing the dark framing edges"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "floating_particles",
+          "approximate_bbox": [0.20, 0.30, 0.80, 0.70],
+          "orientation": "scattered",
+          "sparsity": "high",
+          "typical_size": "1-3 pixels",
+          "color_characteristics": "bright yellow/green",
+          "confidence": 0.9,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "leaf_clusters",
+          "approximate_bbox": [0.0, 0.0, 1.0, 0.40],
+          "orientation": "irregular blobs",
+          "sparsity": "medium",
+          "typical_size": "various small clusters",
+          "color_characteristics": "dark green silhouettes with bright rims",
+          "confidence": 0.95,
+          "mutation_safety": "color_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#4ba960",
+            "role": "bright moss and leaf highlights",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#285e49",
+            "role": "mid-tone forest background and god rays",
+            "approximate_area_fraction": 0.35,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#11261d",
+            "role": "deep forest shadows and foreground silhouettes",
+            "approximate_area_fraction": 0.30,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#c4e5ce",
+            "role": "sword highlights and brightest god rays",
+            "approximate_area_fraction": 0.05,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#768c7e",
+            "role": "sword metal base",
+            "approximate_area_fraction": 0.02,
+            "confidence": 0.9
+          }
+        ],
+        "estimated_palette_size": "restricted (monochromatic green with bright accents)",
+        "palette_temperature": "cool/neutral green dominant",
+        "contrast_level": "high (bright light rays hitting a dark forest floor)",
+        "saturation_level": "moderate overall, high in the moss highlights"
+      },
+      "lighting": {
+        "direction": "top left, casting strong diagonal god rays",
+        "ambient": "deep green forest gloom",
+        "warm_cool_balance": "mostly cool green, lacking warm reds/oranges",
+        "practical_light_sources": [
+          {
+            "description": "sunlight breaking through canopy",
+            "bbox": [0.15, 0.0, 0.40, 0.10],
+            "approximate_color": "#c4e5ce",
+            "relative_intensity": "very high",
+            "affected_regions": [
+              "god_rays",
+              "central_sword",
+              "stone_pedestal_with_moss"
+            ]
+          }
+        ],
+        "important_glows": "strong volumetric light scattering represented by diagonal dithered bands",
+        "reflections": "specular reflections of the green light on the sword blade and dark reflections in the foreground water pool"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "dense forest humidity/mist",
+          "volumetric lighting (god rays)",
+          "floating pollen/dust particles"
+        ],
+        "safe_changes": [
+          "color of the god rays",
+          "intensity of the mist",
+          "particle density"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on the sword, stone pedestal, and foreground leaves",
+        "soft_edges": "simulated through dithering in the god rays",
+        "outlines": "used subtly on the sword hilt for definition",
+        "clustered_shading": "heavy use on the tree trunks (bark texture) and mossy pedestal",
+        "gradients": "represented via diagonal color banding and dithering for the light rays",
+        "dithering": "checkerboard and stylized diagonal dithering used extensively in the god rays to show light falloff",
+        "texture": "rich and varied (rough bark, pixelated moss, smooth metallic sword)",
+        "flat_regions": "the deepest background forest shadows",
+        "native_pixel_scale_feel": "medium resolution, classic fantasy game aesthetic"
+      },
+      "region_relationships": [
+        "central_sword is embedded in stone_pedestal_with_moss",
+        "god_rays overlay the background_forest_canopy and highlight the central_sword",
+        "massive_tree_trunk_left and dark_tree_silhouette_right frame the scene and occlude the background",
+        "foreground_vegetation overlaps the base of the pedestal and the water pool"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "central focal point (the sword on the pedestal)",
+          "strong diagonal lighting",
+          "dark vertical framing on the left and right edges"
+        ],
+        "safe_to_change": [
+          "overall seasonal palette (e.g., turning green to golden yellow or snowy white)",
+          "particle effects",
+          "water reflection intensity"
+        ],
+        "cautious_change": [
+          "sword geometry",
+          "pedestal shape"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "high (intensity and color, not angle)",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

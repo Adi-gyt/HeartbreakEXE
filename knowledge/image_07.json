@@ -1,0 +1,286 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "natural_landscape_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_07",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "natural_landscape_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "sky_gradient",
+          "bbox": [0.0, 0.0, 1.0, 0.40],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.9,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap for time of day",
+            "saturation adjustment"
+          ],
+          "unsafe_mutations": [
+            "adding complex geometry",
+            "removing gradient structure"
+          ]
+        },
+        {
+          "region_name": "distant_mountains",
+          "bbox": [0.0, 0.25, 1.0, 0.45],
+          "layer_order": 1,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "snow cover adjustment",
+            "shadow tinting"
+          ],
+          "unsafe_mutations": [
+            "flattening peaks",
+            "removing structural ridges"
+          ]
+        },
+        {
+          "region_name": "central_volcano_peak",
+          "bbox": [0.35, 0.20, 0.65, 0.45],
+          "layer_order": 1,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "snow tinting",
+            "minor lighting angle shifts"
+          ],
+          "unsafe_mutations": [
+            "removing the peak",
+            "major structural deformation"
+          ]
+        },
+        {
+          "region_name": "smoke_plume",
+          "bbox": [0.50, 0.05, 0.65, 0.28],
+          "layer_order": 2,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.8,
+          "confidence": 0.9,
+          "mutation_safety": "atmosphere_only",
+          "safe_mutations": [
+            "opacity changes",
+            "drift direction alteration",
+            "color tinting"
+          ],
+          "unsafe_mutations": [
+            "making it rigid",
+            "removing entirely without replacing with atmospheric effect"
+          ]
+        },
+        {
+          "region_name": "midground_rolling_hills",
+          "bbox": [0.0, 0.40, 1.0, 0.65],
+          "layer_order": 3,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shifts to represent seasons",
+            "lighting intensity changes"
+          ],
+          "unsafe_mutations": [
+            "removing tree texture",
+            "flattening the rolling topology"
+          ]
+        },
+        {
+          "region_name": "fire_watch_tower_cabin",
+          "bbox": [0.46, 0.35, 0.52, 0.42],
+          "layer_order": 5,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "window illumination state",
+            "roof color tint"
+          ],
+          "unsafe_mutations": [
+            "perspective distortion",
+            "deletion"
+          ]
+        },
+        {
+          "region_name": "fire_watch_tower_structure",
+          "bbox": [0.46, 0.42, 0.52, 0.65],
+          "layer_order": 5,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "translation",
+            "deletion",
+            "thickness alteration"
+          ]
+        },
+        {
+          "region_name": "foreground_forest_silhouette",
+          "bbox": [0.0, 0.60, 1.0, 1.0],
+          "layer_order": 6,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "tinting shadows",
+            "adding subtle mist between trees"
+          ],
+          "unsafe_mutations": [
+            "removing jagged pine silhouettes",
+            "brightening to lose silhouette effect"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "pine_trees",
+          "approximate_bbox": [0.0, 0.40, 1.0, 1.0],
+          "orientation": "vertical",
+          "sparsity": "low",
+          "typical_size": "tall, varying widths",
+          "color_characteristics": "dark purple/blue to deep black in foreground",
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive"
+        },
+        {
+          "pattern_name": "sky_streaks",
+          "approximate_bbox": [0.40, 0.0, 1.0, 0.30],
+          "orientation": "diagonal (bottom-left to top-right)",
+          "sparsity": "high",
+          "typical_size": "long thin lines",
+          "color_characteristics": "semi-transparent white",
+          "confidence": 0.85,
+          "mutation_safety": "atmosphere_only"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#0857ac",
+            "role": "upper sky gradient",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#11cff7",
+            "role": "lower sky gradient",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#ffffff",
+            "role": "snow peaks and clouds",
+            "approximate_area_fraction": 0.10,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#50386e",
+            "role": "midground hills",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#090a18",
+            "role": "foreground forest silhouette",
+            "approximate_area_fraction": 0.30,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "moderate",
+        "palette_temperature": "cool dominant",
+        "contrast_level": "high (bright sky vs dark foreground)",
+        "saturation_level": "high in sky, moderate in landscape"
+      },
+      "lighting": {
+        "direction": "left to right",
+        "ambient": "bright daylight",
+        "warm_cool_balance": "cool overall, slight warmth on sunlit snow",
+        "practical_light_sources": [
+          {
+            "description": "sun (off-screen left)",
+            "approximate_color": "#ffffff",
+            "relative_intensity": "high",
+            "affected_regions": [
+              "central_volcano_peak",
+              "distant_mountains",
+              "smoke_plume"
+            ]
+          }
+        ],
+        "important_glows": "none, clear atmospheric lighting",
+        "reflections": "none"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "volcanic smoke",
+          "atmospheric perspective (distant mountains are lighter/bluer)",
+          "high altitude contrails/clouds"
+        ],
+        "safe_changes": [
+          "smoke density and color",
+          "adding low fog in valleys",
+          "changing sky color for sunset/sunrise"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "visible on the tower structure and foreground pine silhouettes",
+        "soft_edges": "smooth gradients in the sky, achieved via high color count or rendering rather than pure retro pixel art",
+        "outlines": "none",
+        "clustered_shading": "used in the midground hills to define tree canopies",
+        "gradients": "very smooth in the sky, suggesting a modern high-res or 'hd-2d' style",
+        "dithering": "minimal, relies on dense color palettes",
+        "texture": "soft and painted feel in the distance, harder pixel clusters in foreground",
+        "flat_regions": "deep foreground silhouettes",
+        "native_pixel_scale_feel": "high resolution, painterly pixel style"
+      },
+      "region_relationships": [
+        "foreground_forest_silhouette occludes fire_watch_tower_structure base",
+        "fire_watch_tower_cabin is in front of central_volcano_peak",
+        "midground_rolling_hills occlude the base of distant_mountains",
+        "smoke_plume rises from central_volcano_peak",
+        "sky_streaks are behind smoke_plume"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "central placement of tower aligned with volcano peak",
+          "strong foreground framing (dark silhouettes)",
+          "clear distinction between depth layers (foreground, midground, background)"
+        ],
+        "safe_to_change": [
+          "overall palette (time of day/season)",
+          "smoke volume",
+          "sky details (clouds, stars)"
+        ],
+        "cautious_change": [
+          "tower proportions",
+          "volcano silhouette"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "high",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

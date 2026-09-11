@@ -1,0 +1,332 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel",
+    "neon_city_pixel",
+    "natural_landscape_pixel",
+    "cozy_scene_pixel",
+    "retro_sunset_pixel",
+    "surreal_symmetrical_pixel",
+    "sci_fi_space_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_21",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "sci_fi_space_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "space_background",
+          "bbox": [0.0, 0.0, 1.0, 0.70],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.8,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap",
+            "brightness adjustment",
+            "star density changes"
+          ],
+          "unsafe_mutations": [
+            "adding large opaque structures"
+          ]
+        },
+        {
+          "region_name": "gas_giant_planet",
+          "bbox": [0.18, 0.10, 0.55, 0.68],
+          "layer_order": 1,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "band color shifts",
+            "shadow curvature adjustments"
+          ],
+          "unsafe_mutations": [
+            "non-spherical deformation",
+            "removing the banded texture"
+          ]
+        },
+        {
+          "region_name": "bright_sun_star",
+          "bbox": [0.78, 0.12, 0.95, 0.35],
+          "layer_order": 1,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "core color shift",
+            "glow radius expansion/contraction"
+          ],
+          "unsafe_mutations": [
+            "drastic shape changes to the core"
+          ]
+        },
+        {
+          "region_name": "small_moon_top_left",
+          "bbox": [0.07, 0.05, 0.14, 0.15],
+          "layer_order": 1,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.4,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "color tinting",
+            "minor position shift"
+          ],
+          "unsafe_mutations": [
+            "non-circular deformation"
+          ]
+        },
+        {
+          "region_name": "small_moon_top_right",
+          "bbox": [0.65, 0.05, 0.72, 0.16],
+          "layer_order": 1,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.4,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "color tinting",
+            "minor position shift"
+          ],
+          "unsafe_mutations": [
+            "non-circular deformation"
+          ]
+        },
+        {
+          "region_name": "small_moon_mid_right",
+          "bbox": [0.66, 0.38, 0.72, 0.48],
+          "layer_order": 1,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.4,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "color tinting",
+            "minor position shift"
+          ],
+          "unsafe_mutations": [
+            "non-circular deformation"
+          ]
+        },
+        {
+          "region_name": "spaceship_left",
+          "bbox": [0.27, 0.51, 0.36, 0.59],
+          "layer_order": 3,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.5,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "engine glow color shift",
+            "minor translation"
+          ],
+          "unsafe_mutations": [
+            "drastic geometric distortion"
+          ]
+        },
+        {
+          "region_name": "spaceship_center",
+          "bbox": [0.64, 0.74, 0.72, 0.82],
+          "layer_order": 4,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.5,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "engine glow color shift",
+            "minor translation"
+          ],
+          "unsafe_mutations": [
+            "drastic geometric distortion"
+          ]
+        },
+        {
+          "region_name": "spaceship_right",
+          "bbox": [0.81, 0.45, 0.91, 0.53],
+          "layer_order": 3,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.5,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "engine glow color shift",
+            "minor translation"
+          ],
+          "unsafe_mutations": [
+            "drastic geometric distortion"
+          ]
+        },
+        {
+          "region_name": "midground_cloud_layer",
+          "bbox": [0.0, 0.35, 1.0, 0.80],
+          "layer_order": 2,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shift for lighting changes",
+            "contrast adjustment"
+          ],
+          "unsafe_mutations": [
+            "drastic shape deformation",
+            "smoothing out the pixelated clusters"
+          ]
+        },
+        {
+          "region_name": "foreground_cloud_silhouette",
+          "bbox": [0.0, 0.70, 1.0, 1.0],
+          "layer_order": 5,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "rim light tinting",
+            "shadow base color shifting"
+          ],
+          "unsafe_mutations": [
+            "removing the dark silhouette grounding",
+            "smoothing the bubbly texture"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "starfield",
+          "approximate_bbox": [0.0, 0.0, 1.0, 0.60],
+          "orientation": "scattered",
+          "sparsity": "high",
+          "typical_size": "1-3 pixels, some cross-shaped",
+          "color_characteristics": "white, light blue, and pink",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#1a0b3f",
+            "role": "deep space background and darkest shadows",
+            "approximate_area_fraction": 0.30,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#56277d",
+            "role": "mid-tone space background and cloud shadows",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#9c4293",
+            "role": "cloud midtones and gas giant bands",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#f59f9a",
+            "role": "warm cloud highlights and gas giant bands",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#fcf5c7",
+            "role": "brightest cloud highlights",
+            "approximate_area_fraction": 0.10,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#ffffff",
+            "role": "sun core and stars",
+            "approximate_area_fraction": 0.05,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "moderate",
+        "palette_temperature": "warm/cool split (deep cool purples vs warm pink/yellow highlights)",
+        "contrast_level": "high (bright sun/clouds vs dark space/foreground)",
+        "saturation_level": "high"
+      },
+      "lighting": {
+        "direction": "right to left (originating from the bright_sun_star)",
+        "ambient": "deep purple space",
+        "warm_cool_balance": "dynamic interplay between the cool ambient void and warm directional starlight",
+        "practical_light_sources": [
+          {
+            "description": "bright sun/star on the right",
+            "bbox": [0.78, 0.12, 0.95, 0.35],
+            "approximate_color": "#ffffff",
+            "relative_intensity": "very high",
+            "affected_regions": [
+              "space_background",
+              "gas_giant_planet",
+              "midground_cloud_layer",
+              "foreground_cloud_silhouette",
+              "spaceship_right"
+            ]
+          }
+        ],
+        "important_glows": "concentric circular pixel stepping around the bright_sun_star",
+        "reflections": "none"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "nebula-like glowing clouds",
+          "starfield",
+          "deep space vacuum"
+        ],
+        "safe_changes": [
+          "shifting hue for different cosmic palettes (e.g., green/blue nebula)",
+          "star density"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on spaceships, moons, and the gas giant",
+        "soft_edges": "simulated via stepped color banding in the sun glow and space background",
+        "outlines": "none",
+        "clustered_shading": "heavy use in the clouds to create a fluffy, bubbly volumetric look",
+        "gradients": "represented via strict color stepping and banding in the background and planetary shading",
+        "dithering": "minimal traditional dithering; relies more on solid color clusters and concentric banding",
+        "texture": "puffy/bubbly clouds, smooth banded planet, scattered sharp stars",
+        "flat_regions": "the deepest shadows in the foreground clouds",
+        "native_pixel_scale_feel": "medium-low resolution, classic 16-bit sci-fi aesthetic"
+      },
+      "region_relationships": [
+        "gas_giant_planet and bright_sun_star sit behind the midground_cloud_layer",
+        "midground_cloud_layer occludes the lower portion of gas_giant_planet",
+        "foreground_cloud_silhouette occludes the lower portion of midground_cloud_layer",
+        "spaceships fly in front of or among the cloud layers"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "the massive scale of the planet relative to the ships",
+          "horizontal layering of depth (space -> mid clouds -> foreground clouds)",
+          "the strong directional lighting from the right"
+        ],
+        "safe_to_change": [
+          "overall color palette (maintaining contrast)",
+          "spaceship positions (within logical atmospheric depth)",
+          "star placement"
+        ],
+        "cautious_change": [
+          "planet banding details",
+          "cloud cluster volumes"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

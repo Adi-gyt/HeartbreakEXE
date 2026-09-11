@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+
+cache_*.json
+
+preview_generation_*.png
+
+generated_wallpapers/
+
+output_step4/
+output_step5/
+
+gemini_analysis.json.py

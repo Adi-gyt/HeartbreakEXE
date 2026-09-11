@@ -1,0 +1,239 @@
+{
+"dataset_version": "1.0",
+"style_families": [
+"natural_landscape_pixel"
+],
+"images": [
+{
+"image_id": "image_05",
+"dimensions": {
+"width": 626,
+"height": 352
+},
+"style_family": "natural_landscape_pixel",
+"semantic_regions": [
+{
+"region_name": "sky_gradient",
+"bbox": [0.0, 0.0, 1.0, 0.65],
+"layer_order": 0,
+"visual_importance": 0.8,
+"mutation_priority": 0.9,
+"confidence": 1.0,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["hue shift to purple/blue for night", "banding width alteration"],
+"unsafe_mutations": ["adding complex cloud geometry", "removing horizontal gradient flow"]
+},
+{
+"region_name": "giant_sun",
+"bbox": [0.33, 0.11, 0.68, 0.61],
+"layer_order": 1,
+"visual_importance": 0.95,
+"mutation_priority": 0.6,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["color shift to white/blue", "scanline gap width change"],
+"unsafe_mutations": ["removing scanline aesthetic", "non-circular deformation", "deletion"]
+},
+{
+"region_name": "background_mountains",
+"bbox": [0.0, 0.34, 0.75, 0.68],
+"layer_order": 2,
+"visual_importance": 0.85,
+"mutation_priority": 0.7,
+"confidence": 0.95,
+"mutation_safety": "color_safe",
+"safe_mutations": ["highlight color shift", "shadow tinting"],
+"unsafe_mutations": ["flattening jagged silhouette", "removing clustered shading"]
+},
+{
+"region_name": "midground_terrain",
+"bbox": [0.0, 0.60, 1.0, 0.92],
+"layer_order": 3,
+"visual_importance": 0.7,
+"mutation_priority": 0.8,
+"confidence": 0.95,
+"mutation_safety": "color_safe",
+"safe_mutations": ["sand/dirt color shift", "contrast adjustment"],
+"unsafe_mutations": ["removing winding path illusion"]
+},
+{
+"region_name": "main_cactus_right",
+"bbox": [0.69, 0.08, 0.86, 0.88],
+"layer_order": 4,
+"visual_importance": 0.9,
+"mutation_priority": 0.2,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["highlight color adjustment matching sun"],
+"unsafe_mutations": ["arm removal", "thickness alteration", "translation"]
+},
+{
+"region_name": "cactus_left",
+"bbox": [0.08, 0.58, 0.16, 0.80],
+"layer_order": 4,
+"visual_importance": 0.6,
+"mutation_priority": 0.4,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["minor scaling"],
+"unsafe_mutations": ["removing lighting rim"]
+},
+{
+"region_name": "cactus_center",
+"bbox": [0.42, 0.66, 0.50, 0.81],
+"layer_order": 4,
+"visual_importance": 0.5,
+"mutation_priority": 0.4,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["minor scaling"],
+"unsafe_mutations": ["removing lighting rim"]
+},
+{
+"region_name": "bush_right",
+"bbox": [0.64, 0.67, 0.92, 0.88],
+"layer_order": 4,
+"visual_importance": 0.6,
+"mutation_priority": 0.5,
+"confidence": 0.9,
+"mutation_safety": "color_safe",
+"safe_mutations": ["hue shift to represent dead/alive vegetation"],
+"unsafe_mutations": ["smoothing pixelated leaf clusters"]
+},
+{
+"region_name": "foreground_ground_silhouette",
+"bbox": [0.0, 0.88, 1.0, 1.0],
+"layer_order": 5,
+"visual_importance": 0.75,
+"mutation_priority": 0.1,
+"confidence": 0.95,
+"mutation_safety": "exclude",
+"safe_mutations": ["none"],
+"unsafe_mutations": ["any lighting addition", "color brightening"]
+}
+],
+"pattern_regions": [
+{
+"pattern_name": "sun_scanlines",
+"approximate_bbox": [0.33, 0.35, 0.68, 0.61],
+"orientation": "horizontal",
+"sparsity": "low",
+"typical_size": "1-2 pixel thick horizontal lines",
+"color_characteristics": "matching background sky color to create transparency illusion",
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive"
+},
+{
+"pattern_name": "distant_cacti_and_bushes",
+"approximate_bbox": [0.85, 0.55, 0.98, 0.70],
+"orientation": "scattered",
+"sparsity": "high",
+"typical_size": "small 10x10 pixel clusters",
+"color_characteristics": "dark silhouette against light sand",
+"confidence": 0.9,
+"mutation_safety": "color_safe"
+},
+{
+"pattern_name": "ground_rocks",
+"approximate_bbox": [0.10, 0.75, 0.90, 0.92],
+"orientation": "scattered",
+"sparsity": "high",
+"typical_size": "small irregular blobs",
+"color_characteristics": "dark base with warm bright top highlights",
+"confidence": 0.85,
+"mutation_safety": "color_safe"
+}
+],
+"palette": {
+"important_colors": [
+{
+"hex": "#ffb600",
+"role": "sun and brightest highlights",
+"approximate_area_fraction": 0.15,
+"confidence": 0.95
+},
+{
+"hex": "#ff5d00",
+"role": "mid sky and terrain base",
+"approximate_area_fraction": 0.40,
+"confidence": 0.95
+},
+{
+"hex": "#15041a",
+"role": "foreground silhouettes and deep shadows",
+"approximate_area_fraction": 0.25,
+"confidence": 0.9
+},
+{
+"hex": "#8a1e12",
+"role": "mountain midtones",
+"approximate_area_fraction": 0.20,
+"confidence": 0.9
+}
+],
+"estimated_palette_size": "highly restricted (16-bit style)",
+"palette_temperature": "extremely warm",
+"contrast_level": "high (strong darks against vibrant warms)",
+"saturation_level": "very high"
+},
+"lighting": {
+"direction": "backlit from central sun",
+"ambient": "vibrant sunset orange",
+"warm_cool_balance": "entirely warm except for deep purple/black shadows",
+"practical_light_sources": [
+{
+"description": "giant retro sun",
+"bbox": [0.33, 0.11, 0.68, 0.61],
+"approximate_color": "#ffb600",
+"relative_intensity": "very high",
+"affected_regions": ["sky_gradient", "background_mountains", "midground_terrain", "main_cactus_right", "cactus_left", "cactus_center"]
+}
+],
+"important_glows": "No soft bloom; lighting is depicted via hard color stepping",
+"reflections": "none"
+},
+"atmosphere": {
+"identified_effects": ["heat haze represented by sun scanlines", "clear desert evening"],
+"safe_changes": ["sky palette shifting", "sun color shifting"]
+},
+"pixel_characteristics": {
+"hard_pixel_edges": "prominent on all cacti, rocks, and the sun outline",
+"soft_edges": "none (pure hard pixel art)",
+"outlines": "dark pixel outlines used on interior mountain ridges and cacti edges",
+"clustered_shading": "heavy use in mountains and terrain to show rocky texture",
+"gradients": "represented via strict horizontal color banding in the sky",
+"dithering": "stylized cluster dithering on terrain transitions",
+"texture": "chunky, rigid pixel clusters for sand and rock",
+"flat_regions": "bottom foreground silhouette",
+"native_pixel_scale_feel": "retro 16-bit console resolution"
+},
+"region_relationships": [
+"giant_sun is behind background_mountains",
+"background_mountains are behind midground_terrain",
+"main_cactus_right occludes sky_gradient, giant_sun, and midground_terrain",
+"foreground_ground_silhouette occludes the bottom edge of midground_terrain"
+],
+"composition_constraints": {
+"must_remain_stable": [
+"centralized giant sun placement",
+"heavy black foreground framing at the bottom",
+"prominent vertical right-side saguaro cactus"
+],
+"safe_to_change": [
+"overall time-of-day palette",
+"exact rock placement in terrain"
+],
+"cautious_change": [
+"sun scanline spacing",
+"mountain ridge silhouettes"
+]
+},
+"generator_recommendations": {
+"color_mutation": "high",
+"lighting_mutation": "medium",
+"atmosphere_mutation": "low",
+"shape_mutation": "low"
+}
+}
+]
+}

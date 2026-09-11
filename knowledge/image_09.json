@@ -1,0 +1,259 @@
+{
+"dataset_version": "1.0",
+"style_families": [
+"natural_landscape_pixel"
+],
+"images": [
+{
+"image_id": "image_09",
+"dimensions": {
+"width": 736,
+"height": 414
+},
+"style_family": "natural_landscape_pixel",
+"semantic_regions": [
+{
+"region_name": "sky_background",
+"bbox": [0.0, 0.0, 1.0, 0.58],
+"layer_order": 0,
+"visual_importance": 0.8,
+"mutation_priority": 0.9,
+"confidence": 0.95,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["time of day palette shifts", "star density changes"],
+"unsafe_mutations": ["removing gradient depth"]
+},
+{
+"region_name": "moon",
+"bbox": [0.72, 0.16, 0.78, 0.25],
+"layer_order": 1,
+"visual_importance": 0.85,
+"mutation_priority": 0.5,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["color tinting", "brightness glow radius adjustment"],
+"unsafe_mutations": ["non-circular distortion", "deletion"]
+},
+{
+"region_name": "dramatic_clouds",
+"bbox": [0.0, 0.0, 1.0, 0.50],
+"layer_order": 2,
+"visual_importance": 0.95,
+"mutation_priority": 0.8,
+"confidence": 0.95,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["heavy hue shifts", "contrast adjustments", "highlight recoloring"],
+"unsafe_mutations": ["blurring pixel clusters", "flattening volume"]
+},
+{
+"region_name": "mountain_range_left",
+"bbox": [0.0, 0.22, 0.45, 0.58],
+"layer_order": 3,
+"visual_importance": 0.7,
+"mutation_priority": 0.4,
+"confidence": 0.9,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["shadow tinting", "highlight adjustments based on sky"],
+"unsafe_mutations": ["structural deformation", "removing jagged peaks"]
+},
+{
+"region_name": "mountain_range_right",
+"bbox": [0.55, 0.18, 1.0, 0.58],
+"layer_order": 3,
+"visual_importance": 0.7,
+"mutation_priority": 0.4,
+"confidence": 0.9,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["shadow tinting", "highlight adjustments based on sky"],
+"unsafe_mutations": ["structural deformation", "removing jagged peaks"]
+},
+{
+"region_name": "lake_surface",
+"bbox": [0.0, 0.58, 1.0, 1.0],
+"layer_order": 1,
+"visual_importance": 0.9,
+"mutation_priority": 0.9,
+"confidence": 0.95,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["must dynamically match sky mutations", "water color shift"],
+"unsafe_mutations": ["breaking horizon line", "removing reflective property"]
+},
+{
+"region_name": "lake_reflection_clouds",
+"bbox": [0.25, 0.58, 0.90, 0.95],
+"layer_order": 2,
+"visual_importance": 0.95,
+"mutation_priority": 0.9,
+"confidence": 0.95,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["color shift matching dramatic_clouds", "ripple distortion intensity"],
+"unsafe_mutations": ["desynchronizing from sky cloud colors"]
+},
+{
+"region_name": "pine_trees_left",
+"bbox": [0.0, 0.15, 0.25, 0.65],
+"layer_order": 5,
+"visual_importance": 0.8,
+"mutation_priority": 0.2,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["silhouette color tinting to match ambient light"],
+"unsafe_mutations": ["removing vertical spikes", "brightening interior details"]
+},
+{
+"region_name": "shoreline_right",
+"bbox": [0.65, 0.35, 1.0, 0.68],
+"layer_order": 4,
+"visual_importance": 0.75,
+"mutation_priority": 0.2,
+"confidence": 0.9,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["rim light color adjustment"],
+"unsafe_mutations": ["altering reflection contact point"]
+},
+{
+"region_name": "foreground_vegetation_bottom",
+"bbox": [0.0, 0.85, 1.0, 1.0],
+"layer_order": 6,
+"visual_importance": 0.6,
+"mutation_priority": 0.1,
+"confidence": 0.95,
+"mutation_safety": "exclude",
+"safe_mutations": ["none"],
+"unsafe_mutations": ["altering silhouette", "translation"]
+}
+],
+"pattern_regions": [
+{
+"pattern_name": "stars",
+"approximate_bbox": [0.4, 0.0, 0.9, 0.3],
+"orientation": "scattered",
+"sparsity": "high",
+"typical_size": "1-2 pixels",
+"color_characteristics": "bright white/cyan",
+"confidence": 0.9,
+"mutation_safety": "atmosphere_only"
+},
+{
+"pattern_name": "water_ripples",
+"approximate_bbox": [0.0, 0.58, 1.0, 1.0],
+"orientation": "horizontal",
+"sparsity": "medium",
+"typical_size": "horizontal jagged bands of varying length",
+"color_characteristics": "interleaved reflection colors and dark water base",
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive"
+}
+],
+"palette": {
+"important_colors": [
+{
+"hex": "#ff7f3f",
+"role": "core warm sunset/sunrise light on clouds",
+"approximate_area_fraction": 0.15,
+"confidence": 0.95
+},
+{
+"hex": "#ffb86c",
+"role": "secondary warm highlights on clouds and reflections",
+"approximate_area_fraction": 0.12,
+"confidence": 0.9
+},
+{
+"hex": "#1d5799",
+"role": "mid-tone blue sky and water base",
+"approximate_area_fraction": 0.25,
+"confidence": 0.95
+},
+{
+"hex": "#0d1b2a",
+"role": "deep ambient sky and mountain shadows",
+"approximate_area_fraction": 0.28,
+"confidence": 0.95
+},
+{
+"hex": "#050811",
+"role": "foreground silhouettes and darkest water shadows",
+"approximate_area_fraction": 0.15,
+"confidence": 0.95
+},
+{
+"hex": "#c7e5ff",
+"role": "moon and cloud rim lights",
+"approximate_area_fraction": 0.05,
+"confidence": 0.9
+}
+],
+"estimated_palette_size": "moderate (distinct color steps)",
+"palette_temperature": "high contrast (cool deep blues vs extremely warm oranges)",
+"contrast_level": "very high",
+"saturation_level": "very high"
+},
+"lighting": {
+"direction": "low central horizon, shining upwards and outwards",
+"ambient": "deep twilight blue",
+"warm_cool_balance": "sharp split between warm central light and cool ambient surroundings",
+"practical_light_sources": [
+{
+"description": "setting/rising sun (below horizon)",
+"approximate_color": "#ff7f3f",
+"relative_intensity": "very high",
+"affected_regions": ["dramatic_clouds", "lake_reflection_clouds", "mountain_range_left", "mountain_range_right"]
+},
+{
+"description": "full moon",
+"bbox": [0.72, 0.16, 0.78, 0.25],
+"approximate_color": "#c7e5ff",
+"relative_intensity": "medium",
+"affected_regions": ["sky_background"]
+}
+],
+"important_glows": "No soft bloom; light intensity is conveyed through solid color banding.",
+"reflections": "Lake acts as a near-perfect mirror, reflecting the sky, clouds, and shoreline with horizontal ripple distortion."
+},
+"atmosphere": {
+"identified_effects": ["twilight transition", "high contrast clear air", "distant atmospheric perspective in mountains"],
+"safe_changes": ["overall color tinting for different times of day (e.g. turning oranges to purples for deep night)", "adjusting star visibility"]
+},
+"pixel_characteristics": {
+"hard_pixel_edges": "prominent on tree silhouettes, mountain ridges, and moon",
+"soft_edges": "none (pure pixel art)",
+"outlines": "none",
+"clustered_shading": "heavy use in the dramatic clouds to create volumetric puffy shapes",
+"gradients": "represented via strict color stepping and banding in the sky and water",
+"dithering": "minimal traditional dithering; relies on cluster shading and horizontal pixel stretching in water",
+"texture": "chunky, stylized clouds; horizontal noise for water; jagged vertical spikes for pine trees",
+"flat_regions": "deep foreground vegetation silhouettes",
+"native_pixel_scale_feel": "medium-low resolution, distinctly retro aesthetic"
+},
+"region_relationships": [
+"dramatic_clouds overlap sky_background and moon",
+"pine_trees_left occlude mountain_range_left and dramatic_clouds",
+"lake_surface reflects dramatic_clouds, sky_background, and mountain ranges",
+"foreground_vegetation_bottom occludes the bottom edge of lake_surface"
+],
+"composition_constraints": {
+"must_remain_stable": [
+"horizon line exactly around y=0.58",
+"vertical framing by trees/terrain on left and right edges",
+"symmetrical reflection structure in the bottom half"
+],
+"safe_to_change": [
+"cloud and sky palette",
+"moon position (within upper sky)",
+"water ripple intensity"
+],
+"cautious_change": [
+"cloud cluster silhouettes",
+"mountain ridge lines"
+]
+},
+"generator_recommendations": {
+"color_mutation": "high",
+"lighting_mutation": "high",
+"atmosphere_mutation": "medium",
+"shape_mutation": "low"
+}
+}
+]
+}

@@ -1,0 +1,238 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_10",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "cinematic_moody_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "foggy_background_sky",
+          "bbox": [0.0, 0.0, 1.0, 0.65],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.9,
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only",
+          "safe_mutations": ["hue shift", "fog density adjustment"],
+          "unsafe_mutations": ["adding clear skies", "introducing sharp details"]
+        },
+        {
+          "region_name": "distant_giant_creature",
+          "bbox": [0.22, 0.15, 0.35, 0.60],
+          "layer_order": 1,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.6,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["eye color change", "subtle silhouette warping"],
+          "unsafe_mutations": ["bringing into sharp focus", "removing the silhouette nature"]
+        },
+        {
+          "region_name": "house_structure",
+          "bbox": [0.45, 0.05, 0.98, 0.78],
+          "layer_order": 2,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["window light state changes", "minor roof shape tweaks"],
+          "unsafe_mutations": ["drastic architectural changes", "removing the chimney"]
+        },
+        {
+          "region_name": "chimney",
+          "bbox": [0.58, 0.05, 0.64, 0.25],
+          "layer_order": 2,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["height adjustment"],
+          "unsafe_mutations": ["removal"]
+        },
+        {
+          "region_name": "foreground_character_group",
+          "bbox": [0.60, 0.55, 0.85, 0.82],
+          "layer_order": 3,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.4,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["subtle pose changes", "lantern light color shift"],
+          "unsafe_mutations": ["breaking the silhouette", "removing characters"]
+        },
+        {
+          "region_name": "illuminated_ground_path",
+          "bbox": [0.50, 0.75, 0.98, 0.85],
+          "layer_order": 2,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.7,
+          "confidence": 0.9,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["light spill color change", "intensity adjustment"],
+          "unsafe_mutations": ["removing the light completely"]
+        },
+        {
+          "region_name": "dead_tree_left",
+          "bbox": [0.0, 0.45, 0.25, 0.85],
+          "layer_order": 4,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["minor branch adjustments"],
+          "unsafe_mutations": ["adding leaves", "brightening the silhouette"]
+        },
+        {
+          "region_name": "wooden_fence",
+          "bbox": [0.15, 0.55, 0.50, 0.75],
+          "layer_order": 3,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.2,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["minor height variations"],
+          "unsafe_mutations": ["removing the perspective lines"]
+        },
+        {
+          "region_name": "dark_foreground_ground",
+          "bbox": [0.0, 0.78, 1.0, 1.0],
+          "layer_order": 5,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": ["none"],
+          "unsafe_mutations": ["adding bright lights", "removing the framing base"]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "floating_embers",
+          "approximate_bbox": [0.15, 0.35, 0.50, 0.65],
+          "orientation": "scattered",
+          "sparsity": "high",
+          "typical_size": "1-3 pixels",
+          "color_characteristics": "warm orange glow",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "lit_windows",
+          "approximate_bbox": [0.50, 0.50, 0.80, 0.65],
+          "orientation": "grid-like within frames",
+          "sparsity": "low",
+          "typical_size": "small rectangles",
+          "color_characteristics": "bright orange/yellow",
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#38433d",
+            "role": "ambient fog and sky background",
+            "approximate_area_fraction": 0.45,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#1d2320",
+            "role": "midground silhouettes (creature, house roof, fence)",
+            "approximate_area_fraction": 0.35,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#0e1110",
+            "role": "foreground elements and deep shadows",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#f6a757",
+            "role": "practical light sources (windows, lantern, embers, eyes)",
+            "approximate_area_fraction": 0.05,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "highly restricted (monochromatic green/gray with orange accents)",
+        "palette_temperature": "very cool ambient with stark warm local lights",
+        "contrast_level": "high at light sources, very low in the background fog",
+        "saturation_level": "low overall, moderate in the orange highlights"
+      },
+      "lighting": {
+        "direction": "local light sources originating from the house and characters, ambient fog lighting",
+        "ambient": "murky dark green/gray",
+        "warm_cool_balance": "sharp contrast between warm local lights and cool ambient fog",
+        "practical_light_sources": [
+          {
+            "description": "house windows and open door",
+            "bbox": [0.50, 0.50, 0.95, 0.75],
+            "approximate_color": "#f6a757",
+            "relative_intensity": "high",
+            "affected_regions": ["illuminated_ground_path", "foreground_character_group", "house_structure"]
+          },
+          {
+            "description": "creature eyes",
+            "bbox": [0.29, 0.18, 0.33, 0.22],
+            "approximate_color": "#f6a757",
+            "relative_intensity": "medium",
+            "affected_regions": ["distant_giant_creature"]
+          }
+        ],
+        "important_glows": "soft pixel-step glow around the windows and on the path",
+        "reflections": "none, matte surfaces"
+      },
+      "atmosphere": {
+        "identified_effects": ["heavy thick fog", "floating particles/embers", "low visibility depth"],
+        "safe_changes": ["fog color tinting", "particle density", "light bloom radius"]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "visible on character silhouettes and foreground trees",
+        "soft_edges": "achieved through color stepping in the fog and light spill",
+        "outlines": "none",
+        "clustered_shading": "minimal, relies mainly on flat silhouettes ordered by depth",
+        "gradients": "stepped banding representing light falloff and fog density",
+        "dithering": "minimal, uses solid color bands for atmospheric perspective",
+        "texture": "chunky blocky shapes for stone walls and ground",
+        "flat_regions": "the giant creature and background trees are almost entirely flat color",
+        "native_pixel_scale_feel": "low resolution, classic retro horror/adventure aesthetic"
+      },
+      "region_relationships": [
+        "distant_giant_creature is behind the fog and the wooden_fence",
+        "house_structure occludes the background trees",
+        "foreground_character_group is in front of the house_structure",
+        "illuminated_ground_path is cast upon the dark_foreground_ground",
+        "floating_embers overlay the background and midground elements"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "the sense of immense scale of the creature vs the house",
+          "the heavy atmospheric fog obscuring the background",
+          "the contrast between the safe warm light of the house and the dark unknown"
+        ],
+        "safe_to_change": [
+          "the specific positions of the floating embers",
+          "the tint of the fog (e.g. to a dark red or purple)",
+          "the number of lit windows"
+        ],
+        "cautious_change": [
+          "creature silhouette details",
+          "character poses"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

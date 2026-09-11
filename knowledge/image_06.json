@@ -1,0 +1,324 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel",
+    "neon_city_pixel",
+    "natural_landscape_pixel",
+    "cozy_scene_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_06",
+      "dimensions": {
+        "width": 736,
+        "height": 489
+      },
+      "style_family": "cinematic_moody_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "sky_and_clouds",
+          "bbox": [0.0, 0.0, 1.0, 0.45],
+          "layer_order": 0,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "hue shift for time of day",
+            "cloud contrast adjustment",
+            "brightness changes"
+          ],
+          "unsafe_mutations": [
+            "adding sharp structures",
+            "removing gradient feel"
+          ]
+        },
+        {
+          "region_name": "train_station_roof",
+          "bbox": [0.0, 0.2, 0.55, 0.55],
+          "layer_order": 3,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "minor tinting",
+            "adding weathering details"
+          ],
+          "unsafe_mutations": [
+            "structural deformation",
+            "perspective changes"
+          ]
+        },
+        {
+          "region_name": "station_building_facade",
+          "bbox": [0.0, 0.45, 0.45, 0.75],
+          "layer_order": 2,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.3,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "wall color shift",
+            "lighting intensity changes on signs"
+          ],
+          "unsafe_mutations": [
+            "deletion of windows/doors",
+            "perspective skew"
+          ]
+        },
+        {
+          "region_name": "platform_surface",
+          "bbox": [0.15, 0.65, 0.6, 1.0],
+          "layer_order": 1,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "reflection color shifts",
+            "puddle shape alterations",
+            "wetness intensity"
+          ],
+          "unsafe_mutations": [
+            "disrupting perspective lines",
+            "removing reflective quality"
+          ]
+        },
+        {
+          "region_name": "train_tracks",
+          "bbox": [0.55, 0.65, 1.0, 1.0],
+          "layer_order": 1,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "rail highlight color",
+            "ballast texture tinting"
+          ],
+          "unsafe_mutations": [
+            "altering track gauge",
+            "changing vanishing point"
+          ]
+        },
+        {
+          "region_name": "vegetation_right",
+          "bbox": [0.65, 0.15, 1.0, 0.8],
+          "layer_order": 2,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.6,
+          "confidence": 0.9,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "foliage hue shift (e.g., to autumn colors)",
+            "brightness adjustments"
+          ],
+          "unsafe_mutations": [
+            "geometric simplification",
+            "removing jagged leaf texture"
+          ]
+        },
+        {
+          "region_name": "vegetation_left_foreground",
+          "bbox": [0.0, 0.65, 0.25, 1.0],
+          "layer_order": 4,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.5,
+          "confidence": 0.9,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "tinting",
+            "shadow density"
+          ],
+          "unsafe_mutations": [
+            "blurring pixel texture"
+          ]
+        },
+        {
+          "region_name": "catenary_poles_and_wires",
+          "bbox": [0.55, 0.0, 0.85, 0.7],
+          "layer_order": 3,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.1,
+          "confidence": 0.9,
+          "mutation_safety": "exclude",
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "thickness alteration",
+            "deletion",
+            "translation"
+          ]
+        },
+        {
+          "region_name": "illuminated_sign_primary",
+          "bbox": [0.4, 0.35, 0.55, 0.45],
+          "layer_order": 4,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "color change (e.g., orange to blue)",
+            "glow intensity"
+          ],
+          "unsafe_mutations": [
+            "shape distortion",
+            "removal"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "rain_streaks",
+          "approximate_bbox": [0.0, 0.0, 1.0, 1.0],
+          "orientation": "diagonal (top-right to bottom-left)",
+          "sparsity": "medium",
+          "typical_size": "thin, varying length lines",
+          "color_characteristics": "semi-transparent white/cyan",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "platform_puddles",
+          "approximate_bbox": [0.15, 0.65, 0.6, 1.0],
+          "orientation": "horizontal patches aligned with perspective",
+          "sparsity": "medium",
+          "typical_size": "irregular flat shapes",
+          "color_characteristics": "reflecting orange and green light sources",
+          "confidence": 0.9,
+          "mutation_safety": "color+light_safe"
+        },
+        {
+          "pattern_name": "distant_platform_lights",
+          "approximate_bbox": [0.55, 0.3, 0.75, 0.5],
+          "orientation": "cluster",
+          "sparsity": "high",
+          "typical_size": "small glowing dots",
+          "color_characteristics": "bright cyan/green",
+          "confidence": 0.9,
+          "mutation_safety": "color+light_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#0a2a22",
+            "role": "deep ambient shadows and sky base",
+            "approximate_area_fraction": 0.3,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#1d5242",
+            "role": "mid-tone vegetation and structures",
+            "approximate_area_fraction": 0.3,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#ff7200",
+            "role": "primary warm light sources (signs, reflections)",
+            "approximate_area_fraction": 0.1,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#50e3a4",
+            "role": "secondary cool light sources and highlights",
+            "approximate_area_fraction": 0.1,
+            "confidence": 0.9
+          }
+        ],
+        "estimated_palette_size": "moderate",
+        "palette_temperature": "cool dominant with strong warm focal accents",
+        "contrast_level": "high",
+        "saturation_level": "high in light sources and reflections, muted in shadows"
+      },
+      "lighting": {
+        "direction": "multiple local sources, primarily from station signs and track lights",
+        "ambient": "dark teal/green night",
+        "warm_cool_balance": "strong contrast between warm orange station lights and cool green track/ambient lights",
+        "practical_light_sources": [
+          {
+            "description": "orange station signs",
+            "bbox": [0.4, 0.35, 0.55, 0.45],
+            "approximate_color": "#ff7200",
+            "relative_intensity": "high",
+            "affected_regions": [
+              "station_building_facade",
+              "platform_surface"
+            ]
+          },
+          {
+            "description": "cyan/green track lights",
+            "bbox": [0.6, 0.35, 0.75, 0.5],
+            "approximate_color": "#50e3a4",
+            "relative_intensity": "high",
+            "affected_regions": [
+              "vegetation_right",
+              "train_tracks",
+              "rain_streaks"
+            ]
+          }
+        ],
+        "important_glows": "bloom around illuminated signs, diffuse light scattering through rain",
+        "reflections": "strong specular reflections on wet platform tiles and steel rails"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "heavy rain",
+          "wet surfaces",
+          "light diffusion/bloom",
+          "subtle low-lying mist/fog"
+        ],
+        "safe_changes": [
+          "rain intensity",
+          "rain angle",
+          "fog density",
+          "color of atmospheric scattering"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "visible on architectural details, wires, and foliage silhouettes",
+        "soft_edges": "simulated through complex color clustering and dithering in clouds and lighting glow",
+        "outlines": "used subtly on structural elements for definition",
+        "clustered_shading": "heavy use in vegetation and textured surfaces (platform, walls)",
+        "gradients": "achieved through dithering and tight color stepping",
+        "dithering": "prominent in sky transitions and light falloff",
+        "texture": "rich and varied (wet tiles, rough concrete, organic leaves)",
+        "flat_regions": "very few, mostly deep shadows",
+        "native_pixel_scale_feel": "medium-high resolution pixel art, detailed"
+      },
+      "region_relationships": [
+        "train_station_roof occludes sky_and_clouds",
+        "rain_streaks overlay all other regions",
+        "illuminated signs reflect on platform_surface",
+        "catenary_poles_and_wires are in front of sky and vegetation",
+        "vegetation_left_foreground occludes lower station building"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "strong one-point perspective of tracks and platform",
+          "verticality of poles",
+          "horizontal lines of roof and platform edge"
+        ],
+        "safe_to_change": [
+          "sign colors",
+          "vegetation hues",
+          "rain density",
+          "puddle shapes"
+        ],
+        "cautious_change": [
+          "building facade details",
+          "track alignment"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "high",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

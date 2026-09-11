@@ -1,0 +1,271 @@
+{
+"dataset_version": "1.0",
+"style_families": [
+"cinematic_moody_pixel"
+],
+"images": [
+{
+"image_id": "image_15",
+"dimensions": {
+"width": 736,
+"height": 414
+},
+"style_family": "cinematic_moody_pixel",
+"semantic_regions": [
+{
+"region_name": "sky_and_clouds",
+"bbox": [0.0, 0.0, 1.0, 0.60],
+"layer_order": 0,
+"visual_importance": 0.85,
+"mutation_priority": 0.9,
+"confidence": 0.95,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["palette shift for time of day", "banding width alteration", "cloud hue changes"],
+"unsafe_mutations": ["removing gradient banding", "adding complex geometric structures"]
+},
+{
+"region_name": "distant_tree_line",
+"bbox": [0.0, 0.55, 1.0, 0.80],
+"layer_order": 1,
+"visual_importance": 0.6,
+"mutation_priority": 0.5,
+"confidence": 0.9,
+"mutation_safety": "color_safe",
+"safe_mutations": ["shadow color tinting", "contrast adjustment"],
+"unsafe_mutations": ["bringing into sharp focus", "flattening the uneven silhouette"]
+},
+{
+"region_name": "snow_covered_ground",
+"bbox": [0.0, 0.78, 1.0, 1.0],
+"layer_order": 2,
+"visual_importance": 0.75,
+"mutation_priority": 0.7,
+"confidence": 0.95,
+"mutation_safety": "color_safe",
+"safe_mutations": ["hue shift to reflect sky", "dithering contrast adjustments"],
+"unsafe_mutations": ["removing pixelated snow texture"]
+},
+{
+"region_name": "trolleybus_body",
+"bbox": [0.46, 0.65, 0.85, 0.82],
+"layer_order": 3,
+"visual_importance": 0.9,
+"mutation_priority": 0.4,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["body color shift", "window illumination state"],
+"unsafe_mutations": ["structural deformation", "perspective changes"]
+},
+{
+"region_name": "trolleybus_pantograph_poles",
+"bbox": [0.55, 0.35, 0.78, 0.65],
+"layer_order": 3,
+"visual_importance": 0.7,
+"mutation_priority": 0.1,
+"confidence": 0.9,
+"mutation_safety": "exclude",
+"safe_mutations": ["none"],
+"unsafe_mutations": ["thickness alteration", "translation", "removal"]
+},
+{
+"region_name": "bare_tree_left",
+"bbox": [0.10, 0.25, 0.25, 0.82],
+"layer_order": 4,
+"visual_importance": 0.75,
+"mutation_priority": 0.3,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["minor silhouette warping", "tinting black to deep atmospheric color"],
+"unsafe_mutations": ["adding leaves", "removing jagged pixel branch texture"]
+},
+{
+"region_name": "bare_tree_right",
+"bbox": [0.82, 0.23, 1.0, 0.82],
+"layer_order": 4,
+"visual_importance": 0.75,
+"mutation_priority": 0.3,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["minor silhouette warping", "tinting black to deep atmospheric color"],
+"unsafe_mutations": ["adding leaves", "removing jagged pixel branch texture"]
+},
+{
+"region_name": "traffic_light_assembly",
+"bbox": [0.26, 0.48, 0.31, 0.62],
+"layer_order": 4,
+"visual_importance": 0.85,
+"mutation_priority": 0.6,
+"confidence": 0.95,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["bulb color change (e.g., red to green)", "glow intensity adjustment"],
+"unsafe_mutations": ["moving outside the housing", "deforming the rectangular box"]
+},
+{
+"region_name": "left_framing_pole",
+"bbox": [0.07, 0.0, 0.12, 1.0],
+"layer_order": 5,
+"visual_importance": 0.8,
+"mutation_priority": 0.1,
+"confidence": 0.95,
+"mutation_safety": "exclude",
+"safe_mutations": ["none"],
+"unsafe_mutations": ["translation", "thickness alteration", "lighting addition"]
+},
+{
+"region_name": "right_framing_pole",
+"bbox": [0.90, 0.0, 0.93, 1.0],
+"layer_order": 5,
+"visual_importance": 0.7,
+"mutation_priority": 0.1,
+"confidence": 0.95,
+"mutation_safety": "exclude",
+"safe_mutations": ["none"],
+"unsafe_mutations": ["translation", "thickness alteration", "lighting addition"]
+}
+],
+"pattern_regions": [
+{
+"pattern_name": "stars",
+"approximate_bbox": [0.0, 0.0, 1.0, 0.40],
+"orientation": "scattered",
+"sparsity": "high",
+"typical_size": "1-2 pixels",
+"color_characteristics": "bright white/pale violet dots",
+"confidence": 0.95,
+"mutation_safety": "atmosphere_only"
+},
+{
+"pattern_name": "overhead_power_lines",
+"approximate_bbox": [0.0, 0.10, 1.0, 0.45],
+"orientation": "horizontal and slightly diagonal intersecting",
+"sparsity": "high",
+"typical_size": "1-pixel thick lines",
+"color_characteristics": "pure black silhouette against sky",
+"confidence": 0.95,
+"mutation_safety": "exclude"
+},
+{
+"pattern_name": "snow_texture_dithering",
+"approximate_bbox": [0.0, 0.85, 1.0, 1.0],
+"orientation": "horizontal clusters",
+"sparsity": "medium",
+"typical_size": "small irregular clumps",
+"color_characteristics": "darker gray/purple blending with light snow base",
+"confidence": 0.9,
+"mutation_safety": "color_safe"
+}
+],
+"palette": {
+"important_colors": [
+{
+"hex": "#b66bc1",
+"role": "cloud highlights and upper sky",
+"approximate_area_fraction": 0.20,
+"confidence": 0.95
+},
+{
+"hex": "#3c2055",
+"role": "deep sky background",
+"approximate_area_fraction": 0.25,
+"confidence": 0.95
+},
+{
+"hex": "#2a1b38",
+"role": "distant tree line silhouette",
+"approximate_area_fraction": 0.15,
+"confidence": 0.9
+},
+{
+"hex": "#8c819a",
+"role": "snow covered ground and bus body",
+"approximate_area_fraction": 0.25,
+"confidence": 0.95
+},
+{
+"hex": "#0e0a13",
+"role": "foreground silhouettes (poles, bare trees, bus windows)",
+"approximate_area_fraction": 0.14,
+"confidence": 0.95
+},
+{
+"hex": "#e83b3b",
+"role": "active traffic light signal",
+"approximate_area_fraction": 0.01,
+"confidence": 0.95
+}
+],
+"estimated_palette_size": "highly restricted",
+"palette_temperature": "cool dominant (violet/purple) with stark neutral ground and red accent",
+"contrast_level": "high (pure black silhouettes against bright clouds and snow)",
+"saturation_level": "moderate"
+},
+"lighting": {
+"direction": "ambient twilight, no strong directional cast",
+"ambient": "cold purple evening",
+"warm_cool_balance": "entirely cool except for the red traffic light",
+"practical_light_sources": [
+{
+"description": "red traffic light",
+"bbox": [0.26, 0.49, 0.29, 0.53],
+"approximate_color": "#e83b3b",
+"relative_intensity": "medium",
+"affected_regions": ["traffic_light_assembly"]
+}
+],
+"important_glows": "No significant bloom or glow; relies on hard pixel colors",
+"reflections": "none"
+},
+"atmosphere": {
+"identified_effects": [
+"twilight/evening stillness",
+"winter cold (snow on ground)",
+"clear upper atmosphere (stars visible)"
+],
+"safe_changes": [
+"shifting palette to deep night (dark blue) or early dawn (pink/orange)",
+"adding falling snow particles",
+"fog density at the ground level"
+]
+},
+"pixel_characteristics": {
+"hard_pixel_edges": "prominent on all silhouettes, wires, and the bus",
+"soft_edges": "none (pure pixel art)",
+"outlines": "none used, strictly relies on silhouette contrast",
+"clustered_shading": "minimal, mostly flat shapes",
+"gradients": "represented via smooth, wavy horizontal color bands in the sky",
+"dithering": "used selectively on the ground to indicate snow drifts and tire tracks",
+"texture": "chunky flat pixels for machinery, organic jagged pixels for trees",
+"flat_regions": "the foreground framing poles and the dark windows of the bus",
+"native_pixel_scale_feel": "low resolution, retro 8-bit/16-bit style"
+},
+"region_relationships": [
+"left_framing_pole and right_framing_pole occlude all background elements",
+"trolleybus_pantograph_poles connect the trolleybus_body to the overhead_power_lines",
+"bare_tree_left and bare_tree_right occlude distant_tree_line and sky_and_clouds",
+"traffic_light_assembly is mounted on a background pole, occluding the sky"
+],
+"composition_constraints": {
+"must_remain_stable": [
+"the heavy vertical framing by the extreme left and right poles",
+"horizontal division between sky, distant hills, and ground",
+"the rigid horizontal presence of the trolleybus"
+],
+"safe_to_change": [
+"sky palette",
+"traffic light state",
+"star positions"
+],
+"cautious_change": [
+"power line intersections",
+"bare tree branch complexity"
+]
+},
+"generator_recommendations": {
+"color_mutation": "high",
+"lighting_mutation": "medium",
+"atmosphere_mutation": "high",
+"shape_mutation": "low"
+}
+}
+]
+}

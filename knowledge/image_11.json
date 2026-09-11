@@ -1,0 +1,296 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_11",
+      "dimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "style_family": "cinematic_moody_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "night_sky",
+          "bbox": [0.0, 0.0, 1.0, 0.40],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.9,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["sky color shift", "brightness adjustment", "star density changes"],
+          "unsafe_mutations": ["adding large structures", "removing horizon line"]
+        },
+        {
+          "region_name": "cloud_layer",
+          "bbox": [0.0, 0.15, 1.0, 0.40],
+          "layer_order": 1,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": ["hue shift", "contrast adjustment against sky"],
+          "unsafe_mutations": ["changing horizontal flow to vertical", "smoothing out pixel clusters"]
+        },
+        {
+          "region_name": "distant_cityscape",
+          "bbox": [0.25, 0.35, 1.0, 0.48],
+          "layer_order": 2,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.5,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["window light color changes", "silhouette tinting (e.g., to dark blue)"],
+          "unsafe_mutations": ["altering perspective", "structural deformation"]
+        },
+        {
+          "region_name": "water_body",
+          "bbox": [0.25, 0.45, 1.0, 0.65],
+          "layer_order": 3,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.4,
+          "confidence": 0.9,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["reflection distortion (ripples)", "hue shifting matching sky/ambient"],
+          "unsafe_mutations": ["removing reflective properties", "drastic shape changes breaking perspective"]
+        },
+        {
+          "region_name": "foreground_character",
+          "bbox": [0.45, 0.50, 0.55, 0.90],
+          "layer_order": 6,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["minor posture adjustment", "lantern light color shift"],
+          "unsafe_mutations": ["removal", "breaking silhouette"]
+        },
+        {
+          "region_name": "foreground_dog",
+          "bbox": [0.35, 0.75, 0.42, 0.90],
+          "layer_order": 6,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.3,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["minor posture adjustment", "color tinting"],
+          "unsafe_mutations": ["removal", "drastic scaling"]
+        },
+        {
+          "region_name": "bicycle",
+          "bbox": [0.42, 0.70, 0.58, 0.90],
+          "layer_order": 5,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.2,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["color tinting"],
+          "unsafe_mutations": ["structural deformation", "removal"]
+        },
+        {
+          "region_name": "park_bench",
+          "bbox": [0.58, 0.70, 0.85, 0.90],
+          "layer_order": 5,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["minor length adjustment", "tinting"],
+          "unsafe_mutations": ["height change", "deletion"]
+        },
+        {
+          "region_name": "street_lamp_left",
+          "bbox": [0.0, 0.0, 0.15, 0.80],
+          "layer_order": 4,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["bulb color change", "glow radius adjustment"],
+          "unsafe_mutations": ["changing curvature of the pole", "removal"]
+        },
+        {
+          "region_name": "street_lamp_right",
+          "bbox": [0.85, 0.30, 0.95, 0.80],
+          "layer_order": 4,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.4,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["bulb color change", "glow radius adjustment"],
+          "unsafe_mutations": ["changing curvature of the pole", "removal"]
+        },
+        {
+          "region_name": "vegetation_left",
+          "bbox": [0.0, 0.20, 0.35, 0.75],
+          "layer_order": 3,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.3,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["tinting shadows", "hue shift for foliage"],
+          "unsafe_mutations": ["blurring pixel texture", "geometric simplification"]
+        },
+        {
+          "region_name": "foreground_path",
+          "bbox": [0.0, 0.85, 1.0, 1.0],
+          "layer_order": 7,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": ["shadow tinting", "adding subtle texture"],
+          "unsafe_mutations": ["brightening significantly"]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "stars",
+          "approximate_bbox": [0.0, 0.0, 1.0, 0.30],
+          "orientation": "scattered",
+          "sparsity": "very high",
+          "typical_size": "1-2 pixels",
+          "color_characteristics": "white or pale blue dots",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "city_lights",
+          "approximate_bbox": [0.25, 0.40, 1.0, 0.48],
+          "orientation": "horizontal clusters",
+          "sparsity": "medium",
+          "typical_size": "small rectangles",
+          "color_characteristics": "warm yellow/orange dots",
+          "confidence": 0.9,
+          "mutation_safety": "color+light_safe"
+        },
+        {
+          "pattern_name": "water_reflections",
+          "approximate_bbox": [0.25, 0.45, 1.0, 0.65],
+          "orientation": "vertical streaks",
+          "sparsity": "low",
+          "typical_size": "vertical jagged bands",
+          "color_characteristics": "reflecting city lights",
+          "confidence": 0.85,
+          "mutation_safety": "color+light_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#0a132c",
+            "role": "ambient night sky and deep shadows",
+            "approximate_area_fraction": 0.40,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#1d3264",
+            "role": "mid-tone sky and clouds",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#0b151f",
+            "role": "foreground silhouettes and vegetation",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#ffdf8e",
+            "role": "practical light sources (lamps, city lights)",
+            "approximate_area_fraction": 0.05,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "restricted",
+        "palette_temperature": "cool dominant with warm accents",
+        "contrast_level": "high",
+        "saturation_level": "moderate overall, high at light sources"
+      },
+      "lighting": {
+        "direction": "multiple local sources, primarily street lamps and character lantern",
+        "ambient": "dark blue night",
+        "warm_cool_balance": "cool heavy with stark warm local lights",
+        "practical_light_sources": [
+          {
+            "description": "street lamp left",
+            "bbox": [0.05, 0.05, 0.15, 0.15],
+            "approximate_color": "#ffdf8e",
+            "relative_intensity": "high",
+            "affected_regions": ["street_lamp_left", "vegetation_left"]
+          },
+          {
+            "description": "character lantern",
+            "bbox": [0.45, 0.65, 0.48, 0.70],
+            "approximate_color": "#ffdf8e",
+            "relative_intensity": "medium",
+            "affected_regions": ["foreground_character", "bicycle", "foreground_path"]
+          },
+          {
+            "description": "distant city lights",
+            "bbox": [0.25, 0.40, 1.0, 0.48],
+            "approximate_color": "#ffdf8e",
+            "relative_intensity": "low",
+            "affected_regions": ["distant_cityscape", "water_body"]
+          }
+        ],
+        "important_glows": "circular soft glow surrounding the street lamp and lantern",
+        "reflections": "specular vertical reflections on water body"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "clear night sky",
+          "slight atmospheric falloff over water",
+          "localized bloom around lights"
+        ],
+        "safe_changes": [
+          "star density can be changed",
+          "fog/mist could be added safely",
+          "glow radius can be altered"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on structural silhouettes and characters",
+        "soft_edges": "simulated via stepped color banding in the sky and lamp glow",
+        "outlines": "none used for objects against sky, relying entirely on silhouette",
+        "clustered_shading": "used heavily in the cloud structures and vegetation",
+        "gradients": "represented via strict horizontal color banding",
+        "dithering": "minimal, prefers distinct color bands over checkerboard dithering",
+        "texture": "chunky, stylized clouds; jagged vertical spikes for vegetation",
+        "flat_regions": "deep foreground vegetation silhouettes",
+        "native_pixel_scale_feel": "medium-low resolution, distinctly retro aesthetic"
+      },
+      "region_relationships": [
+        "foreground_character and dog occlude foreground_path and bicycle",
+        "bicycle occludes foreground_path",
+        "park_bench occludes foreground_path",
+        "vegetation_left occludes water_body and distant_cityscape",
+        "cloud_layer overlaps night_sky"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "central placement of the character",
+          "strong horizon separation (water vs sky)",
+          "horizontal framing by foreground elements"
+        ],
+        "safe_to_change": [
+          "sky and cloud palette",
+          "city light colors",
+          "lantern and street lamp colors"
+        ],
+        "cautious_change": [
+          "cloud cluster formations",
+          "tree canopy silhouettes"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

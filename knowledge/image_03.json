@@ -1,0 +1,188 @@
+{
+"dataset_version": "1.0",
+"style_families": [
+"natural_landscape_pixel"
+],
+"images": [
+{
+"image_id": "image_03",
+"dimensions": {
+"width": 736,
+"height": 414
+},
+"style_family": "natural_landscape_pixel",
+"semantic_regions": [
+{
+"region_name": "night_sky",
+"bbox": [0.0, 0.0, 1.0, 0.48],
+"layer_order": 0,
+"visual_importance": 0.7,
+"mutation_priority": 0.8,
+"confidence": 1.0,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["sky color shift", "brightness adjustment", "gradient banding alteration"],
+"unsafe_mutations": ["adding large structures", "removing horizon line"]
+},
+{
+"region_name": "lamp_fixture",
+"bbox": [0.46, 0.18, 0.54, 0.32],
+"layer_order": 2,
+"visual_importance": 0.95,
+"mutation_priority": 0.4,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["glass color shift", "glow intensity change"],
+"unsafe_mutations": ["structural deformation", "deletion"]
+},
+{
+"region_name": "lamp_post",
+"bbox": [0.48, 0.32, 0.52, 0.60],
+"layer_order": 2,
+"visual_importance": 0.8,
+"mutation_priority": 0.1,
+"confidence": 0.95,
+"mutation_safety": "exclude",
+"safe_mutations": ["none"],
+"unsafe_mutations": ["any translation", "deletion", "bending"]
+},
+{
+"region_name": "illuminated_midground_grass",
+"bbox": [0.0, 0.48, 1.0, 0.75],
+"layer_order": 1,
+"visual_importance": 0.85,
+"mutation_priority": 0.9,
+"confidence": 0.9,
+"mutation_safety": "color+light_safe",
+"safe_mutations": ["light color change", "intensity change", "hue shift of highlights"],
+"unsafe_mutations": ["complete flattening of texture"]
+},
+{
+"region_name": "dark_foreground_grass",
+"bbox": [0.0, 0.75, 1.0, 1.0],
+"layer_order": 3,
+"visual_importance": 0.7,
+"mutation_priority": 0.3,
+"confidence": 0.9,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": ["slight silhouette shifting", "tinting shadow color"],
+"unsafe_mutations": ["adding bright lighting", "destroying organic curves"]
+}
+],
+"pattern_regions": [
+{
+"pattern_name": "stars",
+"approximate_bbox": [0.1, 0.05, 0.9, 0.35],
+"orientation": "scattered",
+"sparsity": "very high",
+"typical_size": "1-2 pixels",
+"color_characteristics": "white or pale blue dots",
+"confidence": 0.9,
+"mutation_safety": "atmosphere_only"
+},
+{
+"pattern_name": "highlighted_grass_blades",
+"approximate_bbox": [0.0, 0.35, 1.0, 0.80],
+"orientation": "diagonal and vertical arcs",
+"sparsity": "medium",
+"typical_size": "long thin pixel clusters",
+"color_characteristics": "warm yellow/orange stepping to brown",
+"confidence": 0.95,
+"mutation_safety": "color+light_safe"
+}
+],
+"palette": {
+"important_colors": [
+{
+"hex": "#f6c35c",
+"role": "primary light source and strong grass highlights",
+"approximate_area_fraction": 0.10,
+"confidence": 1.0
+},
+{
+"hex": "#192236",
+"role": "ambient night sky",
+"approximate_area_fraction": 0.40,
+"confidence": 0.95
+},
+{
+"hex": "#0e1115",
+"role": "foreground silhouettes and deep shadows",
+"approximate_area_fraction": 0.35,
+"confidence": 0.95
+},
+{
+"hex": "#8c6a38",
+"role": "mid-tone grass transitions",
+"approximate_area_fraction": 0.15,
+"confidence": 0.9
+}
+],
+"estimated_palette_size": "highly restricted (classic pixel art)",
+"palette_temperature": "extreme contrast between warm center and cool surround",
+"contrast_level": "very high",
+"saturation_level": "moderate overall, high at light center"
+},
+"lighting": {
+"direction": "radial from center",
+"ambient": "dark blue night",
+"warm_cool_balance": "sharp split (warm center, cool edges)",
+"practical_light_sources": [
+{
+"description": "central street lamp",
+"bbox": [0.46, 0.18, 0.54, 0.32],
+"approximate_color": "#f6c35c",
+"relative_intensity": "high",
+"affected_regions": ["lamp_fixture", "illuminated_midground_grass", "lamp_post"]
+}
+],
+"important_glows": "circular soft glow surrounding the lamp fixture in the sky",
+"reflections": "none, light is absorbed/diffused by vegetation"
+},
+"atmosphere": {
+"identified_effects": ["localized bloom around light", "clear night sky", "slight atmospheric falloff at horizon"],
+"safe_changes": ["glow radius can be altered", "star density can be changed", "fog/mist could be added safely"]
+},
+"pixel_characteristics": {
+"hard_pixel_edges": "very prominent on grass blades and lamp structure",
+"soft_edges": "simulated via stepped color banding in the sky and grass field",
+"outlines": "none",
+"clustered_shading": "used heavily in the grass to show depth and lighting falloff",
+"gradients": "stepped pixel bands (no smooth interpolation)",
+"dithering": "minimal traditional checkerboard dithering; relies more on color stepping",
+"texture": "coarse, organic grain in the grass field",
+"flat_regions": "deep foreground shadows and upper night sky",
+"native_pixel_scale_feel": "low resolution, distinct chunky pixels"
+},
+"region_relationships": [
+"lamp_fixture is mounted on lamp_post",
+"illuminated_midground_grass occludes lower lamp_post",
+"dark_foreground_grass occludes illuminated_midground_grass",
+"lamp_fixture illuminates illuminated_midground_grass",
+"night_sky is behind all other elements"
+],
+"composition_constraints": {
+"must_remain_stable": [
+"central placement of the lamp",
+"strong horizon separation (sky vs ground)",
+"radial lighting scheme"
+],
+"safe_to_change": [
+"lamp bulb color",
+"sky color",
+"star placement",
+"highlight colors on grass"
+],
+"cautious_change": [
+"grass blade silhouettes",
+"lamp post thickness"
+]
+},
+"generator_recommendations": {
+"color_mutation": "high",
+"lighting_mutation": "high",
+"atmosphere_mutation": "medium",
+"shape_mutation": "low"
+}
+}
+]
+}

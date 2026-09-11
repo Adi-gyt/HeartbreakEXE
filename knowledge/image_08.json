@@ -1,0 +1,254 @@
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_08",
+      "dimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "style_family": "cinematic_moody_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "background_forest_depth",
+          "bbox": [0.0, 0.0, 1.0, 0.55],
+          "layer_order": 0,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.8,
+          "confidence": 0.9,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shift for atmosphere",
+            "brightness adjustment to change depth perception"
+          ],
+          "unsafe_mutations": [
+            "adding sharp details",
+            "removing verticality"
+          ]
+        },
+        {
+          "region_name": "midground_trees",
+          "bbox": [0.0, 0.0, 1.0, 0.65],
+          "layer_order": 1,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "tinting to match atmospheric changes"
+          ],
+          "unsafe_mutations": [
+            "deforming trunk straightness",
+            "changing dense branching"
+          ]
+        },
+        {
+          "region_name": "foreground_tree_left",
+          "bbox": [0.03, 0.0, 0.12, 0.60],
+          "layer_order": 2,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "minor width changes"
+          ],
+          "unsafe_mutations": [
+            "removing silhouette nature",
+            "bending"
+          ]
+        },
+        {
+          "region_name": "foreground_tree_center",
+          "bbox": [0.48, 0.0, 0.57, 0.58],
+          "layer_order": 2,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "minor width changes"
+          ],
+          "unsafe_mutations": [
+            "removing silhouette nature",
+            "bending"
+          ]
+        },
+        {
+          "region_name": "foreground_tree_right",
+          "bbox": [0.85, 0.0, 0.98, 0.60],
+          "layer_order": 2,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "minor width changes"
+          ],
+          "unsafe_mutations": [
+            "removing silhouette nature",
+            "bending"
+          ]
+        },
+        {
+          "region_name": "forest_floor",
+          "bbox": [0.0, 0.55, 1.0, 1.0],
+          "layer_order": 1,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.4,
+          "confidence": 0.9,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "shadow tinting",
+            "adding subtle texture"
+          ],
+          "unsafe_mutations": [
+            "brightening significantly"
+          ]
+        },
+        {
+          "region_name": "water_puddle",
+          "bbox": [0.10, 0.60, 0.85, 0.95],
+          "layer_order": 3,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "reflection distortion (ripples)",
+            "hue shifting matching sky/ambient"
+          ],
+          "unsafe_mutations": [
+            "removing reflective properties",
+            "drastic shape changes breaking perspective"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "fireflies",
+          "approximate_bbox": [0.1, 0.2, 0.9, 0.6],
+          "orientation": "scattered randomly",
+          "sparsity": "high",
+          "typical_size": "1-4 pixels square",
+          "color_characteristics": "bright cyan/green",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "water_reflections",
+          "approximate_bbox": [0.10, 0.60, 0.85, 0.95],
+          "orientation": "vertical mirroring of trees",
+          "sparsity": "medium",
+          "typical_size": "vertical jagged bands",
+          "color_characteristics": "lighter blue than surrounding ground",
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#091226",
+            "role": "deep ambient shadows and foreground silhouettes",
+            "approximate_area_fraction": 0.50,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#1a3a6b",
+            "role": "midground trees and water reflection base",
+            "approximate_area_fraction": 0.30,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#275e9f",
+            "role": "background atmospheric depth and sky patches",
+            "approximate_area_fraction": 0.18,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#4eff9d",
+            "role": "firefly highlights",
+            "approximate_area_fraction": 0.02,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "highly restricted (monochromatic blue with green accent)",
+        "palette_temperature": "very cool",
+        "contrast_level": "high (between fireflies/reflections and dark forest)",
+        "saturation_level": "low overall, high on fireflies"
+      },
+      "lighting": {
+        "direction": "ambient moonlight from behind/above, local firefly lights",
+        "ambient": "dark midnight blue",
+        "warm_cool_balance": "entirely cool",
+        "practical_light_sources": [
+          {
+            "description": "fireflies",
+            "bbox": [0.1, 0.2, 0.9, 0.6],
+            "approximate_color": "#4eff9d",
+            "relative_intensity": "high (locally)",
+            "affected_regions": [
+              "midground_trees (very subtly)"
+            ]
+          }
+        ],
+        "important_glows": "No significant bloom, sharp pixel edges on fireflies",
+        "reflections": "crisp vertical reflections of the background blue light and tree silhouettes in the water puddle"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "dense dark forest atmosphere",
+          "subtle depth fog/haze separating tree layers"
+        ],
+        "safe_changes": [
+          "increasing fog density",
+          "changing firefly color/density",
+          "adding rain"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on tree silhouettes, branches, and fireflies",
+        "soft_edges": "none",
+        "outlines": "none",
+        "clustered_shading": "minimal, mostly flat silhouettes organized in depth layers",
+        "gradients": "represented via flat color layers simulating depth perspective (parallax layers)",
+        "dithering": "minimal to none, relies on solid color shapes",
+        "texture": "jagged pixel branches, blocky fireflies",
+        "flat_regions": "almost all regions are flat colors defined by their layer depth",
+        "native_pixel_scale_feel": "low resolution, distinct chunky pixels"
+      },
+      "region_relationships": [
+        "foreground_tree_center occludes midground_trees and background_forest_depth",
+        "midground_trees occlude background_forest_depth",
+        "water_puddle reflects background_forest_depth and midground_trees",
+        "fireflies are scattered in front of and between trees"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "strong vertical lines of the trees",
+          "horizontal separation of the water puddle at the bottom",
+          "distinct layering of depth (dark foreground to lighter background)"
+        ],
+        "safe_to_change": [
+          "firefly positions and colors",
+          "overall monochromatic hue (e.g., to purple or dark green)",
+          "water puddle shape slightly"
+        ],
+        "cautious_change": [
+          "branch complexity",
+          "tree trunk thickness"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

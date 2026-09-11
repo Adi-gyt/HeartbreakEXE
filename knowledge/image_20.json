@@ -1,0 +1,273 @@
+{
+"dataset_version": "1.0",
+"style_families": [
+"natural_landscape_pixel"
+],
+"images": [
+{
+"image_id": "image_20",
+"dimensions": {
+"width": 736,
+"height": 414
+},
+"style_family": "natural_landscape_pixel",
+"semantic_regions": [
+{
+"region_name": "upper_purple_sky",
+"bbox": [0.0, 0.0, 1.0, 0.40],
+"layer_order": 0,
+"visual_importance": 0.7,
+"mutation_priority": 0.8,
+"confidence": 1.0,
+"mutation_safety": "color+light_safe",
+"safe_mutations": [
+"palette swap for time of day",
+"saturation adjustments",
+"gradient banding alteration"
+],
+"unsafe_mutations": [
+"adding heavy structural elements",
+"removing the smooth gradient feel"
+]
+},
+{
+"region_name": "lower_peach_sky",
+"bbox": [0.0, 0.40, 1.0, 0.65],
+"layer_order": 0,
+"visual_importance": 0.75,
+"mutation_priority": 0.9,
+"confidence": 0.95,
+"mutation_safety": "color+light_safe",
+"safe_mutations": [
+"hue shift for sunset/sunrise effects",
+"brightness adjustments"
+],
+"unsafe_mutations": [
+"disrupting the horizontal transition into the upper sky"
+]
+},
+{
+"region_name": "central_cumulus_clouds",
+"bbox": [0.10, 0.20, 0.65, 0.45],
+"layer_order": 1,
+"visual_importance": 0.9,
+"mutation_priority": 0.7,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": [
+"highlight color shifting",
+"shadow tinting to match sky"
+],
+"unsafe_mutations": [
+"flattening the volumetric shading",
+"drastic shape deformation"
+]
+},
+{
+"region_name": "primary_mountain_range",
+"bbox": [0.0, 0.40, 1.0, 0.75],
+"layer_order": 2,
+"visual_importance": 0.95,
+"mutation_priority": 0.5,
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive",
+"safe_mutations": [
+"ridge highlight color shifts",
+"overall hue adjustments matching atmosphere"
+],
+"unsafe_mutations": [
+"smoothing the jagged pixel ridges",
+"removing the clustered shading on the peaks"
+]
+},
+{
+"region_name": "valley_mist",
+"bbox": [0.0, 0.65, 1.0, 0.85],
+"layer_order": 3,
+"visual_importance": 0.85,
+"mutation_priority": 0.8,
+"confidence": 0.95,
+"mutation_safety": "atmosphere_only",
+"safe_mutations": [
+"opacity changes",
+"color tinting",
+"vertical thickness adjustments"
+],
+"unsafe_mutations": [
+"adding hard edges",
+"making completely opaque"
+]
+},
+{
+"region_name": "foreground_rolling_hills",
+"bbox": [0.0, 0.75, 1.0, 0.95],
+"layer_order": 4,
+"visual_importance": 0.7,
+"mutation_priority": 0.6,
+"confidence": 0.9,
+"mutation_safety": "color_safe",
+"safe_mutations": [
+"silhouette tinting",
+"contrast adjustments against the mist"
+],
+"unsafe_mutations": [
+"adding bright internal lighting",
+"removing atmospheric perspective layering"
+]
+},
+{
+"region_name": "foreground_trees_left",
+"bbox": [0.0, 0.80, 0.40, 1.0],
+"layer_order": 5,
+"visual_importance": 0.8,
+"mutation_priority": 0.1,
+"confidence": 0.95,
+"mutation_safety": "exclude",
+"safe_mutations": [
+"none"
+],
+"unsafe_mutations": [
+"brightening",
+"translation",
+"removing jagged pine edges"
+]
+},
+{
+"region_name": "foreground_trees_right",
+"bbox": [0.70, 0.75, 1.0, 1.0],
+"layer_order": 5,
+"visual_importance": 0.85,
+"mutation_priority": 0.1,
+"confidence": 0.95,
+"mutation_safety": "exclude",
+"safe_mutations": [
+"none"
+],
+"unsafe_mutations": [
+"brightening",
+"translation",
+"removing jagged pine edges"
+]
+}
+],
+"pattern_regions": [
+{
+"pattern_name": "horizontal_stratus_clouds",
+"approximate_bbox": [0.0, 0.05, 1.0, 0.55],
+"orientation": "horizontal",
+"sparsity": "medium",
+"typical_size": "thin, flat dashes of varying length",
+"color_characteristics": "white to light purple highlights",
+"confidence": 0.95,
+"mutation_safety": "color+light_safe"
+},
+{
+"pattern_name": "pine_tree_silhouettes",
+"approximate_bbox": [0.0, 0.80, 1.0, 1.0],
+"orientation": "vertical clusters along the bottom edges",
+"sparsity": "medium",
+"typical_size": "vertical jagged spikes",
+"color_characteristics": "darkest purple/black",
+"confidence": 0.95,
+"mutation_safety": "shape_sensitive"
+}
+],
+"palette": {
+"important_colors": [
+{
+"hex": "#7b5b94",
+"role": "upper sky ambient and mountain shadows",
+"approximate_area_fraction": 0.35,
+"confidence": 0.95
+},
+{
+"hex": "#e2b7c6",
+"role": "lower sky glow and mist base",
+"approximate_area_fraction": 0.25,
+"confidence": 0.95
+},
+{
+"hex": "#ffffff",
+"role": "cumulus cloud highlights",
+"approximate_area_fraction": 0.05,
+"confidence": 0.95
+},
+{
+"hex": "#5d4071",
+"role": "primary mountain midtones",
+"approximate_area_fraction": 0.20,
+"confidence": 0.90
+},
+{
+"hex": "#21192b",
+"role": "foreground tree and hill silhouettes",
+"approximate_area_fraction": 0.15,
+"confidence": 0.95
+}
+],
+"estimated_palette_size": "moderate",
+"palette_temperature": "warm/cool split (cool upper sky and shadows, warm lower sky and mist)",
+"contrast_level": "moderate to high (soft midtones with stark dark foreground)",
+"saturation_level": "moderate"
+},
+"lighting": {
+"direction": "top left to bottom right (highlights on left side of clouds and mountain ridges)",
+"ambient": "soft purple/peach twilight",
+"warm_cool_balance": "harmonious blend of cool purples and warm peaches",
+"practical_light_sources": [],
+"important_glows": "broad atmospheric horizontal glow in the mist and lower sky layers",
+"reflections": "none"
+},
+"atmosphere": {
+"identified_effects": [
+"dense valley mist",
+"atmospheric perspective (distant layers are lighter and less detailed)",
+"soft dusk/dawn light scattering"
+],
+"safe_changes": [
+"shifting hue for different times of day (e.g., golden hour or deep night)",
+"mist density and height"
+]
+},
+"pixel_characteristics": {
+"hard_pixel_edges": "visible on the foreground pine trees and the sharp ridges of the primary mountains",
+"soft_edges": "represented via smooth color banding in the sky and mist",
+"outlines": "none",
+"clustered_shading": "heavy use in the central cumulus clouds to create a fluffy volumetric look, and on the mountain faces to show rock texture",
+"gradients": "achieved through distinct horizontal color steps (banding) in the sky and mist layers",
+"dithering": "minimal traditional dithering; relies more on dense color ramps and clustered pixels",
+"texture": "puffy/bubbly clouds, jagged/sharp mountains, smooth banded sky",
+"flat_regions": "the deep foreground silhouettes",
+"native_pixel_scale_feel": "medium-high resolution pixel art, clean and modern"
+},
+"region_relationships": [
+"primary_mountain_range occludes the lower sky and some stratus clouds",
+"central_cumulus_clouds overlap the upper sky and stratus clouds",
+"valley_mist overlaps the base of the primary_mountain_range and foreground_rolling_hills",
+"foreground_trees_left and foreground_trees_right occlude all other layers behind them"
+],
+"composition_constraints": {
+"must_remain_stable": [
+"horizontal layering of depth (sky -> mountains -> mist -> foreground)",
+"the central prominence of the highest mountain peak and the cloud formation above it",
+"dark framing silhouettes at the bottom corners"
+],
+"safe_to_change": [
+"overall color palette (maintaining atmospheric depth logic)",
+"placement of thin horizontal stratus clouds",
+"intensity of the mist"
+],
+"cautious_change": [
+"mountain ridge silhouettes",
+"cumulus cloud volumes"
+]
+},
+"generator_recommendations": {
+"color_mutation": "high",
+"lighting_mutation": "medium",
+"atmosphere_mutation": "high",
+"shape_mutation": "low"
+}
+}
+]
+}
