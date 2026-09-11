@@ -1,1 +1,279 @@
-{}
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "retro_sunset_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_27",
+      "dimensions": {
+        "width": 736,
+        "height": 368
+      },
+      "style_family": "retro_sunset_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "upper_sky",
+          "bbox": [0.0, 0.0, 1.0, 0.30],
+          "layer_order": 0,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.8,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap",
+            "saturation adjustments"
+          ],
+          "unsafe_mutations": [
+            "adding sharp geometric structures"
+          ]
+        },
+        {
+          "region_name": "distant_ocean_horizon",
+          "bbox": [0.45, 0.28, 1.0, 0.65],
+          "layer_order": 1,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.7,
+          "confidence": 0.9,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "hue shift",
+            "brightness adjustment"
+          ],
+          "unsafe_mutations": [
+            "breaking the horizontal horizon line"
+          ]
+        },
+        {
+          "region_name": "pink_cloud_bank",
+          "bbox": [0.45, 0.45, 1.0, 1.0],
+          "layer_order": 2,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shifting (e.g., to orange or purple)",
+            "contrast adjustments"
+          ],
+          "unsafe_mutations": [
+            "drastic shape deformation",
+            "smoothing pixel clusters"
+          ]
+        },
+        {
+          "region_name": "mountain_forest_silhouette",
+          "bbox": [0.0, 0.0, 0.55, 0.65],
+          "layer_order": 3,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "leaf highlight color shifting",
+            "shadow tinting"
+          ],
+          "unsafe_mutations": [
+            "smoothing the jagged pine edges",
+            "removing the dark framing effect"
+          ]
+        },
+        {
+          "region_name": "curving_mountain_road",
+          "bbox": [0.0, 0.60, 0.35, 0.95],
+          "layer_order": 4,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "road surface color tinting"
+          ],
+          "unsafe_mutations": [
+            "altering the perspective curve",
+            "removal"
+          ]
+        },
+        {
+          "region_name": "driving_car",
+          "bbox": [0.18, 0.70, 0.32, 0.85],
+          "layer_order": 5,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "car body color shift",
+            "taillight intensity"
+          ],
+          "unsafe_mutations": [
+            "changing perspective angle",
+            "drastic resizing"
+          ]
+        },
+        {
+          "region_name": "foreground_cliff_edge",
+          "bbox": [0.0, 0.85, 0.60, 1.0],
+          "layer_order": 6,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "shadow tinting",
+            "minor edge dithering adjustments"
+          ],
+          "unsafe_mutations": [
+            "flattening the rocky texture",
+            "brightening significantly"
+          ]
+        },
+        {
+          "region_name": "isolated_pine_trees",
+          "bbox": [0.55, 0.55, 0.70, 0.90],
+          "layer_order": 3,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.4,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "tinting to match background"
+          ],
+          "unsafe_mutations": [
+            "removal",
+            "smoothing edges"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "road_markings",
+          "approximate_bbox": [0.0, 0.70, 0.35, 0.85],
+          "orientation": "following the curve of the road",
+          "sparsity": "high",
+          "typical_size": "short dashed lines",
+          "color_characteristics": "dark grey/faded yellow",
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive"
+        },
+        {
+          "pattern_name": "cloud_layering",
+          "approximate_bbox": [0.45, 0.45, 1.0, 1.0],
+          "orientation": "horizontal undulating layers",
+          "sparsity": "low",
+          "typical_size": "large chunky blocks",
+          "color_characteristics": "pink and purple bands",
+          "confidence": 0.95,
+          "mutation_safety": "color_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#f67c9c",
+            "role": "dominant cloud color and sky highlights",
+            "approximate_area_fraction": 0.30,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#e75876",
+            "role": "cloud shadows and lower sky",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#4f5f9e",
+            "role": "distant ocean and mid-tone shadows",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#1d1928",
+            "role": "deep forest silhouettes and road base",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#896f4a",
+            "role": "sunlit tree highlights and cliff edge",
+            "approximate_area_fraction": 0.10,
+            "confidence": 0.9
+          }
+        ],
+        "estimated_palette_size": "restricted",
+        "palette_temperature": "warm dominant (pink/orange) with cool deep shadows",
+        "contrast_level": "high (bright pink clouds vs dark forest silhouette)",
+        "saturation_level": "high"
+      },
+      "lighting": {
+        "direction": "bottom left (sun setting behind the viewer/mountain)",
+        "ambient": "vibrant pink/orange sunset",
+        "warm_cool_balance": "very warm atmosphere with deep cool purple shadows",
+        "practical_light_sources": [
+          {
+            "description": "car taillights",
+            "bbox": [0.18, 0.75, 0.25, 0.80],
+            "approximate_color": "#ff0000",
+            "relative_intensity": "low",
+            "affected_regions": [
+              "curving_mountain_road"
+            ]
+          }
+        ],
+        "important_glows": "No soft bloom; lighting is depicted via hard color stepping in the clouds",
+        "reflections": "subtle highlight on the rear window of the car"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "vibrant sunset/vaporwave aesthetic",
+          "sea of clouds below the mountain peak",
+          "clear upper atmosphere"
+        ],
+        "safe_changes": [
+          "shifting palette to synthwave (neon blue/magenta) or deep night",
+          "adding stars in the upper sky"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on the car, tree silhouettes, and road edges",
+        "soft_edges": "none",
+        "outlines": "none",
+        "clustered_shading": "used heavily in the cloud bank to create voluminous puffy shapes, and on the trees to show lighting",
+        "gradients": "represented via strict color stepping and banding in the clouds and sky",
+        "dithering": "minimal, prefers solid chunky color blocks and stepped banding",
+        "texture": "chunky blocky clouds, jagged pine silhouettes, smooth road",
+        "flat_regions": "the deepest shadows in the forest and the distant ocean",
+        "native_pixel_scale_feel": "low resolution, retro 8-bit/16-bit aesthetic"
+      },
+      "region_relationships": [
+        "mountain_forest_silhouette occludes the left side of the upper_sky and distant_ocean_horizon",
+        "pink_cloud_bank obscures the lower right portion of the distant_ocean_horizon",
+        "curving_mountain_road hugs the edge of the mountain_forest_silhouette",
+        "driving_car is positioned on the curving_mountain_road",
+        "isolated_pine_trees poke through the pink_cloud_bank"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "the perspective curve of the road",
+          "the strong diagonal division between the dark mountain left and bright sky right",
+          "the sense of high altitude (looking down on clouds)"
+        ],
+        "safe_to_change": [
+          "overall sky/cloud palette",
+          "car color",
+          "cloud cluster formations (maintaining the horizontal sea-of-clouds feel)"
+        ],
+        "cautious_change": [
+          "tree canopy jaggedness",
+          "road width/curve"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "medium",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

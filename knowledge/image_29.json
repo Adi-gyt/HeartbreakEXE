@@ -1,1 +1,322 @@
-{}
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "retro_sunset_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_29",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "retro_sunset_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "upper_sky_crimson",
+          "bbox": [0.0, 0.0, 1.0, 0.40],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.9,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap for time of day",
+            "banding width alteration"
+          ],
+          "unsafe_mutations": [
+            "adding heavy structural geometry",
+            "removing the horizontal stratus clouds"
+          ]
+        },
+        {
+          "region_name": "lower_sky_orange",
+          "bbox": [0.0, 0.40, 1.0, 0.70],
+          "layer_order": 0,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.9,
+          "confidence": 1.0,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap for time of day",
+            "banding width alteration"
+          ],
+          "unsafe_mutations": [
+            "adding heavy structural geometry",
+            "removing the horizontal sunset flow"
+          ]
+        },
+        {
+          "region_name": "massive_sun",
+          "bbox": [0.23, 0.33, 0.42, 0.65],
+          "layer_order": 1,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "color shift to white/pale yellow",
+            "scanline gap width change"
+          ],
+          "unsafe_mutations": [
+            "non-circular deformation",
+            "deletion"
+          ]
+        },
+        {
+          "region_name": "distant_city_mountains",
+          "bbox": [0.0, 0.35, 1.0, 0.75],
+          "layer_order": 2,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.5,
+          "confidence": 0.9,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "atmospheric haze tinting",
+            "contrast adjustments"
+          ],
+          "unsafe_mutations": [
+            "bringing into sharp focus",
+            "altering the ridge lines significantly"
+          ]
+        },
+        {
+          "region_name": "cliff_castle_right",
+          "bbox": [0.55, 0.05, 1.0, 0.85],
+          "layer_order": 3,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "window illumination state changes",
+            "minor roof shape tweaks",
+            "silhouette tinting"
+          ],
+          "unsafe_mutations": [
+            "drastic architectural changes",
+            "removing the towers"
+          ]
+        },
+        {
+          "region_name": "left_framing_trees",
+          "bbox": [0.0, 0.20, 0.20, 0.75],
+          "layer_order": 3,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "minor edge tweaking",
+            "tinting to very dark blue/green"
+          ],
+          "unsafe_mutations": [
+            "brightening significantly",
+            "removing jagged pixel nature"
+          ]
+        },
+        {
+          "region_name": "water_body",
+          "bbox": [0.15, 0.75, 0.60, 1.0],
+          "layer_order": 2,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "reflection color shifts matching sun/sky",
+            "water ripple texture tweaks"
+          ],
+          "unsafe_mutations": [
+            "removing reflective properties",
+            "breaking horizontal perspective"
+          ]
+        },
+        {
+          "region_name": "foreground_banks_left",
+          "bbox": [0.0, 0.75, 0.35, 1.0],
+          "layer_order": 4,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "grass/dirt hue shift",
+            "shadow tinting"
+          ],
+          "unsafe_mutations": [
+            "removing the texture",
+            "flattening the lighting"
+          ]
+        },
+        {
+          "region_name": "foreground_banks_right",
+          "bbox": [0.45, 0.80, 1.0, 1.0],
+          "layer_order": 4,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "grass/dirt hue shift",
+            "shadow tinting"
+          ],
+          "unsafe_mutations": [
+            "removing the texture",
+            "flattening the lighting"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "flying_birds",
+          "approximate_bbox": [0.10, 0.05, 0.90, 0.55],
+          "orientation": "scattered flocks",
+          "sparsity": "high",
+          "typical_size": "small 'v' or dash shapes",
+          "color_characteristics": "dark silhouette",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "sun_scanlines",
+          "approximate_bbox": [0.23, 0.33, 0.42, 0.65],
+          "orientation": "horizontal",
+          "sparsity": "low",
+          "typical_size": "1-2 pixel thick horizontal lines",
+          "color_characteristics": "matching background sky color",
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive"
+        },
+        {
+          "pattern_name": "water_reflections",
+          "approximate_bbox": [0.15, 0.75, 0.60, 1.0],
+          "orientation": "horizontal dashes",
+          "sparsity": "medium",
+          "typical_size": "horizontal bands of varying length",
+          "color_characteristics": "bright yellow/orange reflecting the sun",
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#aa2b4c",
+            "role": "upper sky and base cloud color",
+            "approximate_area_fraction": 0.35,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#ec5e53",
+            "role": "lower sky and bright cloud highlights",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#ffce70",
+            "role": "sun and water reflections",
+            "approximate_area_fraction": 0.10,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#634768",
+            "role": "distant city/mountain haze",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#1d1227",
+            "role": "deep foreground silhouettes and shadows",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "highly restricted (monochromatic red/orange scale)",
+        "palette_temperature": "extremely warm",
+        "contrast_level": "high (bright sun vs dark silhouettes)",
+        "saturation_level": "very high"
+      },
+      "lighting": {
+        "direction": "backlit from the massive sun",
+        "ambient": "vibrant crimson sunset",
+        "warm_cool_balance": "entirely warm except for the deepest purple/black shadows",
+        "practical_light_sources": [
+          {
+            "description": "massive central sun",
+            "bbox": [0.23, 0.33, 0.42, 0.65],
+            "approximate_color": "#ffce70",
+            "relative_intensity": "very high",
+            "affected_regions": [
+              "sky_gradient_upper",
+              "sky_gradient_lower",
+              "water_body"
+            ]
+          },
+          {
+            "description": "castle windows",
+            "bbox": [0.70, 0.30, 0.95, 0.50],
+            "approximate_color": "#ffce70",
+            "relative_intensity": "low",
+            "affected_regions": [
+              "cliff_castle_right"
+            ]
+          }
+        ],
+        "important_glows": "No soft bloom; lighting is depicted via hard color stepping and scanline aesthetics",
+        "reflections": "horizontal banding on the water body reflecting the sun directly"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "heat haze represented by sun scanlines",
+          "heavy atmospheric perspective (distant elements fade into purple)",
+          "vibrant stylized sunset"
+        ],
+        "safe_changes": [
+          "sky palette shifting",
+          "adding fog low on the water",
+          "bird flock density"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on the sun, building silhouettes, and birds",
+        "soft_edges": "none (pure hard pixel art)",
+        "outlines": "none",
+        "clustered_shading": "used in the clouds and foreground terrain to create texture",
+        "gradients": "represented via strict horizontal color banding in the sky",
+        "dithering": "minimal, relies mostly on solid color clusters and stepping",
+        "texture": "jagged pixels for trees, smooth horizontal bands for water, blocky structures for the castle",
+        "flat_regions": "the deepest shadows on the castle and foreground banks",
+        "native_pixel_scale_feel": "low resolution, retro 8-bit/16-bit style"
+      },
+      "region_relationships": [
+        "massive_sun is behind distant_city_mountains and left_framing_trees",
+        "cliff_castle_right and left_framing_trees act as foreground framing, occluding the background",
+        "water_body reflects the massive_sun and sky",
+        "foreground_banks_left and foreground_banks_right overlap the bottom edge of the water_body"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "centralized massive sun placement",
+          "heavy dark framing on the left and right sides",
+          "horizontal separation of the water reflection at the bottom"
+        ],
+        "safe_to_change": [
+          "overall palette (e.g., turning sunset to a neon night)",
+          "bird positions",
+          "castle window states"
+        ],
+        "cautious_change": [
+          "sun scanline spacing",
+          "castle architecture"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "medium",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

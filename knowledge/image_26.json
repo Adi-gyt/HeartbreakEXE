@@ -1,1 +1,317 @@
-{}
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "natural_landscape_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_26",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "natural_landscape_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "upper_sky_and_planet",
+          "bbox": [0.0, 0.0, 1.0, 0.35],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap for time of day",
+            "planet hue shift"
+          ],
+          "unsafe_mutations": [
+            "removing the planet structure entirely"
+          ]
+        },
+        {
+          "region_name": "voluminous_clouds_left",
+          "bbox": [0.0, 0.10, 0.35, 0.65],
+          "layer_order": 1,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shifting",
+            "highlight intensity adjustments"
+          ],
+          "unsafe_mutations": [
+            "drastic shape deformation",
+            "smoothing pixel clusters"
+          ]
+        },
+        {
+          "region_name": "voluminous_clouds_right",
+          "bbox": [0.35, 0.15, 1.0, 0.60],
+          "layer_order": 1,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shifting",
+            "highlight intensity adjustments"
+          ],
+          "unsafe_mutations": [
+            "drastic shape deformation",
+            "smoothing pixel clusters"
+          ]
+        },
+        {
+          "region_name": "main_castle_complex",
+          "bbox": [0.55, 0.05, 0.95, 0.62],
+          "layer_order": 3,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "wall color tinting",
+            "roof color changes",
+            "window illumination"
+          ],
+          "unsafe_mutations": [
+            "structural deformation",
+            "removing towers"
+          ]
+        },
+        {
+          "region_name": "rocky_island_base",
+          "bbox": [0.50, 0.58, 0.98, 0.75],
+          "layer_order": 4,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "rock color tinting",
+            "vegetation hue shifts"
+          ],
+          "unsafe_mutations": [
+            "flattening the rocky texture",
+            "altering the waterline"
+          ]
+        },
+        {
+          "region_name": "stone_bridge",
+          "bbox": [0.15, 0.62, 0.50, 0.75],
+          "layer_order": 3,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "stone tinting"
+          ],
+          "unsafe_mutations": [
+            "breaking the horizontal line",
+            "removing arches"
+          ]
+        },
+        {
+          "region_name": "small_village_left",
+          "bbox": [0.0, 0.55, 0.15, 0.72],
+          "layer_order": 4,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.3,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "roof color changes",
+            "wall tinting"
+          ],
+          "unsafe_mutations": [
+            "removal",
+            "drastic geometric changes"
+          ]
+        },
+        {
+          "region_name": "water_body",
+          "bbox": [0.0, 0.72, 1.0, 1.0],
+          "layer_order": 2,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.9,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "water color shift matching sky",
+            "reflection distortion adjustments"
+          ],
+          "unsafe_mutations": [
+            "removing reflective properties",
+            "breaking horizontal perspective"
+          ]
+        },
+        {
+          "region_name": "wooden_dock_foreground",
+          "bbox": [0.0, 0.85, 0.25, 1.0],
+          "layer_order": 5,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "wood tinting"
+          ],
+          "unsafe_mutations": [
+            "breaking perspective lines",
+            "removal"
+          ]
+        },
+        {
+          "region_name": "rowboat",
+          "bbox": [0.42, 0.80, 0.55, 0.88],
+          "layer_order": 5,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "boat color tinting",
+            "minor translation on water"
+          ],
+          "unsafe_mutations": [
+            "perspective distortion",
+            "removal"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "water_reflections",
+          "approximate_bbox": [0.0, 0.72, 1.0, 1.0],
+          "orientation": "vertical streaks with horizontal ripple distortion",
+          "sparsity": "medium",
+          "typical_size": "jagged horizontal bands",
+          "color_characteristics": "reflecting castle, clouds, and sky colors",
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe"
+        },
+        {
+          "pattern_name": "castle_windows",
+          "approximate_bbox": [0.60, 0.20, 0.90, 0.60],
+          "orientation": "aligned to building faces",
+          "sparsity": "low",
+          "typical_size": "small vertical rectangles/arches",
+          "color_characteristics": "dark shadows, unlit",
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#b085bd",
+            "role": "upper sky and lighter clouds",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#5e3e8f",
+            "role": "mid-tone clouds and water reflection base",
+            "approximate_area_fraction": 0.35,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#f5e1dd",
+            "role": "sunlit castle walls",
+            "approximate_area_fraction": 0.10,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#1d123d",
+            "role": "deep cloud shadows and dark water areas",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#79b691",
+            "role": "vegetation highlights on island and village",
+            "approximate_area_fraction": 0.05,
+            "confidence": 0.9
+          }
+        ],
+        "estimated_palette_size": "moderate",
+        "palette_temperature": "cool dominant (purple/blue) with stark warm highlights (pink/white)",
+        "contrast_level": "high (bright castle against dark clouds)",
+        "saturation_level": "moderate"
+      },
+      "lighting": {
+        "direction": "right to left, slightly top-down",
+        "ambient": "cool purple twilight",
+        "warm_cool_balance": "cool heavy, warm direct sunlight hitting specific structures",
+        "practical_light_sources": [
+          {
+            "description": "primary sun (off-screen right)",
+            "approximate_color": "#ffffff",
+            "relative_intensity": "high",
+            "affected_regions": [
+              "main_castle_complex",
+              "voluminous_clouds_left",
+              "voluminous_clouds_right",
+              "rocky_island_base",
+              "stone_bridge"
+            ]
+          }
+        ],
+        "important_glows": "none, light is depicted via hard color stepping",
+        "reflections": "strong specular and diffuse reflections in the water_body, mirroring the structures and clouds above"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "clear twilight air",
+          "surreal celestial body in the sky"
+        ],
+        "safe_changes": [
+          "palette shifting to represent different alien times of day",
+          "adding mist low on the water"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on the castle architecture, dock, and boat",
+        "soft_edges": "none (pure pixel art)",
+        "outlines": "dark pixel outlines used selectively on the castle roofs and bridge arches",
+        "clustered_shading": "heavy use in the clouds to create large bubbly volumes, and on the rocks for texture",
+        "gradients": "represented via strict color stepping and banding in the sky and water",
+        "dithering": "minimal, relies mostly on solid color clusters and stepping",
+        "texture": "bubbly clouds, smooth castle walls, jagged rocks, horizontal ripple noise in water",
+        "flat_regions": "the deepest cloud shadows",
+        "native_pixel_scale_feel": "medium resolution, detailed 16-bit RPG aesthetic"
+      },
+      "region_relationships": [
+        "main_castle_complex sits atop rocky_island_base",
+        "stone_bridge connects the rocky_island_base to the small_village_left",
+        "water_body reflects all structures and clouds above the horizon line",
+        "rowboat floats on water_body, casting its own small reflection/shadow",
+        "wooden_dock_foreground overlaps the water_body in the extreme foreground"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "the central horizontal horizon line separating land/sky from water",
+          "the structural integrity and perspective of the castle and bridge",
+          "the exact mirroring logic in the water reflection"
+        ],
+        "safe_to_change": [
+          "cloud and sky palette",
+          "water color (must match sky/reflection)",
+          "lighting angle (would require recalculating shadows/highlights)"
+        ],
+        "cautious_change": [
+          "castle architecture",
+          "rock formations"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "medium",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

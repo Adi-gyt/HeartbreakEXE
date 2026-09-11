@@ -1,1 +1,266 @@
-{}
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "natural_landscape_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_28",
+      "dimensions": {
+        "width": 640,
+        "height": 400
+      },
+      "style_family": "natural_landscape_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "upper_sky_and_clouds",
+          "bbox": [0.0, 0.0, 1.0, 0.45],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.9,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "palette swap for time of day",
+            "cloud shape variations"
+          ],
+          "unsafe_mutations": [
+            "adding sharp geometric structures"
+          ]
+        },
+        {
+          "region_name": "distant_mountains",
+          "bbox": [0.0, 0.22, 1.0, 0.52],
+          "layer_order": 1,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "color tinting to match sky",
+            "highlight adjustments"
+          ],
+          "unsafe_mutations": [
+            "flattening the peaks",
+            "removing the clustered shading"
+          ]
+        },
+        {
+          "region_name": "dense_pine_forest",
+          "bbox": [0.0, 0.45, 1.0, 0.65],
+          "layer_order": 2,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "hue shift for season",
+            "shadow tinting"
+          ],
+          "unsafe_mutations": [
+            "smoothing the jagged tree line",
+            "brightening significantly to remove silhouette"
+          ]
+        },
+        {
+          "region_name": "grassy_meadow_plain",
+          "bbox": [0.0, 0.62, 1.0, 0.82],
+          "layer_order": 3,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.7,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "color shifting for season (e.g. green to yellow/brown)",
+            "contrast adjustments"
+          ],
+          "unsafe_mutations": [
+            "removing horizontal perspective lines"
+          ]
+        },
+        {
+          "region_name": "reflective_water_pool",
+          "bbox": [0.0, 0.80, 1.0, 0.90],
+          "layer_order": 3,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "color shift matching the sky mutations",
+            "ripple intensity adjustments"
+          ],
+          "unsafe_mutations": [
+            "removing reflective properties",
+            "desynchronizing colors from the sky"
+          ]
+        },
+        {
+          "region_name": "foreground_flower_bank",
+          "bbox": [0.0, 0.85, 1.0, 1.0],
+          "layer_order": 4,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "flower color changes",
+            "grass hue tinting"
+          ],
+          "unsafe_mutations": [
+            "removing the floral details",
+            "brightening the deep silhouette base"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "fireflies",
+          "approximate_bbox": [0.05, 0.70, 0.95, 0.82],
+          "orientation": "scattered horizontally over the meadow",
+          "sparsity": "medium",
+          "typical_size": "1-3 pixels",
+          "color_characteristics": "bright yellow and pink dots",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "water_reflections",
+          "approximate_bbox": [0.0, 0.80, 1.0, 0.90],
+          "orientation": "horizontal dashed streaks",
+          "sparsity": "low",
+          "typical_size": "horizontal jagged bands",
+          "color_characteristics": "reflecting the orange/pink sunset",
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive"
+        },
+        {
+          "pattern_name": "foreground_flowers",
+          "approximate_bbox": [0.0, 0.88, 1.0, 1.0],
+          "orientation": "scattered amidst the grass silhouette",
+          "sparsity": "medium",
+          "typical_size": "small 3-5 pixel cross shapes",
+          "color_characteristics": "orange, pink, and purple",
+          "confidence": 0.95,
+          "mutation_safety": "color_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#493570",
+            "role": "upper sky and mountain shadows",
+            "approximate_area_fraction": 0.30,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#fb666b",
+            "role": "central cloud highlights and water reflection",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#2d3550",
+            "role": "distant mountains base and tree silhouettes",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#5e6933",
+            "role": "grassy meadow base",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.90
+          },
+          {
+            "hex": "#1d232c",
+            "role": "deepest foreground silhouettes",
+            "approximate_area_fraction": 0.10,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "moderate",
+        "palette_temperature": "warm center (sunset clouds) surrounded by cool purples and greens",
+        "contrast_level": "high (bright sunset vs dark foreground silhouettes)",
+        "saturation_level": "high in the sunset and flowers, muted in the forest"
+      },
+      "lighting": {
+        "direction": "backlit from the central horizon (setting sun behind clouds)",
+        "ambient": "colorful dusk",
+        "warm_cool_balance": "strong contrast between warm central light and cool ambient surroundings",
+        "practical_light_sources": [
+          {
+            "description": "setting sun (behind clouds)",
+            "approximate_color": "#ffc165",
+            "relative_intensity": "high",
+            "affected_regions": [
+              "upper_sky_and_clouds",
+              "reflective_water_pool"
+            ]
+          },
+          {
+            "description": "fireflies",
+            "bbox": [0.05, 0.70, 0.95, 0.82],
+            "approximate_color": "#ffc165",
+            "relative_intensity": "low",
+            "affected_regions": [
+              "grassy_meadow_plain"
+            ]
+          }
+        ],
+        "important_glows": "No soft bloom; light is depicted via hard color stepping",
+        "reflections": "crisp horizontal reflections of the sunset colors in the water pool"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "vibrant sunset/dusk",
+          "calm evening (fireflies visible)",
+          "slight atmospheric perspective on mountains"
+        ],
+        "safe_changes": [
+          "shifting palette to night or early dawn",
+          "firefly density"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on mountain ridges, tree silhouettes, and flowers",
+        "soft_edges": "none (pure pixel art)",
+        "outlines": "none",
+        "clustered_shading": "used heavily in the clouds and mountains to create volume and texture",
+        "gradients": "represented via strict color stepping and banding in the sky and meadow",
+        "dithering": "minimal, prefers solid chunky color blocks",
+        "texture": "chunky blocky clouds, jagged pine silhouettes, horizontal lines for water/meadow",
+        "flat_regions": "the deepest shadows in the forest and foreground",
+        "native_pixel_scale_feel": "low resolution, retro 8-bit/16-bit aesthetic"
+      },
+      "region_relationships": [
+        "upper_sky_and_clouds are behind distant_mountains",
+        "dense_pine_forest occludes the base of distant_mountains",
+        "grassy_meadow_plain sits in front of dense_pine_forest",
+        "reflective_water_pool sits horizontally between grassy_meadow_plain and foreground_flower_bank",
+        "foreground_flower_bank overlaps the bottom edge of reflective_water_pool"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "strong horizontal layering (sky -> mountains -> forest -> meadow -> water -> foreground)",
+          "the central prominent sunset cloud structure",
+          "the mirroring of the sky in the water pool"
+        ],
+        "safe_to_change": [
+          "overall color palette (e.g., turning sunset to night)",
+          "flower colors",
+          "firefly positions"
+        ],
+        "cautious_change": [
+          "mountain ridge silhouettes",
+          "tree canopy jaggedness"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "medium",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

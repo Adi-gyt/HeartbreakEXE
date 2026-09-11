@@ -1,1 +1,269 @@
-{}
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "cinematic_moody_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_01",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "cinematic_moody_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "sky_and_clouds",
+          "bbox": [0.16, 0.11, 1.0, 0.55],
+          "layer_order": 0,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["hue shift", "cloud contrast adjustment", "brightness changes"],
+          "unsafe_mutations": ["removing clouds", "adding sharp geometric structures"]
+        },
+        {
+          "region_name": "distant_cityscape",
+          "bbox": [0.16, 0.40, 1.0, 0.70],
+          "layer_order": 1,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["window light state changes", "fog tinting at the base"],
+          "unsafe_mutations": ["structural deformation", "perspective changes"]
+        },
+        {
+          "region_name": "midground_trees",
+          "bbox": [0.16, 0.55, 1.0, 0.75],
+          "layer_order": 2,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.6,
+          "confidence": 0.9,
+          "mutation_safety": "color_safe",
+          "safe_mutations": ["shadow tinting", "silhouette softening"],
+          "unsafe_mutations": ["brightening to remove silhouette effect"]
+        },
+        {
+          "region_name": "highway_traffic",
+          "bbox": [0.38, 0.75, 0.65, 0.88],
+          "layer_order": 3,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.7,
+          "confidence": 0.9,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": ["taillight color shift", "light trail intensity", "fog density"],
+          "unsafe_mutations": ["breaking the road perspective", "removing traffic flow"]
+        },
+        {
+          "region_name": "overhang_roof",
+          "bbox": [0.0, 0.11, 1.0, 0.24],
+          "layer_order": 5,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.1,
+          "confidence": 0.95,
+          "mutation_safety": "exclude",
+          "safe_mutations": ["none"],
+          "unsafe_mutations": ["translation", "lighting addition", "deletion"]
+        },
+        {
+          "region_name": "bus_shelter_left",
+          "bbox": [0.0, 0.11, 0.16, 0.91],
+          "layer_order": 4,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["neon sign color changes", "screen content tinting"],
+          "unsafe_mutations": ["perspective distortion", "removal"]
+        },
+        {
+          "region_name": "horizontal_railing",
+          "bbox": [0.16, 0.74, 1.0, 0.88],
+          "layer_order": 5,
+          "visual_importance": 0.8,
+          "mutation_priority": 0.2,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["reflection intensity", "minor rim light tinting"],
+          "unsafe_mutations": ["breaking horizontal line", "deletion"]
+        },
+        {
+          "region_name": "foreground_foliage",
+          "bbox": [0.0, 0.75, 0.35, 0.91],
+          "layer_order": 6,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["neon reflection tinting", "leaf silhouette tweaks"],
+          "unsafe_mutations": ["removing neon lighting cast", "blurring pixel edges"]
+        },
+        {
+          "region_name": "character_silhouette",
+          "bbox": [0.01, 0.50, 0.10, 0.70],
+          "layer_order": 5,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.2,
+          "confidence": 0.85,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": ["rim lighting color change"],
+          "unsafe_mutations": ["breaking silhouette", "drastic pose changes"]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "rain_streaks",
+          "approximate_bbox": [0.16, 0.11, 1.0, 0.91],
+          "orientation": "vertical",
+          "sparsity": "medium",
+          "typical_size": "thin 1-pixel vertical lines",
+          "color_characteristics": "semi-transparent white/cyan",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "power_lines",
+          "approximate_bbox": [0.16, 0.25, 1.0, 0.55],
+          "orientation": "swooping horizontal/diagonal curves",
+          "sparsity": "high",
+          "typical_size": "1-pixel thin black/dark lines",
+          "color_characteristics": "dark silhouette against clouds",
+          "confidence": 0.95,
+          "mutation_safety": "exclude"
+        },
+        {
+          "pattern_name": "city_windows",
+          "approximate_bbox": [0.40, 0.45, 0.95, 0.65],
+          "orientation": "grid",
+          "sparsity": "low",
+          "typical_size": "small 1-2 pixel dots/rectangles",
+          "color_characteristics": "pale yellow, white, and cyan",
+          "confidence": 0.9,
+          "mutation_safety": "color+light_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#192b3c",
+            "role": "ambient sky and upper cloud base",
+            "approximate_area_fraction": 0.25,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#3d5c75",
+            "role": "cloud highlights and mid-sky",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#0d131a",
+            "role": "foreground silhouettes and structural shadows",
+            "approximate_area_fraction": 0.30,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#6b4559",
+            "role": "distant city fog base / lower sky glow",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#ff3b5c",
+            "role": "neon lights, car trails, and local foliage reflections",
+            "approximate_area_fraction": 0.05,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "restricted (cinematic teal and pink/red grading)",
+        "palette_temperature": "cool dominant with stark warm/neon contrasts",
+        "contrast_level": "high (bright neon against dark silhouettes)",
+        "saturation_level": "moderate overall, high in neon accents"
+      },
+      "lighting": {
+        "direction": "ambient backlighting from city haze; local stark neon lights on the left and right",
+        "ambient": "moody dark teal and purple",
+        "warm_cool_balance": "cool base with vivid pink/red local illumination",
+        "practical_light_sources": [
+          {
+            "description": "neon sign/light on left shelter",
+            "bbox": [0.15, 0.33, 0.21, 0.38],
+            "approximate_color": "#ff3b5c",
+            "relative_intensity": "high",
+            "affected_regions": ["bus_shelter_left", "foreground_foliage", "horizontal_railing"]
+          },
+          {
+            "description": "highway traffic light trails",
+            "bbox": [0.38, 0.78, 0.65, 0.86],
+            "approximate_color": "#ff3b5c",
+            "relative_intensity": "medium",
+            "affected_regions": ["highway_traffic", "horizontal_railing"]
+          },
+          {
+            "description": "city skyline glow",
+            "bbox": [0.20, 0.60, 0.95, 0.75],
+            "approximate_color": "#6b4559",
+            "relative_intensity": "low",
+            "affected_regions": ["distant_cityscape", "midground_trees"]
+          }
+        ],
+        "important_glows": "soft atmospheric scattering at the city base blending into the trees",
+        "reflections": "crisp neon reflections highlighting the edges of the dark foliage and the metal railing"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "falling rain",
+          "city smog/fog layer separating midground and background",
+          "cinematic color grading"
+        ],
+        "safe_changes": [
+          "rain intensity",
+          "fog color (e.g. changing pink to neon blue or green)",
+          "neon light colors"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on foreground architecture, power lines, and railing",
+        "soft_edges": "represented via stepped color banding in the clouds and city fog",
+        "outlines": "none",
+        "clustered_shading": "used in the clouds and foliage to define volume",
+        "gradients": "achieved through distinct horizontal color steps in the atmospheric fog",
+        "dithering": "minimal, relies mostly on solid color clusters and stepping",
+        "texture": "smooth gradients in the sky, blocky rigid textures for the city and shelter",
+        "flat_regions": "the deepest shadows in the overhang and shelter",
+        "native_pixel_scale_feel": "high resolution pixel art or heavily stylized low-res digital painting"
+      },
+      "region_relationships": [
+        "overhang_roof and bus_shelter_left frame the scene from the top and left",
+        "horizontal_railing creates a mid-foreground barrier, occluding highway_traffic",
+        "distant_cityscape is behind midground_trees",
+        "power_lines cross over sky_and_clouds and distant_cityscape",
+        "foreground_foliage occludes the lower left corner and parts of the railing"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "the heavy framing provided by the shelter and overhang",
+          "the horizontal divide created by the railing",
+          "the rule-of-thirds placement of the main left-side focal points"
+        ],
+        "safe_to_change": [
+          "neon accent colors",
+          "city window patterns",
+          "cloud formations (maintaining volume)"
+        ],
+        "cautious_change": [
+          "power line curves",
+          "skyline silhouette"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

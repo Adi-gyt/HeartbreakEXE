@@ -1,1 +1,276 @@
-{}
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "natural_landscape_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_25",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "natural_landscape_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "background_forest_depth",
+          "bbox": [0.0, 0.0, 1.0, 0.65],
+          "layer_order": 0,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.8,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "hue shift to simulate seasons/time of day",
+            "contrast reduction to increase depth/fog"
+          ],
+          "unsafe_mutations": [
+            "bringing into sharp focus",
+            "removing the vertical tree structures"
+          ]
+        },
+        {
+          "region_name": "large_tree_left",
+          "bbox": [0.0, 0.0, 0.35, 0.75],
+          "layer_order": 2,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "bark color tinting",
+            "leaf highlight color changes"
+          ],
+          "unsafe_mutations": [
+            "removing the trunk",
+            "drastic shape deformation"
+          ]
+        },
+        {
+          "region_name": "large_tree_right",
+          "bbox": [0.65, 0.0, 1.0, 0.70],
+          "layer_order": 2,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.3,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "bark color tinting",
+            "leaf highlight color changes"
+          ],
+          "unsafe_mutations": [
+            "removing the trunk",
+            "drastic shape deformation"
+          ]
+        },
+        {
+          "region_name": "sunlit_clearing_grass",
+          "bbox": [0.10, 0.60, 0.90, 0.85],
+          "layer_order": 1,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "grass color shift (e.g. to autumn/yellow)",
+            "lighting intensity adjustments"
+          ],
+          "unsafe_mutations": [
+            "removing the flat terrain perspective"
+          ]
+        },
+        {
+          "region_name": "foreground_shadowed_terrain",
+          "bbox": [0.0, 0.80, 1.0, 1.0],
+          "layer_order": 3,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "shadow tinting",
+            "contrast adjustments"
+          ],
+          "unsafe_mutations": [
+            "brightening significantly to remove framing effect",
+            "flattening texture"
+          ]
+        },
+        {
+          "region_name": "foreground_tree_trunk_extreme_left",
+          "bbox": [0.0, 0.40, 0.15, 1.0],
+          "layer_order": 4,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.1,
+          "confidence": 0.9,
+          "mutation_safety": "exclude",
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "translation",
+            "lighting addition",
+            "removal"
+          ]
+        },
+        {
+          "region_name": "midground_foliage_bushes",
+          "bbox": [0.35, 0.45, 0.65, 0.65],
+          "layer_order": 1,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.5,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "color tinting",
+            "minor clustering adjustments"
+          ],
+          "unsafe_mutations": [
+            "blurring the pixelated leaf texture"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "floating_particles",
+          "approximate_bbox": [0.10, 0.20, 0.90, 0.90],
+          "orientation": "scattered randomly",
+          "sparsity": "high",
+          "typical_size": "1-3 pixel bright dots",
+          "color_characteristics": "white/pale yellow",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        },
+        {
+          "pattern_name": "leaf_clusters",
+          "approximate_bbox": [0.0, 0.0, 1.0, 0.40],
+          "orientation": "irregular overlapping blobs",
+          "sparsity": "low",
+          "typical_size": "various chunky shapes",
+          "color_characteristics": "dark green with bright yellow-green top highlights",
+          "confidence": 0.95,
+          "mutation_safety": "color_safe"
+        },
+        {
+          "pattern_name": "clearing_flowers_or_highlights",
+          "approximate_bbox": [0.15, 0.65, 0.85, 0.80],
+          "orientation": "scattered horizontally across grass",
+          "sparsity": "medium",
+          "typical_size": "small 1-2 pixel dashes",
+          "color_characteristics": "bright white/yellow",
+          "confidence": 0.9,
+          "mutation_safety": "color_safe"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#a6e355",
+            "role": "bright sunlit grass and leaf highlights",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#4ba960",
+            "role": "mid-tone sunlit foliage",
+            "approximate_area_fraction": 0.20,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#1d443f",
+            "role": "ambient forest shadows and deep background",
+            "approximate_area_fraction": 0.30,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#11262d",
+            "role": "foreground silhouettes and darkest shadows",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#cba265",
+            "role": "sunlit tree bark highlights",
+            "approximate_area_fraction": 0.05,
+            "confidence": 0.9
+          }
+        ],
+        "estimated_palette_size": "moderate (distinct color steps for lighting)",
+        "palette_temperature": "warm/cool balance (warm sunlit areas, cool deep shadows)",
+        "contrast_level": "high (bright clearing vs dark framing trees)",
+        "saturation_level": "high in the sunlit greens, moderate in shadows"
+      },
+      "lighting": {
+        "direction": "top center/slightly right, shining down into the clearing",
+        "ambient": "deep green forest gloom",
+        "warm_cool_balance": "warm sunlight penetrating a cool shadowed forest",
+        "practical_light_sources": [
+          {
+            "description": "sunlight breaking through canopy (off-screen top)",
+            "bbox": [0.20, 0.0, 0.80, 0.20],
+            "approximate_color": "#ffffff",
+            "relative_intensity": "high",
+            "affected_regions": [
+              "sunlit_clearing_grass",
+              "large_tree_left",
+              "large_tree_right"
+            ]
+          }
+        ],
+        "important_glows": "No soft bloom; light is depicted via hard color stepping and high contrast in the clearing",
+        "reflections": "none"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "dense forest depth",
+          "atmospheric perspective (background trees fade into dark teal)",
+          "floating pollen/dust particles"
+        ],
+        "safe_changes": [
+          "overall seasonal palette (e.g. changing vibrant greens to autumn hues)",
+          "particle density",
+          "depth of field/fog in the background"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on all tree trunks, leaves, and grass textures",
+        "soft_edges": "none (pure pixel art)",
+        "outlines": "none",
+        "clustered_shading": "used heavily to define the volume of the leaf canopy and the texture of the tree bark",
+        "gradients": "represented via strict color stepping",
+        "dithering": "minimal, prefers solid chunky color blocks and clusters",
+        "texture": "rich organic textures: rough bark, distinct leafy clumps, scattered grass detail",
+        "flat_regions": "the deepest background forest silhouettes",
+        "native_pixel_scale_feel": "medium-low resolution, classic 16-bit RPG aesthetic"
+      },
+      "region_relationships": [
+        "large_tree_left and large_tree_right frame the sunlit_clearing_grass",
+        "foreground_shadowed_terrain occludes the bottom edge of the sunlit_clearing_grass",
+        "background_forest_depth provides a dark backdrop that makes the sunlit_clearing_grass pop",
+        "foreground_tree_trunk_extreme_left overlaps all other layers on the left edge"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "the central open clearing framed by large trees on both sides",
+          "the contrast between the dark foreground/background and the bright central clearing",
+          "the horizontal ground plane"
+        ],
+        "safe_to_change": [
+          "foliage and grass color palette",
+          "placement of small rocks/details in the clearing",
+          "particle effects"
+        ],
+        "cautious_change": [
+          "tree trunk shapes and placement",
+          "canopy silhouette"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "medium",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}

@@ -1,1 +1,235 @@
-{}
+{
+  "dataset_version": "1.0",
+  "style_families": [
+    "sci_fi_space_pixel"
+  ],
+  "images": [
+    {
+      "image_id": "image_30",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "style_family": "sci_fi_space_pixel",
+      "semantic_regions": [
+        {
+          "region_name": "deep_space_void",
+          "bbox": [0.0, 0.0, 1.0, 1.0],
+          "layer_order": 0,
+          "visual_importance": 0.6,
+          "mutation_priority": 0.8,
+          "confidence": 1.0,
+          "mutation_safety": "color_safe",
+          "safe_mutations": [
+            "palette swap (e.g., to dark purple or black)",
+            "brightness adjustment"
+          ],
+          "unsafe_mutations": [
+            "adding large opaque structures"
+          ]
+        },
+        {
+          "region_name": "glowing_nebula_clouds",
+          "bbox": [0.0, 0.25, 0.75, 1.0],
+          "layer_order": 1,
+          "visual_importance": 0.85,
+          "mutation_priority": 0.9,
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only",
+          "safe_mutations": [
+            "hue shift (e.g., teal to magenta)",
+            "glow intensity adjustment",
+            "opacity changes"
+          ],
+          "unsafe_mutations": [
+            "adding hard geometric edges",
+            "removing the clustered pixel aesthetic"
+          ]
+        },
+        {
+          "region_name": "giant_planet_top_right",
+          "bbox": [0.55, 0.0, 1.0, 0.40],
+          "layer_order": 2,
+          "visual_importance": 0.9,
+          "mutation_priority": 0.4,
+          "confidence": 0.95,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "rim lighting color shift",
+            "band/texture color changes"
+          ],
+          "unsafe_mutations": [
+            "non-spherical deformation",
+            "removal of the dark silhouette"
+          ]
+        },
+        {
+          "region_name": "primary_cross_star",
+          "bbox": [0.20, 0.30, 0.50, 0.95],
+          "layer_order": 3,
+          "visual_importance": 0.95,
+          "mutation_priority": 0.6,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "core color shift",
+            "flare length scaling",
+            "glow intensity changes"
+          ],
+          "unsafe_mutations": [
+            "deforming the rigid cross structure",
+            "blurring the distinct pixel rays"
+          ]
+        },
+        {
+          "region_name": "secondary_cross_star",
+          "bbox": [0.70, 0.60, 0.90, 0.90],
+          "layer_order": 3,
+          "visual_importance": 0.75,
+          "mutation_priority": 0.5,
+          "confidence": 0.95,
+          "mutation_safety": "color+light_safe",
+          "safe_mutations": [
+            "core color shift",
+            "flare length scaling"
+          ],
+          "unsafe_mutations": [
+            "deforming the rigid cross structure"
+          ]
+        },
+        {
+          "region_name": "small_dark_planet",
+          "bbox": [0.35, 0.85, 0.45, 1.0],
+          "layer_order": 4,
+          "visual_importance": 0.7,
+          "mutation_priority": 0.3,
+          "confidence": 0.9,
+          "mutation_safety": "shape_sensitive",
+          "safe_mutations": [
+            "rim light color tinting"
+          ],
+          "unsafe_mutations": [
+            "brightening the silhouette core",
+            "non-circular deformation"
+          ]
+        }
+      ],
+      "pattern_regions": [
+        {
+          "pattern_name": "distant_stars",
+          "approximate_bbox": [0.0, 0.0, 1.0, 1.0],
+          "orientation": "scattered randomly",
+          "sparsity": "high",
+          "typical_size": "1-3 pixels",
+          "color_characteristics": "bright white, pale yellow, and light cyan dots",
+          "confidence": 0.95,
+          "mutation_safety": "atmosphere_only"
+        }
+      ],
+      "palette": {
+        "important_colors": [
+          {
+            "hex": "#0b1220",
+            "role": "deep space vacuum and planet silhouettes",
+            "approximate_area_fraction": 0.45,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#1d4454",
+            "role": "mid-tone nebula gas",
+            "approximate_area_fraction": 0.30,
+            "confidence": 0.95
+          },
+          {
+            "hex": "#509a7e",
+            "role": "bright nebula highlights and planet rim lighting",
+            "approximate_area_fraction": 0.15,
+            "confidence": 0.9
+          },
+          {
+            "hex": "#fdffda",
+            "role": "star cores and brightest glows",
+            "approximate_area_fraction": 0.05,
+            "confidence": 0.95
+          }
+        ],
+        "estimated_palette_size": "highly restricted (monochromatic teal/blue with bright accents)",
+        "palette_temperature": "cool dominant",
+        "contrast_level": "high (stark white star cores against deep dark blue void)",
+        "saturation_level": "moderate overall, high in the teal nebula highlights"
+      },
+      "lighting": {
+        "direction": "local radiating light from stars; strong rim light on the giant planet from the bottom-left",
+        "ambient": "dark vacuum",
+        "warm_cool_balance": "cool teal/blue environment with pale warm/white starlight",
+        "practical_light_sources": [
+          {
+            "description": "primary cross star",
+            "bbox": [0.32, 0.65, 0.36, 0.72],
+            "approximate_color": "#fdffda",
+            "relative_intensity": "very high",
+            "affected_regions": [
+              "glowing_nebula_clouds",
+              "giant_planet_top_right",
+              "small_dark_planet"
+            ]
+          }
+        ],
+        "important_glows": "pixel-stepped halos surrounding the large cross stars, creating a retro bloom effect",
+        "reflections": "none"
+      },
+      "atmosphere": {
+        "identified_effects": [
+          "glowing ionized gas (nebula)",
+          "stellar glare (cross-shaped diffraction spikes)",
+          "deep space void"
+        ],
+        "safe_changes": [
+          "shifting nebula color (e.g., to red, purple, or green)",
+          "star field density",
+          "star flare lengths"
+        ]
+      },
+      "pixel_characteristics": {
+        "hard_pixel_edges": "prominent on the dark planetary silhouettes and the thin lines of the star flares",
+        "soft_edges": "simulated using stepped color banding in the nebula and star halos",
+        "outlines": "none",
+        "clustered_shading": "used organically to form the shapes of the nebula gas clouds",
+        "gradients": "represented via strict color stepping and pixel clusters",
+        "dithering": "minimal, prefers distinct solid color chunks to build texture",
+        "texture": "smooth dark planets, clustered fluffy nebula, sharp geometric star spikes",
+        "flat_regions": "the deepest space background and the core of the giant planet",
+        "native_pixel_scale_feel": "medium-low resolution, classic 16-bit space shooter aesthetic"
+      },
+      "region_relationships": [
+        "deep_space_void is the base layer behind all elements",
+        "glowing_nebula_clouds overlay the deep_space_void",
+        "giant_planet_top_right occludes the space and nebula behind it",
+        "primary_cross_star and secondary_cross_star sit in the foreground, their light flares overlapping other structures",
+        "small_dark_planet sits in the extreme foreground, occluding a star flare"
+      ],
+      "composition_constraints": {
+        "must_remain_stable": [
+          "the prominent cross-shaped structure of the major stars",
+          "the stark contrast between the bright star cores and the dark planet silhouettes",
+          "the curving rim light on the giant planet"
+        ],
+        "safe_to_change": [
+          "overall nebula palette",
+          "background star distribution",
+          "planet surface texture (within the shadowed area)"
+        ],
+        "cautious_change": [
+          "planet curvature and scale",
+          "alignment of the star diffraction spikes"
+        ]
+      },
+      "generator_recommendations": {
+        "color_mutation": "high",
+        "lighting_mutation": "medium",
+        "atmosphere_mutation": "high",
+        "shape_mutation": "low"
+      }
+    }
+  ]
+}
