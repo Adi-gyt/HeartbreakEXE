@@ -260,6 +260,9 @@ for n in comp_dict.keys():
 sem_map = np.zeros((h, w, 3), dtype=np.uint8)
 merged_map = np.zeros((h, w, 3), dtype=np.uint8)
 overlay = img.copy()
+# Exact per-pixel region-label map (0 = unassigned). Reuses `region_mask`,
+# already computed below for bbox/centroid/contours -- no new segmentation.
+region_label_map = np.zeros((h, w), dtype=np.uint16)
 
 rng = np.random.default_rng(42)
 
@@ -298,6 +301,7 @@ for root, members in groups.items():
     
     merged_map[region_mask > 0] = rng.integers(50, 255, size=3, dtype=np.uint8)
     sem_map[region_mask > 0] = sem_colors.get(label, [255, 255, 255])
+    region_label_map[region_mask > 0] = region_counter
     
     contours, _ = cv2.findContours(region_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(overlay, contours, -1, (0, 255, 0), 1)
@@ -312,6 +316,7 @@ for root, members in groups.items():
         'dominant_colors': [f"#{int(comp_dict[members[0]]['mean_rgb'][0]):02x}{int(comp_dict[members[0]]['mean_rgb'][1]):02x}{int(comp_dict[members[0]]['mean_rgb'][2]):02x}"],
         'confidence': comp_dict[members[0]]['sem_confidence'],
         'mutation_safety': comp_dict[members[0]]['sem_safety'],
+        'region_label': region_counter,
     })
     region_counter += 1
 
@@ -320,6 +325,11 @@ image_id = json_data.get('image_id', 'image_01')
 Image.fromarray(merged_map).save(OUT / f'{image_id}_merged_regions.png')
 Image.fromarray(sem_map).save(OUT / f'{image_id}_semantic_regions.png')
 Image.fromarray(overlay).save(OUT / f'{image_id}_region_overlay.png')
+
+# Exact per-pixel region-label map, uint16 grayscale PNG. 0 = unassigned;
+# positive integers correspond 1:1 to region_id/region_label in the JSON.
+assert region_label_map.shape == (h, w), "label map dimensions must match source image"
+cv2.imwrite(str(OUT / f'{image_id}_region_labels.png'), region_label_map)
 
 with open(OUT / f'{image_id}_regions.json', 'w') as f:
     json.dump(report_data, f, indent=2)
