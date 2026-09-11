@@ -53,6 +53,9 @@ COLOR_ELIGIBLE_SAFETY = {"color_safe", "color+light_safe"}
 # Per the L2 region contract, lighting is eligible for exactly the same
 # Step 4 mutation_safety values as color: color_safe and color+light_safe.
 LIGHT_ELIGIBLE_SAFETY = COLOR_ELIGIBLE_SAFETY
+# Per the L3 region contract, atmosphere/texture is eligible ONLY for
+# Step 4 regions whose own mutation_safety is atmosphere_only.
+ATMOSPHERE_ELIGIBLE_SAFETY = {"atmosphere_only"}
 
 
 class MutationEngineError(ValueError):
@@ -148,6 +151,7 @@ def validate_inputs(image, label_map, region_data, mutation_plan):
 
     seen_color_region_ids = set()
     seen_light_region_ids = set()
+    seen_atmosphere_region_ids = set()
 
     for m in mutations:
         if not isinstance(m, dict):
@@ -168,8 +172,8 @@ def validate_inputs(image, label_map, region_data, mutation_plan):
         if not (0.0 <= strength <= 1.0):
             raise MutationEngineError(f"Mutation strength out of [0,1]: {m!r}")
 
-        if mutation_type not in ("color", "light"):
-            # L3/L4 -- out of scope for this engine.
+        if mutation_type not in ("color", "light", "atmosphere"):
+            # L4 -- out of scope for this engine.
             continue
 
         parameters = m.get("parameters")
@@ -191,7 +195,7 @@ def validate_inputs(image, label_map, region_data, mutation_plan):
                 raise MutationEngineError(f"Duplicate color mutation for region_id {region_id!r}")
             seen_color_region_ids.add(region_id)
 
-        else:  # "light"
+        elif mutation_type == "light":
             light_angle = parameters.get("light_angle")
             light_warmth = parameters.get("light_warmth")
 
@@ -203,6 +207,16 @@ def validate_inputs(image, label_map, region_data, mutation_plan):
             if region_id in seen_light_region_ids:
                 raise MutationEngineError(f"Duplicate light mutation for region_id {region_id!r}")
             seen_light_region_ids.add(region_id)
+
+        else:  # "atmosphere"
+            atmosphere_density = parameters.get("atmosphere_density")
+
+            if isinstance(atmosphere_density, bool) or not isinstance(atmosphere_density, (int, float)):
+                raise MutationEngineError(f"atmosphere_density must be numeric: {m!r}")
+
+            if region_id in seen_atmosphere_region_ids:
+                raise MutationEngineError(f"Duplicate atmosphere mutation for region_id {region_id!r}")
+            seen_atmosphere_region_ids.add(region_id)
 
         if region_id not in semantic_index:
             raise MutationEngineError(
@@ -251,6 +265,14 @@ def _resolve_light_mutation_labels(region_id, semantic_index):
     eligibility rule as color, per the L2 region contract. See
     _resolve_mutation_labels for details."""
     return _resolve_mutation_labels(region_id, semantic_index, LIGHT_ELIGIBLE_SAFETY)
+
+
+def _resolve_atmosphere_mutation_labels(region_id, semantic_index):
+    """Resolve eligible Step 4 labels for an atmosphere mutation. Only
+    Step 4 entries whose own mutation_safety is atmosphere_only are
+    eligible, per the L3 region contract. See _resolve_mutation_labels
+    for details."""
+    return _resolve_mutation_labels(region_id, semantic_index, ATMOSPHERE_ELIGIBLE_SAFETY)
 
 
 # ============================================================================
@@ -404,17 +426,163 @@ def apply_light_mutation(image, label_map, eligible_labels, light_angle, light_w
 
 
 # ============================================================================
+# L3 ATMOSPHERE / TEXTURE TRANSFORM
+# ============================================================================
+
+# Conservative caps so the effect stays subtle even at atmosphere_density=1.0
+# and strength=1.0 -- this is meant to read as "a bit more/less hazy", not a
+# visible filter slapped over the scene.
+_MAX_ATMOSPHERE_BRIGHTNESS = 26.0
+_MAX_ATMOSPHERE_DESATURATION = 0.30
+
+# Two fixed octaves of coherent value noise, both deliberately large-celled
+# (low frequency) so the result reads as soft atmospheric patches rather
+# than fine-grained/photographic noise. Odd, non-power-of-two cell sizes
+# and distinct seeds keep the two octaves from lining up into an obvious
+# repeating grid.
+_ATMOSPHERE_OCTAVES = (
+    {"cell_size": 71, "seed": 0xA17C, "weight": 0.7},
+    {"cell_size": 29, "seed": 0x5EED, "weight": 0.3},
+)
+_ATMOSPHERE_BAND_LEVELS = 6  # discrete bands -> pixel-art-style stepped look
+
+
+def _lattice_hash(ix, iy, seed):
+    """
+    Deterministic integer-lattice hash -> float in [0, 1). Pure bit
+    mixing (same family of constants used elsewhere in this pipeline for
+    stable hashing), no randomness, no global state, no timestamps.
+    """
+    ix64 = ix.astype(np.int64)
+    iy64 = iy.astype(np.int64)
+    seed64 = np.int64((seed * 2654435761) & 0x7FFFFFFF)
+
+    h = (ix64 * np.int64(374761393)) ^ (iy64 * np.int64(668265263)) ^ seed64
+    h = (h ^ (h >> 13)) * np.int64(1274126177)
+    h = h ^ (h >> 16)
+    return (h & np.int64(0xFFFFFFFF)).astype(np.float64) / 4294967295.0
+
+
+def _bilinear_upsample(grid, out_h, out_w):
+    """
+    Upsample a small 2D lattice (grid_h, grid_w) to (out_h, out_w) via
+    bilinear interpolation. This synthesizes the coherent noise field
+    itself (not a blur of the photo); the image's own pixels are never
+    resampled or interpolated.
+    """
+    grid_h, grid_w = grid.shape
+
+    ys = np.linspace(0, grid_h - 1, out_h)
+    xs = np.linspace(0, grid_w - 1, out_w)
+
+    y0 = np.floor(ys).astype(np.int64)
+    x0 = np.floor(xs).astype(np.int64)
+    y1 = np.clip(y0 + 1, 0, grid_h - 1)
+    x1 = np.clip(x0 + 1, 0, grid_w - 1)
+
+    wy = (ys - y0)[:, np.newaxis]
+    wx = (xs - x0)[np.newaxis, :]
+
+    top = grid[y0][:, x0] * (1.0 - wx) + grid[y0][:, x1] * wx
+    bottom = grid[y1][:, x0] * (1.0 - wx) + grid[y1][:, x1] * wx
+    return top * (1.0 - wy) + bottom * wy
+
+
+def _value_noise_octave(shape, cell_size, seed):
+    """One coherent, low-frequency noise octave over the full image plane."""
+    h, w = shape
+    grid_h = (h // cell_size) + 2
+    grid_w = (w // cell_size) + 2
+    iy, ix = np.mgrid[0:grid_h, 0:grid_w]
+    lattice_values = _lattice_hash(ix, iy, seed)
+    return _bilinear_upsample(lattice_values, h, w)
+
+
+def _quantize_field(field, levels):
+    """Snap a [0,1] field to `levels` discrete steps -- gives the banded,
+    stepped look already used elsewhere in this piece's clouds/fog rather
+    than a smooth photographic gradient."""
+    field = np.clip(field, 0.0, 1.0 - 1e-9)
+    step = 1.0 / levels
+    return np.floor(field / step) * step
+
+
+def _procedural_atmosphere_field(shape):
+    """
+    Deterministic, coherent, low-frequency, quantized [0, 1) density
+    field -- purely a function of pixel coordinates via fixed-seed
+    lattice hashing (no randomness, no timestamps, no external state).
+    0 = clear, higher = denser local atmospheric texture.
+    """
+    combined = np.zeros(shape, dtype=np.float64)
+    for octave in _ATMOSPHERE_OCTAVES:
+        combined += octave["weight"] * _value_noise_octave(
+            shape, octave["cell_size"], octave["seed"]
+        )
+    return _quantize_field(combined, _ATMOSPHERE_BAND_LEVELS)
+
+
+def _atmosphere_transform(image, atmosphere_density):
+    """
+    Whole-image atmospheric texture: a coherent, banded density field
+    (fixed per image size) scaled by atmosphere_density, applied as a
+    mild brightening + desaturation (haze reads as lighter and less
+    saturated). Deterministic and purely per-pixel/per-coordinate; no
+    blur, no resampling of the source image, no anti-aliased edges.
+    """
+    density_field = _procedural_atmosphere_field(image.shape[:2]) * atmosphere_density  # (H, W)
+
+    brightness_delta = density_field * _MAX_ATMOSPHERE_BRIGHTNESS
+    desat_amount = np.clip(density_field, 0.0, 1.0) * _MAX_ATMOSPHERE_DESATURATION
+
+    image_f = image.astype(np.float64)
+    luminance = image_f.mean(axis=2, keepdims=True)
+
+    desaturated = image_f * (1.0 - desat_amount[..., np.newaxis]) + luminance * desat_amount[..., np.newaxis]
+    transformed = desaturated + brightness_delta[..., np.newaxis]
+    return np.clip(np.round(transformed), 0, 255).astype(np.uint8)
+
+
+def apply_atmosphere_mutation(image, label_map, eligible_labels, atmosphere_density, strength):
+    """
+    Return (new_image, affected_pixel_count). Mirrors apply_color_mutation
+    and apply_light_mutation: new_image is a copy of `image` with the
+    atmosphere transform blended in, restricted to exactly the pixels
+    where label_map is one of eligible_labels. Every other pixel is
+    byte-identical to the input.
+    """
+    output = image.copy()
+
+    if not eligible_labels:
+        return output, 0
+
+    mask = np.isin(label_map, eligible_labels)
+    affected = int(np.count_nonzero(mask))
+
+    if affected == 0 or strength == 0:
+        return output, affected
+
+    transformed = _atmosphere_transform(image, atmosphere_density)
+
+    blended = image.astype(np.float64) * (1.0 - strength) + transformed.astype(np.float64) * strength
+    blended = np.clip(np.round(blended), 0, 255).astype(np.uint8)
+
+    output[mask] = blended[mask]
+    return output, affected
+
+
+# ============================================================================
 # ORCHESTRATION
 # ============================================================================
 
 def apply_mutation_plan(image, label_map, region_data, mutation_plan):
     """
-    Validate inputs, then apply every L1 color mutation in the plan.
-    Non-color mutations (light/atmosphere/shape) are present in
+    Validate inputs, then apply every L1 color, L2 light, and L3
+    atmosphere mutation in the plan. L4 (shape) mutations are present in
     region_mapper.py's plan but are intentionally not executed here.
 
     Returns (output_image, report). report is a list of dicts, one per
-    color mutation, describing resolution, eligibility, and pixel counts.
+    executed mutation, describing resolution, eligibility, and pixel counts.
     """
     semantic_index = validate_inputs(image, label_map, region_data, mutation_plan)
 
@@ -423,8 +591,8 @@ def apply_mutation_plan(image, label_map, region_data, mutation_plan):
 
     for m in mutation_plan["mutations"]:
         mutation_type = m["mutation"]
-        if mutation_type not in ("color", "light"):
-            # L3 (atmosphere) / L4 (shape) -- not implemented by this engine yet.
+        if mutation_type not in ("color", "light", "atmosphere"):
+            # L4 (shape) -- not implemented by this engine yet.
             continue
 
         region_id = m["region_id"]
@@ -454,7 +622,7 @@ def apply_mutation_plan(image, label_map, region_data, mutation_plan):
                 "affected_pixel_count": affected,
             })
 
-        else:  # "light"
+        elif mutation_type == "light":
             light_angle = m["parameters"]["light_angle"]
             light_warmth = m["parameters"]["light_warmth"]
 
@@ -475,6 +643,28 @@ def apply_mutation_plan(image, label_map, region_data, mutation_plan):
                 "strength": strength,
                 "light_angle": light_angle,
                 "light_warmth": light_warmth,
+                "affected_pixel_count": affected,
+            })
+
+        else:  # "atmosphere"
+            atmosphere_density = m["parameters"]["atmosphere_density"]
+
+            matching_entries, eligible, skipped = _resolve_atmosphere_mutation_labels(
+                region_id, semantic_index
+            )
+
+            output, affected = apply_atmosphere_mutation(
+                output, label_map, eligible, atmosphere_density, strength
+            )
+
+            report.append({
+                "semantic_region_id": region_id,
+                "mutation": "atmosphere",
+                "matching_step4_labels": [e["region_label"] for e in matching_entries],
+                "eligible_labels": eligible,
+                "skipped_labels": skipped,
+                "strength": strength,
+                "atmosphere_density": atmosphere_density,
                 "affected_pixel_count": affected,
             })
 
@@ -852,6 +1042,166 @@ if __name__ == "__main__":
         check("BONUS duplicate region_id light mutation raises MutationEngineError",
               "Duplicate" in str(e))
 
+    # ------------------------------------------------------------------
+    # L3 -- atmosphere/texture tests (same synthetic fixture)
+    # ------------------------------------------------------------------
+    #   1 = "sky"     color_safe          (never atmosphere-eligible)
+    #   2 = "roof"    exclude             (never atmosphere-eligible)
+    #   3 = "rain"    atmosphere_only     (atmosphere-eligible)
+    #   4 = "windows" color+light_safe    (never atmosphere-eligible)
+    #   5 = "windows" shape_sensitive     (never atmosphere-eligible)
+
+    atmosphere_plan = {"mutations": [
+        {"region_id": "rain", "mutation": "atmosphere", "strength": 0.8,
+         "parameters": {"atmosphere_density": 0.9}},
+    ]}
+
+    # L3-TEST1 -- basic atmosphere mutation executes
+    out_l3, report_l3 = apply_mutation_plan(image, label_map, region_data, atmosphere_plan)
+    check("L3-TEST1 basic atmosphere mutation executes", out_l3 is not None and len(report_l3) == 1)
+
+    # L3-TEST2 -- output dimensions correct
+    check("L3-TEST2 atmosphere output dimensions match input", out_l3.shape == image.shape)
+
+    # L3-TEST2b -- output remains RGB
+    check("L3-TEST2b atmosphere output remains RGB (H,W,3) uint8",
+          out_l3.ndim == 3 and out_l3.shape[2] == 3 and out_l3.dtype == np.uint8)
+
+    # L3-TEST4 -- determinism
+    out_l3_again, _ = apply_mutation_plan(image, label_map, region_data, atmosphere_plan)
+    check("L3-TEST4 determinism (identical atmosphere plan -> identical output)",
+          np.array_equal(out_l3, out_l3_again))
+
+    # L3-TEST5 -- zero strength -> byte-identical
+    zero_atmosphere_plan = {"mutations": [
+        {"region_id": "rain", "mutation": "atmosphere", "strength": 0.0,
+         "parameters": {"atmosphere_density": 0.9}},
+    ]}
+    out_zero_atm, _ = apply_mutation_plan(image, label_map, region_data, zero_atmosphere_plan)
+    check("L3-TEST5 zero-strength atmosphere -> output byte-identical to input",
+          np.array_equal(out_zero_atm, image))
+
+    # L3-TEST6 -- empty plan already covered by TEST5/TEST5b above (shared code path).
+
+    # L3-TEST7/8 -- exact pixel isolation: only label 3 (rain, atmosphere_only) changes
+    changed_l3 = np.any(out_l3 != image, axis=2)
+    eligible_atm = (label_map == 3)
+    check(
+        "L3-TEST7 every changed pixel belongs to the eligible atmosphere label (3)",
+        bool(np.all(eligible_atm[changed_l3])) if changed_l3.any() else True,
+    )
+    check(
+        "L3-TEST8 every pixel outside the eligible atmosphere label is byte-identical",
+        np.array_equal(out_l3[~eligible_atm], image[~eligible_atm]),
+    )
+
+    # L3-TEST9 -- excluded region ("roof", label 2) unaffected
+    check("L3-TEST9 exclude region (roof) unchanged by atmosphere",
+          np.array_equal(out_l3[label_map == 2], image[label_map == 2]))
+
+    # L3-TEST10 -- color_safe region ("sky", label 1) unaffected
+    check("L3-TEST10 color_safe region (sky) unchanged by atmosphere",
+          np.array_equal(out_l3[label_map == 1], image[label_map == 1]))
+
+    # L3-TEST11 -- color+light_safe region ("windows", label 4) unaffected
+    check("L3-TEST11 color+light_safe region (windows eligible) unchanged by atmosphere",
+          np.array_equal(out_l3[label_map == 4], image[label_map == 4]))
+
+    # L3-TEST12 -- shape_sensitive region (label 5) unaffected
+    check("L3-TEST12 shape_sensitive region (windows ineligible) unchanged by atmosphere",
+          np.array_equal(out_l3[label_map == 5], image[label_map == 5]))
+
+    # An atmosphere mutation targeting a region with NO atmosphere_only Step 4
+    # sub-labels (e.g. "sky", which is entirely color_safe) must be reported
+    # as having zero eligible labels and change nothing.
+    sky_atmosphere_plan = {"mutations": [
+        {"region_id": "sky", "mutation": "atmosphere", "strength": 1.0,
+         "parameters": {"atmosphere_density": 1.0}},
+    ]}
+    out_sky_atm, report_sky_atm = apply_mutation_plan(image, label_map, region_data, sky_atmosphere_plan)
+    check("L3-BONUS color_safe-only semantic region has 0 eligible atmosphere labels",
+          report_sky_atm[0]["eligible_labels"] == [] and report_sky_atm[0]["affected_pixel_count"] == 0)
+    check("L3-BONUS color_safe-only semantic region unchanged by atmosphere mutation",
+          np.array_equal(out_sky_atm, image))
+
+    # L3-TEST13/14 -- atmosphere_density changes the effect, and different
+    # density values are distinguishable from one another.
+    plan_density_low = {"mutations": [
+        {"region_id": "rain", "mutation": "atmosphere", "strength": 0.9,
+         "parameters": {"atmosphere_density": 0.2}},
+    ]}
+    plan_density_high = {"mutations": [
+        {"region_id": "rain", "mutation": "atmosphere", "strength": 0.9,
+         "parameters": {"atmosphere_density": 1.0}},
+    ]}
+    out_density_low, _ = apply_mutation_plan(image, label_map, region_data, plan_density_low)
+    out_density_high, _ = apply_mutation_plan(image, label_map, region_data, plan_density_high)
+    delta_density_low = np.abs(
+        out_density_low[label_map == 3].astype(np.int16) - image[label_map == 3].astype(np.int16)
+    ).sum()
+    delta_density_high = np.abs(
+        out_density_high[label_map == 3].astype(np.int16) - image[label_map == 3].astype(np.int16)
+    ).sum()
+    check("L3-TEST13 atmosphere_density changes the effect magnitude",
+          delta_density_high != delta_density_low)
+    check("L3-TEST14 different atmosphere_density values are distinguishable",
+          not np.array_equal(out_density_low[label_map == 3], out_density_high[label_map == 3]))
+
+    # L3-TEST15 -- L1 + L2 + L3 execute together without breaking L1/L2
+    combined_l123_plan = {"mutations": [
+        {"region_id": "sky", "mutation": "color", "strength": 0.8,
+         "parameters": {"hue_shift": 90.0, "saturation_scale": 1.3}},
+        {"region_id": "sky", "mutation": "light", "strength": 0.5,
+         "parameters": {"light_angle": 45.0, "light_warmth": 0.4}},
+        {"region_id": "windows", "mutation": "color", "strength": 0.6,
+         "parameters": {"hue_shift": -45.0, "saturation_scale": 0.6}},
+        {"region_id": "rain", "mutation": "atmosphere", "strength": 0.7,
+         "parameters": {"atmosphere_density": 0.6}},
+    ]}
+    out_l123, report_l123 = apply_mutation_plan(image, label_map, region_data, combined_l123_plan)
+    check(
+        "L3-TEST15 combined L1+L2+L3 plan executes and reports all three mutation types",
+        len(report_l123) == 4
+        and {r["mutation"] for r in report_l123} == {"color", "light", "atmosphere"},
+    )
+    # Every changed pixel must belong to one of the eligible labels touched by
+    # this plan: sky(1), windows-eligible(4), rain(3). Roof(2) and
+    # windows-ineligible(5) must be untouched.
+    touched_union = np.isin(label_map, [1, 3, 4])
+    changed_l123 = np.any(out_l123 != image, axis=2)
+    check(
+        "L3-TEST15b combined L1+L2+L3 plan isolates changes to the touched labels only",
+        bool(np.all(touched_union[changed_l123])) if changed_l123.any() else True,
+    )
+    check(
+        "L3-TEST15c combined L1+L2+L3 plan leaves roof/windows-ineligible untouched",
+        np.array_equal(out_l123[label_map == 2], image[label_map == 2])
+        and np.array_equal(out_l123[label_map == 5], image[label_map == 5]),
+    )
+
+    # L3-TEST16 -- no randomness/timestamps: re-running the exact same
+    # combined plan on a fresh copy of the fixture gives byte-identical output.
+    image3, label_map3, region_data3 = make_fixture()
+    out_l123_again, _ = apply_mutation_plan(image3, label_map3, region_data3, combined_l123_plan)
+    check(
+        "L3-TEST16 identical L1+L2+L3 plan on a fresh fixture is byte-identical",
+        np.array_equal(out_l123, out_l123_again),
+    )
+
+    # Bonus: duplicate atmosphere mutation for the same region_id raises.
+    dup_atmosphere_plan = {"mutations": [
+        {"region_id": "rain", "mutation": "atmosphere", "strength": 0.5,
+         "parameters": {"atmosphere_density": 0.4}},
+        {"region_id": "rain", "mutation": "atmosphere", "strength": 0.3,
+         "parameters": {"atmosphere_density": 0.2}},
+    ]}
+    try:
+        apply_mutation_plan(image, label_map, region_data, dup_atmosphere_plan)
+        check("BONUS duplicate region_id atmosphere mutation raises MutationEngineError", False)
+    except MutationEngineError as e:
+        check("BONUS duplicate region_id atmosphere mutation raises MutationEngineError",
+              "Duplicate" in str(e))
+
     print(f"\nSynthetic fixture tests: {passed} passed, {failed} failed")
 
     # ------------------------------------------------------------------
@@ -886,18 +1236,35 @@ if __name__ == "__main__":
             real_image, real_label_map, real_region_data, plan
         )
 
+        # L3-only run (atmosphere mutations in isolation) for visual inspection.
+        atmosphere_only_plan = {
+            "image_id": plan["image_id"],
+            "reference_bucket": plan["reference_bucket"],
+            "mutations": [mm for mm in plan["mutations"] if mm["mutation"] == "atmosphere"],
+        }
+        real_output_l3_only, real_report_l3_only = apply_mutation_plan(
+            real_image, real_label_map, real_region_data, atmosphere_only_plan
+        )
+
         os.makedirs("output_mutation_test", exist_ok=True)
-        save_image(real_output, "output_mutation_test/image_01_L1_L2_combined.png")
+        save_image(real_output_l3_only, "output_mutation_test/image_01_L3_only.png")
+        save_image(real_output, "output_mutation_test/image_01_L1_L2_L3_combined.png")
 
         diff = np.abs(real_output.astype(np.int16) - real_image.astype(np.int16))
         diff_vis = np.clip(diff.sum(axis=2) * 3, 0, 255).astype(np.uint8)
-        Image.fromarray(diff_vis, mode="L").save("output_mutation_test/image_01_L1_L2_difference.png")
+        Image.fromarray(diff_vis, mode="L").save("output_mutation_test/image_01_L1_L2_L3_difference.png")
+
+        diff_l3_only = np.abs(real_output_l3_only.astype(np.int16) - real_image.astype(np.int16))
+        diff_l3_only_vis = np.clip(diff_l3_only.sum(axis=2) * 3, 0, 255).astype(np.uint8)
+        Image.fromarray(diff_l3_only_vis, mode="L").save("output_mutation_test/image_01_L3_only_difference.png")
 
         print("\n--- Visual integration test (Image 1) ---")
         color_mutations_in_plan = [mm for mm in plan["mutations"] if mm["mutation"] == "color"]
         light_mutations_in_plan = [mm for mm in plan["mutations"] if mm["mutation"] == "light"]
+        atmosphere_mutations_in_plan = [mm for mm in plan["mutations"] if mm["mutation"] == "atmosphere"]
         print(f"Color mutations in plan: {len(color_mutations_in_plan)}")
         print(f"Light mutations in plan: {len(light_mutations_in_plan)}")
+        print(f"Atmosphere mutations in plan: {len(atmosphere_mutations_in_plan)}")
         for r in real_report:
             print(
                 f"  region_id={r['semantic_region_id']!r} "
@@ -926,18 +1293,45 @@ if __name__ == "__main__":
             check("VISUAL city_windows light mutation present and affected pixels > 0",
                   windows_light_report["affected_pixel_count"] > 0)
 
-        # Confirm exclude/atmosphere_only regions never appear as eligible anywhere,
-        # for either color or light mutations.
+        rain_reports = [r for r in real_report if r["semantic_region_id"] == "rain_streaks"]
+        rain_atmosphere_report = next((r for r in rain_reports if r["mutation"] == "atmosphere"), None)
+        if rain_atmosphere_report is not None:
+            check("VISUAL rain_streaks atmosphere mutation present and affected pixels > 0",
+                  rain_atmosphere_report["affected_pixel_count"] > 0)
+            rain_eligible_mask = np.isin(real_label_map, rain_atmosphere_report["eligible_labels"])
+            check(
+                "VISUAL L3-only run changes rain_streaks pixels and nothing else",
+                not np.array_equal(real_output_l3_only[rain_eligible_mask], real_image[rain_eligible_mask])
+                and np.array_equal(real_output_l3_only[~rain_eligible_mask], real_image[~rain_eligible_mask]),
+            )
+
+        # Confirm excluded regions never appear as eligible for ANY mutation
+        # type, and atmosphere_only regions never appear as eligible for
+        # color or light (they only become eligible for the new "atmosphere"
+        # mutation type introduced in this step).
         excluded_semantic_labels = {
             e["semantic_label"] for e in real_region_data
-            if e["mutation_safety"] in ("exclude", "atmosphere_only")
+            if e["mutation_safety"] == "exclude"
         }
-        exclude_violation = False
-        for r in real_report:
-            if r["semantic_region_id"] in excluded_semantic_labels and r["eligible_labels"]:
-                exclude_violation = True
-        check("VISUAL no exclude/atmosphere_only semantic category has eligible labels",
+        atmosphere_only_semantic_labels = {
+            e["semantic_label"] for e in real_region_data
+            if e["mutation_safety"] == "atmosphere_only"
+        }
+        exclude_violation = any(
+            r["semantic_region_id"] in excluded_semantic_labels and r["eligible_labels"]
+            for r in real_report
+        )
+        check("VISUAL excluded semantic category never has eligible labels (any mutation)",
               not exclude_violation)
+
+        atmosphere_color_light_violation = any(
+            r["semantic_region_id"] in atmosphere_only_semantic_labels
+            and r["mutation"] in ("color", "light")
+            and r["eligible_labels"]
+            for r in real_report
+        )
+        check("VISUAL atmosphere_only semantic category never eligible for color/light",
+              not atmosphere_color_light_violation)
 
         # shape_sensitive Step 4 sub-labels must never be eligible either, even
         # within an otherwise partially-eligible semantic category.
@@ -952,8 +1346,10 @@ if __name__ == "__main__":
         check("VISUAL no shape_sensitive Step 4 label ever appears eligible",
               not shape_violation)
 
-        print("\nSaved: output_mutation_test/image_01_L1_L2_combined.png")
-        print("Saved: output_mutation_test/image_01_L1_L2_difference.png")
+        print("\nSaved: output_mutation_test/image_01_L3_only.png")
+        print("Saved: output_mutation_test/image_01_L3_only_difference.png")
+        print("Saved: output_mutation_test/image_01_L1_L2_L3_combined.png")
+        print("Saved: output_mutation_test/image_01_L1_L2_L3_difference.png")
 
     except FileNotFoundError as e:
         print(f"\n[SKIPPED] Visual integration test -- missing real project file: {e}")
