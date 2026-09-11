@@ -1,7 +1,8 @@
 """
 Heartbreak.exe - Mutation Engine (mutation_engine.py)
 
-L1 -- SEMANTIC COLOR MUTATION ONLY.
+L1 -- SEMANTIC COLOR MUTATION.
+L2 -- DIRECTIONAL LIGHTING MUTATION.
 
 Pipeline position:
 
@@ -29,7 +30,7 @@ ones are skipped, and neither outcome fails the whole mutation unless
 NO Step 4 region matches the semantic label at all.
 
 This module does NOT:
-    - implement L2 (lighting), L3 (atmosphere), or L4 (shape)
+    - implement L3 (atmosphere) or L4 (shape)
     - fetch API data, compute artistic parameters, or build mutation plans
     - use bounding boxes, reconstructed masks, or morphology
     - touch any pixel outside the resolved, safety-filtered union mask
@@ -49,6 +50,9 @@ from PIL import Image
 
 VALID_MUTATION_TYPES = {"color", "light", "atmosphere", "shape"}
 COLOR_ELIGIBLE_SAFETY = {"color_safe", "color+light_safe"}
+# Per the L2 region contract, lighting is eligible for exactly the same
+# Step 4 mutation_safety values as color: color_safe and color+light_safe.
+LIGHT_ELIGIBLE_SAFETY = COLOR_ELIGIBLE_SAFETY
 
 
 class MutationEngineError(ValueError):
@@ -143,6 +147,7 @@ def validate_inputs(image, label_map, region_data, mutation_plan):
         raise MutationEngineError("mutation_plan['mutations'] must be a list")
 
     seen_color_region_ids = set()
+    seen_light_region_ids = set()
 
     for m in mutations:
         if not isinstance(m, dict):
@@ -163,30 +168,46 @@ def validate_inputs(image, label_map, region_data, mutation_plan):
         if not (0.0 <= strength <= 1.0):
             raise MutationEngineError(f"Mutation strength out of [0,1]: {m!r}")
 
-        if mutation_type != "color":
-            # L2/L3/L4 -- out of scope for this engine.
+        if mutation_type not in ("color", "light"):
+            # L3/L4 -- out of scope for this engine.
             continue
 
         parameters = m.get("parameters")
         if not isinstance(parameters, dict):
-            raise MutationEngineError(f"Color mutation missing 'parameters' dict: {m!r}")
+            raise MutationEngineError(
+                f"{mutation_type.capitalize()} mutation missing 'parameters' dict: {m!r}"
+            )
 
-        hue_shift = parameters.get("hue_shift")
-        saturation_scale = parameters.get("saturation_scale")
+        if mutation_type == "color":
+            hue_shift = parameters.get("hue_shift")
+            saturation_scale = parameters.get("saturation_scale")
 
-        if isinstance(hue_shift, bool) or not isinstance(hue_shift, (int, float)):
-            raise MutationEngineError(f"hue_shift must be numeric: {m!r}")
-        if isinstance(saturation_scale, bool) or not isinstance(saturation_scale, (int, float)):
-            raise MutationEngineError(f"saturation_scale must be numeric: {m!r}")
+            if isinstance(hue_shift, bool) or not isinstance(hue_shift, (int, float)):
+                raise MutationEngineError(f"hue_shift must be numeric: {m!r}")
+            if isinstance(saturation_scale, bool) or not isinstance(saturation_scale, (int, float)):
+                raise MutationEngineError(f"saturation_scale must be numeric: {m!r}")
 
-        if region_id in seen_color_region_ids:
-            raise MutationEngineError(f"Duplicate color mutation for region_id {region_id!r}")
-        seen_color_region_ids.add(region_id)
+            if region_id in seen_color_region_ids:
+                raise MutationEngineError(f"Duplicate color mutation for region_id {region_id!r}")
+            seen_color_region_ids.add(region_id)
+
+        else:  # "light"
+            light_angle = parameters.get("light_angle")
+            light_warmth = parameters.get("light_warmth")
+
+            if isinstance(light_angle, bool) or not isinstance(light_angle, (int, float)):
+                raise MutationEngineError(f"light_angle must be numeric: {m!r}")
+            if isinstance(light_warmth, bool) or not isinstance(light_warmth, (int, float)):
+                raise MutationEngineError(f"light_warmth must be numeric: {m!r}")
+
+            if region_id in seen_light_region_ids:
+                raise MutationEngineError(f"Duplicate light mutation for region_id {region_id!r}")
+            seen_light_region_ids.add(region_id)
 
         if region_id not in semantic_index:
             raise MutationEngineError(
-                f"Color mutation refers to semantic label {region_id!r} which has no "
-                f"corresponding Step 4 regions in the region JSON"
+                f"{mutation_type.capitalize()} mutation refers to semantic label {region_id!r} "
+                f"which has no corresponding Step 4 regions in the region JSON"
             )
 
     return semantic_index
@@ -196,12 +217,12 @@ def validate_inputs(image, label_map, region_data, mutation_plan):
 # RESOLUTION: semantic region_id -> eligible / skipped Step 4 labels
 # ============================================================================
 
-def _resolve_color_mutation_labels(region_id, semantic_index):
+def _resolve_mutation_labels(region_id, semantic_index, eligible_safety):
     """
     Resolve a mutation's semantic region_id into the Step 4 integer
-    region_label values that are eligible for color mutation, per each
-    matching Step 4 entry's OWN mutation_safety (the Step 4 JSON is the
-    runtime execution authority, not the knowledge-JSON-level safety
+    region_label values that are eligible for the given mutation, per
+    each matching Step 4 entry's OWN mutation_safety (the Step 4 JSON is
+    the runtime execution authority, not the knowledge-JSON-level safety
     already baked into the plan).
     """
     matching_entries = semantic_index[region_id]
@@ -211,12 +232,25 @@ def _resolve_color_mutation_labels(region_id, semantic_index):
     for entry in matching_entries:
         label = entry["region_label"]
         safety = entry["mutation_safety"]
-        if safety in COLOR_ELIGIBLE_SAFETY:
+        if safety in eligible_safety:
             eligible.append(label)
         else:
             skipped.append({"region_label": label, "reason": f"mutation_safety={safety}"})
 
     return matching_entries, eligible, skipped
+
+
+def _resolve_color_mutation_labels(region_id, semantic_index):
+    """Resolve eligible Step 4 labels for a color mutation. See
+    _resolve_mutation_labels for details."""
+    return _resolve_mutation_labels(region_id, semantic_index, COLOR_ELIGIBLE_SAFETY)
+
+
+def _resolve_light_mutation_labels(region_id, semantic_index):
+    """Resolve eligible Step 4 labels for a light mutation. Same
+    eligibility rule as color, per the L2 region contract. See
+    _resolve_mutation_labels for details."""
+    return _resolve_mutation_labels(region_id, semantic_index, LIGHT_ELIGIBLE_SAFETY)
 
 
 # ============================================================================
@@ -273,6 +307,103 @@ def apply_color_mutation(image, label_map, eligible_labels, hue_shift, saturatio
 
 
 # ============================================================================
+# L2 DIRECTIONAL LIGHTING TRANSFORM
+# ============================================================================
+
+# Conservative caps so the effect stays subtle and pixel-art friendly even
+# at strength=1.0 / light_warmth=+-1.0.
+_MAX_BRIGHTNESS_DELTA = 55.0
+_MAX_WARMTH_DELTA = 40.0
+
+# Warm/cool per-channel direction: positive light_warmth pushes toward a
+# warm cast (more red, a little more green, less blue); negative light_warmth
+# pushes the opposite (cool) direction. Purely an artistic constant.
+_WARMTH_CHANNEL_VECTOR = np.array([1.0, 0.25, -0.85], dtype=np.float64)
+
+
+def _directional_light_factor(shape, light_angle):
+    """
+    Deterministic per-pixel directional illumination factor in [0, 1],
+    purely a function of pixel coordinates and light_angle (no neighbor
+    access, no randomness, no resampling). 0 degrees points along +x
+    (right); angles increase clockwise (toward +y, i.e. downward) to
+    match image/array coordinates. 1.0 = fully facing the light,
+    0.0 = fully turned away from it, varying linearly in between.
+    """
+    h, w = shape
+    ys, xs = np.mgrid[0:h, 0:w]
+    ys = ys.astype(np.float64)
+    xs = xs.astype(np.float64)
+
+    half_w = (w - 1) / 2.0 if w > 1 else 1.0
+    half_h = (h - 1) / 2.0 if h > 1 else 1.0
+    xs_norm = (xs - (w - 1) / 2.0) / half_w
+    ys_norm = (ys - (h - 1) / 2.0) / half_h
+
+    theta = np.deg2rad(light_angle)
+    dx = np.cos(theta)
+    dy = np.sin(theta)
+
+    projection = xs_norm * dx + ys_norm * dy
+    projection = np.clip(projection, -1.0, 1.0)
+    return (projection + 1.0) / 2.0
+
+
+def _directional_lighting_transform(image, light_angle, light_warmth):
+    """
+    Whole-image directional lighting: a spatially varying brightness ramp
+    (direction set by light_angle) combined with a warm/cool color shift
+    (light_warmth) that is strongest on the lit side of the ramp.
+    Deterministic and purely per-pixel (fixed coordinates + fixed
+    direction/warmth inputs); no blur, no interpolation, no resampling,
+    so pixel-art edges stay hard.
+    """
+    light_factor = _directional_light_factor(image.shape[:2], light_angle)  # 0..1
+    signed_factor = (light_factor * 2.0) - 1.0  # -1 (shadow side) .. +1 (lit side)
+
+    brightness_delta = signed_factor * _MAX_BRIGHTNESS_DELTA  # (H, W)
+    warmth_delta = (
+        light_warmth * _MAX_WARMTH_DELTA
+        * light_factor[..., np.newaxis]
+        * _WARMTH_CHANNEL_VECTOR
+    )  # (H, W, 3), warmth only shows up on the lit side
+
+    transformed = (
+        image.astype(np.float64)
+        + brightness_delta[..., np.newaxis]
+        + warmth_delta
+    )
+    return np.clip(np.round(transformed), 0, 255).astype(np.uint8)
+
+
+def apply_light_mutation(image, label_map, eligible_labels, light_angle, light_warmth, strength):
+    """
+    Return (new_image, affected_pixel_count). Mirrors apply_color_mutation:
+    new_image is a copy of `image` with the directional lighting transform
+    blended in, restricted to exactly the pixels where label_map is one of
+    eligible_labels. Every other pixel is byte-identical to the input.
+    """
+    output = image.copy()
+
+    if not eligible_labels:
+        return output, 0
+
+    mask = np.isin(label_map, eligible_labels)
+    affected = int(np.count_nonzero(mask))
+
+    if affected == 0 or strength == 0:
+        return output, affected
+
+    transformed = _directional_lighting_transform(image, light_angle, light_warmth)
+
+    blended = image.astype(np.float64) * (1.0 - strength) + transformed.astype(np.float64) * strength
+    blended = np.clip(np.round(blended), 0, 255).astype(np.uint8)
+
+    output[mask] = blended[mask]
+    return output, affected
+
+
+# ============================================================================
 # ORCHESTRATION
 # ============================================================================
 
@@ -291,32 +422,61 @@ def apply_mutation_plan(image, label_map, region_data, mutation_plan):
     report = []
 
     for m in mutation_plan["mutations"]:
-        if m["mutation"] != "color":
+        mutation_type = m["mutation"]
+        if mutation_type not in ("color", "light"):
+            # L3 (atmosphere) / L4 (shape) -- not implemented by this engine yet.
             continue
 
         region_id = m["region_id"]
         strength = m["strength"]
-        hue_shift = m["parameters"]["hue_shift"]
-        saturation_scale = m["parameters"]["saturation_scale"]
 
-        matching_entries, eligible, skipped = _resolve_color_mutation_labels(
-            region_id, semantic_index
-        )
+        if mutation_type == "color":
+            hue_shift = m["parameters"]["hue_shift"]
+            saturation_scale = m["parameters"]["saturation_scale"]
 
-        output, affected = apply_color_mutation(
-            output, label_map, eligible, hue_shift, saturation_scale, strength
-        )
+            matching_entries, eligible, skipped = _resolve_color_mutation_labels(
+                region_id, semantic_index
+            )
 
-        report.append({
-            "semantic_region_id": region_id,
-            "matching_step4_labels": [e["region_label"] for e in matching_entries],
-            "eligible_labels": eligible,
-            "skipped_labels": skipped,
-            "strength": strength,
-            "hue_shift": hue_shift,
-            "saturation_scale": saturation_scale,
-            "affected_pixel_count": affected,
-        })
+            output, affected = apply_color_mutation(
+                output, label_map, eligible, hue_shift, saturation_scale, strength
+            )
+
+            report.append({
+                "semantic_region_id": region_id,
+                "mutation": "color",
+                "matching_step4_labels": [e["region_label"] for e in matching_entries],
+                "eligible_labels": eligible,
+                "skipped_labels": skipped,
+                "strength": strength,
+                "hue_shift": hue_shift,
+                "saturation_scale": saturation_scale,
+                "affected_pixel_count": affected,
+            })
+
+        else:  # "light"
+            light_angle = m["parameters"]["light_angle"]
+            light_warmth = m["parameters"]["light_warmth"]
+
+            matching_entries, eligible, skipped = _resolve_light_mutation_labels(
+                region_id, semantic_index
+            )
+
+            output, affected = apply_light_mutation(
+                output, label_map, eligible, light_angle, light_warmth, strength
+            )
+
+            report.append({
+                "semantic_region_id": region_id,
+                "mutation": "light",
+                "matching_step4_labels": [e["region_label"] for e in matching_entries],
+                "eligible_labels": eligible,
+                "skipped_labels": skipped,
+                "strength": strength,
+                "light_angle": light_angle,
+                "light_warmth": light_warmth,
+                "affected_pixel_count": affected,
+            })
 
     return output, report
 
@@ -513,6 +673,185 @@ if __name__ == "__main__":
         check("BONUS duplicate region_id color mutation raises MutationEngineError",
               "Duplicate" in str(e))
 
+    # ------------------------------------------------------------------
+    # L2 -- directional lighting tests (same synthetic fixture)
+    # ------------------------------------------------------------------
+    #   1 = "sky"     color_safe          (light-eligible, conservative)
+    #   2 = "roof"    exclude             (never light-eligible)
+    #   3 = "rain"    atmosphere_only     (never light-eligible)
+    #   4 = "windows" color+light_safe    (light-eligible instance)
+    #   5 = "windows" shape_sensitive     (light-ineligible instance)
+
+    light_plan = {"mutations": [
+        {"region_id": "sky", "mutation": "light", "strength": 0.8,
+         "parameters": {"light_angle": 45.0, "light_warmth": 0.6}},
+        {"region_id": "windows", "mutation": "light", "strength": 0.7,
+         "parameters": {"light_angle": 200.0, "light_warmth": -0.5}},
+    ]}
+
+    # L2-TEST1 -- basic light mutation executes
+    out_l2, report_l2 = apply_mutation_plan(image, label_map, region_data, light_plan)
+    check("L2-TEST1 basic light mutation executes", out_l2 is not None and len(report_l2) == 2)
+
+    # L2-TEST2 -- output dimensions/mode correct
+    check("L2-TEST2 light output dimensions match input", out_l2.shape == image.shape)
+    check("L2-TEST2b light output dtype matches input", out_l2.dtype == image.dtype)
+
+    # L2-TEST3 -- determinism
+    out_l2_again, _ = apply_mutation_plan(image, label_map, region_data, light_plan)
+    check("L2-TEST3 determinism (identical light plan -> identical output)",
+          np.array_equal(out_l2, out_l2_again))
+
+    # L2-TEST4 -- zero strength -> byte-identical to input
+    zero_light_plan = {"mutations": [
+        {"region_id": "sky", "mutation": "light", "strength": 0.0,
+         "parameters": {"light_angle": 45.0, "light_warmth": 0.6}},
+    ]}
+    out_zero_light, _ = apply_mutation_plan(image, label_map, region_data, zero_light_plan)
+    check("L2-TEST4 zero-strength light -> output byte-identical to input",
+          np.array_equal(out_zero_light, image))
+
+    # L2-TEST5 -- empty plan already covered by TEST5/TEST5b above (shared code path).
+
+    # L2-TEST6 -- exact pixel isolation: only eligible labels (1=sky, 4=windows) change
+    changed_l2 = np.any(out_l2 != image, axis=2)
+    eligible_union_l2 = np.isin(label_map, [1, 4])
+    check(
+        "L2-TEST6 every changed pixel belongs to an eligible label (1 or 4)",
+        bool(np.all(eligible_union_l2[changed_l2])) if changed_l2.any() else True,
+    )
+    check(
+        "L2-TEST6b every pixel outside eligible labels is byte-identical",
+        np.array_equal(out_l2[~eligible_union_l2], image[~eligible_union_l2]),
+    )
+
+    # L2-TEST7 -- excluded region ("roof") never mutated by light
+    roof_light_plan = {"mutations": [
+        {"region_id": "roof", "mutation": "light", "strength": 1.0,
+         "parameters": {"light_angle": 90.0, "light_warmth": 1.0}},
+    ]}
+    out_roof_light, report_roof_light = apply_mutation_plan(image, label_map, region_data, roof_light_plan)
+    check("L2-TEST7 excluded region pixels unchanged by light", np.array_equal(out_roof_light, image))
+    check("L2-TEST7b excluded region reported with 0 eligible labels (light)",
+          report_roof_light[0]["eligible_labels"] == [] and report_roof_light[0]["affected_pixel_count"] == 0)
+
+    # L2-TEST8 -- atmosphere_only region ("rain") never mutated by light
+    rain_light_plan = {"mutations": [
+        {"region_id": "rain", "mutation": "light", "strength": 1.0,
+         "parameters": {"light_angle": 90.0, "light_warmth": 1.0}},
+    ]}
+    out_rain_light, report_rain_light = apply_mutation_plan(image, label_map, region_data, rain_light_plan)
+    check("L2-TEST8 atmosphere_only region pixels unchanged by light", np.array_equal(out_rain_light, image))
+    check("L2-TEST8b atmosphere_only region reported with 0 eligible labels (light)",
+          report_rain_light[0]["eligible_labels"] == [])
+
+    # L2-TEST9 -- shape_sensitive instance of "windows" (label 5) stays untouched
+    # even though the sibling label 4 (color+light_safe) IS mutated.
+    check(
+        "L2-TEST9 shape_sensitive windows sub-label (5) untouched while label 4 changes",
+        np.array_equal(out_l2[label_map == 5], image[label_map == 5])
+        and not np.array_equal(out_l2[label_map == 4], image[label_map == 4]),
+    )
+
+    # L2-TEST10 -- outside-mask preservation restated at whole-plan level (redundant
+    # with L2-TEST6b, kept for parity with the numbered requirement list).
+    check("L2-TEST10 no changed pixels outside eligible union (whole plan)",
+          bool(np.all(eligible_union_l2[changed_l2])) if changed_l2.any() else True)
+
+    # L2-TEST12 -- changing light_angle changes the directional result
+    plan_angle_a = {"mutations": [
+        {"region_id": "sky", "mutation": "light", "strength": 0.9,
+         "parameters": {"light_angle": 0.0, "light_warmth": 0.0}},
+    ]}
+    plan_angle_b = {"mutations": [
+        {"region_id": "sky", "mutation": "light", "strength": 0.9,
+         "parameters": {"light_angle": 180.0, "light_warmth": 0.0}},
+    ]}
+    out_angle_a, _ = apply_mutation_plan(image, label_map, region_data, plan_angle_a)
+    out_angle_b, _ = apply_mutation_plan(image, label_map, region_data, plan_angle_b)
+    check(
+        "L2-TEST12 changing light_angle changes the lighting result",
+        not np.array_equal(out_angle_a[label_map == 1], out_angle_b[label_map == 1]),
+    )
+
+    # L2-TEST13 -- changing light_warmth changes the lighting character
+    plan_warm_a = {"mutations": [
+        {"region_id": "sky", "mutation": "light", "strength": 0.9,
+         "parameters": {"light_angle": 45.0, "light_warmth": 1.0}},
+    ]}
+    plan_warm_b = {"mutations": [
+        {"region_id": "sky", "mutation": "light", "strength": 0.9,
+         "parameters": {"light_angle": 45.0, "light_warmth": -1.0}},
+    ]}
+    out_warm_a, _ = apply_mutation_plan(image, label_map, region_data, plan_warm_a)
+    out_warm_b, _ = apply_mutation_plan(image, label_map, region_data, plan_warm_b)
+    check(
+        "L2-TEST13 changing light_warmth changes the lighting character",
+        not np.array_equal(out_warm_a[label_map == 1], out_warm_b[label_map == 1]),
+    )
+
+    # L2-TEST14 -- changing intensity (mutation strength) changes effect magnitude
+    plan_strength_low = {"mutations": [
+        {"region_id": "sky", "mutation": "light", "strength": 0.2,
+         "parameters": {"light_angle": 45.0, "light_warmth": 0.8}},
+    ]}
+    plan_strength_high = {"mutations": [
+        {"region_id": "sky", "mutation": "light", "strength": 0.9,
+         "parameters": {"light_angle": 45.0, "light_warmth": 0.8}},
+    ]}
+    out_strength_low, _ = apply_mutation_plan(image, label_map, region_data, plan_strength_low)
+    out_strength_high, _ = apply_mutation_plan(image, label_map, region_data, plan_strength_high)
+    delta_low = np.abs(out_strength_low[label_map == 1].astype(np.int16) - image[label_map == 1].astype(np.int16)).sum()
+    delta_high = np.abs(out_strength_high[label_map == 1].astype(np.int16) - image[label_map == 1].astype(np.int16)).sum()
+    check(
+        "L2-TEST14 higher intensity/strength produces larger effect magnitude",
+        delta_high > delta_low,
+    )
+
+    # L2-TEST15 -- L1 (color) + L2 (light) execute together without breaking L1
+    combined_plan = {"mutations": [
+        {"region_id": "sky", "mutation": "color", "strength": 0.8,
+         "parameters": {"hue_shift": 90.0, "saturation_scale": 1.3}},
+        {"region_id": "sky", "mutation": "light", "strength": 0.5,
+         "parameters": {"light_angle": 45.0, "light_warmth": 0.4}},
+        {"region_id": "windows", "mutation": "color", "strength": 0.6,
+         "parameters": {"hue_shift": -45.0, "saturation_scale": 0.6}},
+    ]}
+    out_combined, report_combined = apply_mutation_plan(image, label_map, region_data, combined_plan)
+    check(
+        "L2-TEST15 combined color+light plan executes and reports both mutations",
+        len(report_combined) == 3
+        and {r["mutation"] for r in report_combined} == {"color", "light"},
+    )
+    check(
+        "L2-TEST15b combined plan still isolates changes to eligible labels (1, 4)",
+        np.array_equal(out_combined[label_map != 1][label_map[label_map != 1] != 4],
+                        image[label_map != 1][label_map[label_map != 1] != 4]),
+    )
+
+    # L2-TEST16 -- no randomness/timestamps: re-running the exact same combined
+    # plan on a fresh copy of the fixture gives byte-identical output.
+    image2, label_map2, region_data2 = make_fixture()
+    out_combined2, _ = apply_mutation_plan(image2, label_map2, region_data2, combined_plan)
+    check(
+        "L2-TEST16 identical combined plan on a fresh fixture is byte-identical",
+        np.array_equal(out_combined, out_combined2),
+    )
+
+    # Bonus: duplicate light mutation for the same region_id raises.
+    dup_light_plan = {"mutations": [
+        {"region_id": "sky", "mutation": "light", "strength": 0.5,
+         "parameters": {"light_angle": 10.0, "light_warmth": 0.2}},
+        {"region_id": "sky", "mutation": "light", "strength": 0.3,
+         "parameters": {"light_angle": 20.0, "light_warmth": 0.1}},
+    ]}
+    try:
+        apply_mutation_plan(image, label_map, region_data, dup_light_plan)
+        check("BONUS duplicate region_id light mutation raises MutationEngineError", False)
+    except MutationEngineError as e:
+        check("BONUS duplicate region_id light mutation raises MutationEngineError",
+              "Duplicate" in str(e))
+
     print(f"\nSynthetic fixture tests: {passed} passed, {failed} failed")
 
     # ------------------------------------------------------------------
@@ -548,15 +887,17 @@ if __name__ == "__main__":
         )
 
         os.makedirs("output_mutation_test", exist_ok=True)
-        save_image(real_output, "output_mutation_test/image_01_L1_color.png")
+        save_image(real_output, "output_mutation_test/image_01_L1_L2_combined.png")
 
         diff = np.abs(real_output.astype(np.int16) - real_image.astype(np.int16))
         diff_vis = np.clip(diff.sum(axis=2) * 3, 0, 255).astype(np.uint8)
-        Image.fromarray(diff_vis, mode="L").save("output_mutation_test/image_01_L1_difference.png")
+        Image.fromarray(diff_vis, mode="L").save("output_mutation_test/image_01_L1_L2_difference.png")
 
         print("\n--- Visual integration test (Image 1) ---")
         color_mutations_in_plan = [mm for mm in plan["mutations"] if mm["mutation"] == "color"]
+        light_mutations_in_plan = [mm for mm in plan["mutations"] if mm["mutation"] == "light"]
         print(f"Color mutations in plan: {len(color_mutations_in_plan)}")
+        print(f"Light mutations in plan: {len(light_mutations_in_plan)}")
         for r in real_report:
             print(
                 f"  region_id={r['semantic_region_id']!r} "
@@ -566,17 +907,27 @@ if __name__ == "__main__":
                 f"strength={r['strength']} affected_pixels={r['affected_pixel_count']}"
             )
 
-        sky_report = next((r for r in real_report if r["semantic_region_id"] == "sky_and_clouds"), None)
-        windows_report = next((r for r in real_report if r["semantic_region_id"] == "city_windows"), None)
+        sky_reports = [r for r in real_report if r["semantic_region_id"] == "sky_and_clouds"]
+        sky_color_report = next((r for r in sky_reports if r["mutation"] == "color"), None)
+        sky_light_report = next((r for r in sky_reports if r["mutation"] == "light"), None)
+        windows_reports = [r for r in real_report if r["semantic_region_id"] == "city_windows"]
+        windows_color_report = next((r for r in windows_reports if r["mutation"] == "color"), None)
+        windows_light_report = next((r for r in windows_reports if r["mutation"] == "light"), None)
 
         check("VISUAL output dims match source (1200x547)", real_output.shape[:2] == (547, 1200))
-        check("VISUAL sky_and_clouds mutation present and affected pixels > 0",
-              sky_report is not None and sky_report["affected_pixel_count"] > 0)
-        if windows_report is not None:
-            check("VISUAL city_windows mutation present and affected pixels > 0",
-                  windows_report["affected_pixel_count"] > 0)
+        check("VISUAL sky_and_clouds color mutation present and affected pixels > 0",
+              sky_color_report is not None and sky_color_report["affected_pixel_count"] > 0)
+        check("VISUAL sky_and_clouds light mutation present and affected pixels > 0",
+              sky_light_report is not None and sky_light_report["affected_pixel_count"] > 0)
+        if windows_color_report is not None:
+            check("VISUAL city_windows color mutation present and affected pixels > 0",
+                  windows_color_report["affected_pixel_count"] > 0)
+        if windows_light_report is not None:
+            check("VISUAL city_windows light mutation present and affected pixels > 0",
+                  windows_light_report["affected_pixel_count"] > 0)
 
-        # Confirm exclude/atmosphere_only regions never appear as eligible anywhere.
+        # Confirm exclude/atmosphere_only regions never appear as eligible anywhere,
+        # for either color or light mutations.
         excluded_semantic_labels = {
             e["semantic_label"] for e in real_region_data
             if e["mutation_safety"] in ("exclude", "atmosphere_only")
@@ -588,8 +939,21 @@ if __name__ == "__main__":
         check("VISUAL no exclude/atmosphere_only semantic category has eligible labels",
               not exclude_violation)
 
-        print("\nSaved: output_mutation_test/image_01_L1_color.png")
-        print("Saved: output_mutation_test/image_01_L1_difference.png")
+        # shape_sensitive Step 4 sub-labels must never be eligible either, even
+        # within an otherwise partially-eligible semantic category.
+        shape_sensitive_labels = {
+            e["region_label"] for e in real_region_data if e["mutation_safety"] == "shape_sensitive"
+        }
+        shape_violation = any(
+            lbl in shape_sensitive_labels
+            for r in real_report
+            for lbl in r["eligible_labels"]
+        )
+        check("VISUAL no shape_sensitive Step 4 label ever appears eligible",
+              not shape_violation)
+
+        print("\nSaved: output_mutation_test/image_01_L1_L2_combined.png")
+        print("Saved: output_mutation_test/image_01_L1_L2_difference.png")
 
     except FileNotFoundError as e:
         print(f"\n[SKIPPED] Visual integration test -- missing real project file: {e}")
