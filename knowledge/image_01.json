@@ -7,115 +7,219 @@
     {
       "image_id": "image_01",
       "dimensions": {
-        "width": 736,
-        "height": 414
+        "width": 1200,
+        "height": 547
       },
       "style_family": "cinematic_moody_pixel",
       "semantic_regions": [
         {
           "region_name": "sky_and_clouds",
-          "bbox": [0.16, 0.11, 1.0, 0.55],
+          "bbox": [
+            0.16,
+            0.11,
+            1.0,
+            0.55
+          ],
           "layer_order": 0,
           "visual_importance": 0.8,
           "mutation_priority": 0.8,
           "confidence": 0.95,
           "mutation_safety": "color+light_safe",
-          "safe_mutations": ["hue shift", "cloud contrast adjustment", "brightness changes"],
-          "unsafe_mutations": ["removing clouds", "adding sharp geometric structures"]
+          "safe_mutations": [
+            "hue shift",
+            "cloud contrast adjustment",
+            "brightness changes"
+          ],
+          "unsafe_mutations": [
+            "removing clouds",
+            "adding sharp geometric structures"
+          ]
         },
         {
           "region_name": "distant_cityscape",
-          "bbox": [0.16, 0.40, 1.0, 0.70],
+          "bbox": [
+            0.16,
+            0.4,
+            1.0,
+            0.7
+          ],
           "layer_order": 1,
           "visual_importance": 0.85,
           "mutation_priority": 0.5,
           "confidence": 0.95,
           "mutation_safety": "shape_sensitive",
-          "safe_mutations": ["window light state changes", "fog tinting at the base"],
-          "unsafe_mutations": ["structural deformation", "perspective changes"]
+          "safe_mutations": [
+            "window light state changes",
+            "fog tinting at the base"
+          ],
+          "unsafe_mutations": [
+            "structural deformation",
+            "perspective changes"
+          ]
         },
         {
           "region_name": "midground_trees",
-          "bbox": [0.16, 0.55, 1.0, 0.75],
+          "bbox": [
+            0.16,
+            0.55,
+            1.0,
+            0.75
+          ],
           "layer_order": 2,
           "visual_importance": 0.7,
           "mutation_priority": 0.6,
           "confidence": 0.9,
           "mutation_safety": "color_safe",
-          "safe_mutations": ["shadow tinting", "silhouette softening"],
-          "unsafe_mutations": ["brightening to remove silhouette effect"]
+          "safe_mutations": [
+            "shadow tinting",
+            "silhouette softening"
+          ],
+          "unsafe_mutations": [
+            "brightening to remove silhouette effect"
+          ]
         },
         {
           "region_name": "highway_traffic",
-          "bbox": [0.38, 0.75, 0.65, 0.88],
+          "bbox": [
+            0.38,
+            0.75,
+            0.65,
+            0.88
+          ],
           "layer_order": 3,
           "visual_importance": 0.8,
           "mutation_priority": 0.7,
           "confidence": 0.9,
           "mutation_safety": "color+light_safe",
-          "safe_mutations": ["taillight color shift", "light trail intensity", "fog density"],
-          "unsafe_mutations": ["breaking the road perspective", "removing traffic flow"]
+          "safe_mutations": [
+            "taillight color shift",
+            "light trail intensity",
+            "fog density"
+          ],
+          "unsafe_mutations": [
+            "breaking the road perspective",
+            "removing traffic flow"
+          ]
         },
         {
           "region_name": "overhang_roof",
-          "bbox": [0.0, 0.11, 1.0, 0.24],
+          "bbox": [
+            0.0,
+            0.11,
+            1.0,
+            0.24
+          ],
           "layer_order": 5,
           "visual_importance": 0.75,
           "mutation_priority": 0.1,
           "confidence": 0.95,
           "mutation_safety": "exclude",
-          "safe_mutations": ["none"],
-          "unsafe_mutations": ["translation", "lighting addition", "deletion"]
+          "safe_mutations": [
+            "none"
+          ],
+          "unsafe_mutations": [
+            "translation",
+            "lighting addition",
+            "deletion"
+          ]
         },
         {
           "region_name": "bus_shelter_left",
-          "bbox": [0.0, 0.11, 0.16, 0.91],
+          "bbox": [
+            0.0,
+            0.11,
+            0.16,
+            0.91
+          ],
           "layer_order": 4,
           "visual_importance": 0.85,
           "mutation_priority": 0.2,
           "confidence": 0.95,
           "mutation_safety": "shape_sensitive",
-          "safe_mutations": ["neon sign color changes", "screen content tinting"],
-          "unsafe_mutations": ["perspective distortion", "removal"]
+          "safe_mutations": [
+            "neon sign color changes",
+            "screen content tinting"
+          ],
+          "unsafe_mutations": [
+            "perspective distortion",
+            "removal"
+          ]
         },
         {
           "region_name": "horizontal_railing",
-          "bbox": [0.16, 0.74, 1.0, 0.88],
+          "bbox": [
+            0.16,
+            0.74,
+            1.0,
+            0.88
+          ],
           "layer_order": 5,
           "visual_importance": 0.8,
           "mutation_priority": 0.2,
           "confidence": 0.95,
           "mutation_safety": "shape_sensitive",
-          "safe_mutations": ["reflection intensity", "minor rim light tinting"],
-          "unsafe_mutations": ["breaking horizontal line", "deletion"]
+          "safe_mutations": [
+            "reflection intensity",
+            "minor rim light tinting"
+          ],
+          "unsafe_mutations": [
+            "breaking horizontal line",
+            "deletion"
+          ]
         },
         {
           "region_name": "foreground_foliage",
-          "bbox": [0.0, 0.75, 0.35, 0.91],
+          "bbox": [
+            0.0,
+            0.75,
+            0.35,
+            0.91
+          ],
           "layer_order": 6,
           "visual_importance": 0.85,
           "mutation_priority": 0.4,
           "confidence": 0.95,
           "mutation_safety": "shape_sensitive",
-          "safe_mutations": ["neon reflection tinting", "leaf silhouette tweaks"],
-          "unsafe_mutations": ["removing neon lighting cast", "blurring pixel edges"]
+          "safe_mutations": [
+            "neon reflection tinting",
+            "leaf silhouette tweaks"
+          ],
+          "unsafe_mutations": [
+            "removing neon lighting cast",
+            "blurring pixel edges"
+          ]
         },
         {
           "region_name": "character_silhouette",
-          "bbox": [0.01, 0.50, 0.10, 0.70],
+          "bbox": [
+            0.01,
+            0.5,
+            0.1,
+            0.7
+          ],
           "layer_order": 5,
           "visual_importance": 0.9,
           "mutation_priority": 0.2,
           "confidence": 0.85,
           "mutation_safety": "shape_sensitive",
-          "safe_mutations": ["rim lighting color change"],
-          "unsafe_mutations": ["breaking silhouette", "drastic pose changes"]
+          "safe_mutations": [
+            "rim lighting color change"
+          ],
+          "unsafe_mutations": [
+            "breaking silhouette",
+            "drastic pose changes"
+          ]
         }
       ],
       "pattern_regions": [
         {
           "pattern_name": "rain_streaks",
-          "approximate_bbox": [0.16, 0.11, 1.0, 0.91],
+          "approximate_bbox": [
+            0.16,
+            0.11,
+            1.0,
+            0.91
+          ],
           "orientation": "vertical",
           "sparsity": "medium",
           "typical_size": "thin 1-pixel vertical lines",
@@ -125,7 +229,12 @@
         },
         {
           "pattern_name": "power_lines",
-          "approximate_bbox": [0.16, 0.25, 1.0, 0.55],
+          "approximate_bbox": [
+            0.16,
+            0.25,
+            1.0,
+            0.55
+          ],
           "orientation": "swooping horizontal/diagonal curves",
           "sparsity": "high",
           "typical_size": "1-pixel thin black/dark lines",
@@ -135,7 +244,12 @@
         },
         {
           "pattern_name": "city_windows",
-          "approximate_bbox": [0.40, 0.45, 0.95, 0.65],
+          "approximate_bbox": [
+            0.4,
+            0.45,
+            0.95,
+            0.65
+          ],
           "orientation": "grid",
           "sparsity": "low",
           "typical_size": "small 1-2 pixel dots/rectangles",
@@ -155,13 +269,13 @@
           {
             "hex": "#3d5c75",
             "role": "cloud highlights and mid-sky",
-            "approximate_area_fraction": 0.20,
+            "approximate_area_fraction": 0.2,
             "confidence": 0.95
           },
           {
             "hex": "#0d131a",
             "role": "foreground silhouettes and structural shadows",
-            "approximate_area_fraction": 0.30,
+            "approximate_area_fraction": 0.3,
             "confidence": 0.95
           },
           {
@@ -189,24 +303,49 @@
         "practical_light_sources": [
           {
             "description": "neon sign/light on left shelter",
-            "bbox": [0.15, 0.33, 0.21, 0.38],
+            "bbox": [
+              0.15,
+              0.33,
+              0.21,
+              0.38
+            ],
             "approximate_color": "#ff3b5c",
             "relative_intensity": "high",
-            "affected_regions": ["bus_shelter_left", "foreground_foliage", "horizontal_railing"]
+            "affected_regions": [
+              "bus_shelter_left",
+              "foreground_foliage",
+              "horizontal_railing"
+            ]
           },
           {
             "description": "highway traffic light trails",
-            "bbox": [0.38, 0.78, 0.65, 0.86],
+            "bbox": [
+              0.38,
+              0.78,
+              0.65,
+              0.86
+            ],
             "approximate_color": "#ff3b5c",
             "relative_intensity": "medium",
-            "affected_regions": ["highway_traffic", "horizontal_railing"]
+            "affected_regions": [
+              "highway_traffic",
+              "horizontal_railing"
+            ]
           },
           {
             "description": "city skyline glow",
-            "bbox": [0.20, 0.60, 0.95, 0.75],
+            "bbox": [
+              0.2,
+              0.6,
+              0.95,
+              0.75
+            ],
             "approximate_color": "#6b4559",
             "relative_intensity": "low",
-            "affected_regions": ["distant_cityscape", "midground_trees"]
+            "affected_regions": [
+              "distant_cityscape",
+              "midground_trees"
+            ]
           }
         ],
         "important_glows": "soft atmospheric scattering at the city base blending into the trees",

@@ -17,31 +17,60 @@ img = np.array(Image.open('image_01_cropped.png').convert('RGB'))
 h, w = img.shape[:2]
 TOTAL_PIXELS = h * w
 
-with open('gemini_analysis.json', 'r') as f:
-    json_data = json.load(f)
+# STANDARDIZED KNOWLEDGE SOURCE (image_01.json). gemini_analysis.json is no
+# longer read anywhere in this pipeline -- it is not the semantic authority.
+with open('knowledge/image_01.json', 'r') as f:
+    dataset = json.load(f)
 
-def hex_to_rgb(hex_str):
-    hex_str = hex_str.lstrip('#')
-    return np.array([int(hex_str[i:i+2], 16) for i in (0, 2, 4)], dtype=np.float32)
+images = dataset.get('images')
+if not images:
+    raise ValueError("image_01.json contains no 'images' entries")
 
+json_data = images[0]  # single-image knowledge file, same assumption region_mapper.py makes
+
+expected_w = json_data.get('dimensions', {}).get('width')
+expected_h = json_data.get('dimensions', {}).get('height')
+if expected_w is not None and expected_h is not None:
+    if (w, h) != (expected_w, expected_h):
+        raise ValueError(
+            f"image_01_cropped.png is {w}x{h} but image_01.json declares "
+            f"{expected_w}x{expected_h} -- refusing to run against a mismatched image "
+            f"(Non-negotiable rule 6: preserve image dimensions)."
+        )
+
+# Standardized regions carry no per-region dominant_color/secondary_colors, so
+# semantic assignment can no longer be color-driven (see Section 4 below).
+# `bbox` normalized coords are converted to absolute pixel coords once, up front.
 targets = []
 for sr in json_data.get('semantic_regions', []):
-    colors = [hex_to_rgb(sr['dominant_color'])]
-    for sc in sr.get('secondary_colors', []):
-        colors.append(hex_to_rgb(sc))
+    bx, by, bxx, byy = sr['bbox']
     targets.append({
-        'id': sr['id'], 'label': sr['label'], 'bbox': sr['approx_bbox'],
-        'colors': colors, 'type': 'semantic', 'safety': sr['mutation_safety']
+        'label': sr['region_name'],
+        'bbox_abs': [bx * w, by * h, bxx * w, byy * h],
+        'type': 'semantic',
+        'safety': sr['mutation_safety'],
+        'confidence': sr.get('confidence', 0.85),
+        'visual_importance': sr.get('visual_importance', 0.5),
+        'mutation_priority': sr.get('mutation_priority', 0.5),
     })
 
 # Pre-calculate absolute bounding boxes for Pattern Overlap checks
 pattern_bboxes = {}
+pattern_confidence = {}
+pattern_safety = {}
 for pr in json_data.get('pattern_regions', []):
-    bx, by, bxx, byy = pr['approx_bbox']
-    pattern_bboxes[pr['label']] = [bx*w, by*h, bxx*w, byy*h]
+    bx, by, bxx, byy = pr['approximate_bbox']
+    pattern_bboxes[pr['pattern_name']] = [bx * w, by * h, bxx * w, byy * h]
+    pattern_confidence[pr['pattern_name']] = pr.get('confidence', 0.85)
+    pattern_safety[pr['pattern_name']] = pr['mutation_safety']
     targets.append({
-        'id': pr['id'] + 100, 'label': pr['label'], 'bbox': pr['approx_bbox'],
-        'colors': [], 'type': 'pattern', 'safety': pr['mutation_safety']
+        'label': pr['pattern_name'],
+        'bbox_abs': [bx * w, by * h, bxx * w, byy * h],
+        'type': 'pattern',
+        'safety': pr['mutation_safety'],
+        'confidence': pr.get('confidence', 0.85),
+        'visual_importance': 0.5,
+        'mutation_priority': 0.5,
     })
 
 # ==========================================
@@ -87,6 +116,13 @@ for k in range(K):
 # ==========================================
 # 4. HIGH-PRECISION SEMANTIC ASSIGNMENT
 # ==========================================
+
+# A component must have at least this fraction of its own area contained
+# within a knowledge region's bbox to be claimed by that region. This is
+# what turns bbox from a "weak penalty" into a real spatial constraint.
+MIN_SEMANTIC_OVERLAP = 0.5
+
+
 def get_intersection_ratio(comp_rect, bbox):
     cx, cy, cw, ch = comp_rect
     px, py, pxx, pyy = bbox
@@ -104,55 +140,77 @@ def get_semantic_assignment(comp):
     mean_lum = np.mean(mean_color)
     
     # 1. STRICT PATTERN FILTERS
-    
+    #
+    # Safety and confidence for each pattern are pulled live from
+    # pattern_safety/pattern_confidence (sourced from image_01.json) rather
+    # than hardcoded, so this never silently reproduces gemini_analysis.json's
+    # stale judgment (e.g. gemini said power_lines was shape_sensitive;
+    # image_01.json says exclude -- image_01.json wins).
+
     # Rain Streaks (Vertical, sparse, extremely small)
     intersect_rain = get_intersection_ratio(comp_rect, pattern_bboxes.get('rain_streaks', [0,0,w,h]))
-    if intersect_rain > 0.5:
+    if intersect_rain > 0.5 and 'rain_streaks' in pattern_safety:
         if cw < 15 and ch > 10 and (cw / max(1, ch)) < 0.4 and area < 500 and mean_lum > 80:
-            return 'rain_streaks', 'atmosphere_only', True
-            
+            return 'rain_streaks', pattern_safety['rain_streaks'], True, pattern_confidence['rain_streaks']
+
     # Power Lines (Horizontal/diagonal, thin thickness)
     intersect_wire = get_intersection_ratio(comp_rect, pattern_bboxes.get('power_lines', [0,0,w,h]))
-    if intersect_wire > 0.3:
+    if intersect_wire > 0.3 and 'power_lines' in pattern_safety:
         length = max(cw, ch)
         thickness = area / max(1, length) # Calculated exact thickness
         aspect = cw / max(1, ch)
         if length > 30 and thickness < 8 and (aspect > 3.0 or aspect < 0.3) and mean_lum < 120 and area < 4000:
-            return 'power_lines', 'shape_sensitive', True
-            
+            return 'power_lines', pattern_safety['power_lines'], True, pattern_confidence['power_lines']
+
     # City Windows (Small, compact, bright)
     intersect_window = get_intersection_ratio(comp_rect, pattern_bboxes.get('city_windows', [0,0,w,h]))
-    if intersect_window > 0.8:
+    if intersect_window > 0.8 and 'city_windows' in pattern_safety:
         if area < 150 and cw < 25 and ch < 25 and mean_lum > 140:
-            return 'city_windows', 'color+light_safe', True
+            return 'city_windows', pattern_safety['city_windows'], True, pattern_confidence['city_windows']
             
-    # 2. SEMANTIC FALLBACK
-    best_target, best_score = None, float('inf')
+    # 2. BBOX-PRIORITY SEMANTIC ASSIGNMENT
+    #
+    # image_01.json carries no per-region dominant_color/secondary_colors, and
+    # the visually-similar dark foreground regions (overhang_roof,
+    # bus_shelter_left, horizontal_railing, foreground_foliage,
+    # character_silhouette) cannot be told apart by color regardless. Spatial
+    # evidence -- how much of this component actually falls inside a given
+    # knowledge region's bbox -- is now the sole assignment criterion.
+    #
+    # `targets` preserves image_01.json's semantic_regions list order, so
+    # ties (equal overlap ratio) deterministically resolve to whichever
+    # region appears first in the knowledge file.
+    best_target, best_overlap, best_area = None, 0.0, None
     for t in targets:
-        if t['type'] == 'pattern': 
+        if t['type'] == 'pattern':
             continue
-            
-        bx, by, bxx, byy = t['bbox']
-        px, py, pxx, pyy = bx*w, by*h, bxx*w, byy*h
-        
-        # Determine if component centroid is inside the target bbox with slight padding
-        is_inside = (px - 20 <= cx <= pxx + 20) and (py - 20 <= cy <= pyy + 20)
-        
-        min_color_dist = min([np.linalg.norm(mean_color - tc) for tc in t['colors']])
-        
-        # Heavy penalty if outside bounding box to prevent overlapping regions stealing pixels
-        penalty = 0 if is_inside else 500
-        score = min_color_dist + penalty
-        
-        if score < best_score:
-            best_score = score
+
+        overlap_ratio = get_intersection_ratio(comp_rect, t['bbox_abs'])
+        t_area = (t['bbox_abs'][2] - t['bbox_abs'][0]) * (t['bbox_abs'][3] - t['bbox_abs'][1])
+        # On a tie (e.g. a component fully inside a smaller region that is
+        # itself nested inside a larger region, such as character_silhouette
+        # inside bus_shelter_left), prefer the smaller/more specific region
+        # instead of silently keeping whichever appeared first in the list.
+        if overlap_ratio > best_overlap or (overlap_ratio == best_overlap and best_area is not None and t_area < best_area):
+            best_overlap = overlap_ratio
             best_target = t
-            
-    return best_target['label'], best_target['safety'], False
+            best_area = t_area
+
+    if best_target is not None and best_overlap >= MIN_SEMANTIC_OVERLAP:
+        return best_target['label'], best_target['safety'], False, best_target['confidence']
+
+    # No knowledge bbox contains enough of this component to justify a claim.
+    # Per spec: do not force it into a foreground (or any) semantic region.
+    return None, None, False, None
 
 for comp in raw_components:
-    lbl, safety, is_pattern = get_semantic_assignment(comp)
-    comp['sem_label'], comp['sem_safety'], comp['is_pattern'] = lbl, safety, is_pattern
+    lbl, safety, is_pattern, confidence = get_semantic_assignment(comp)
+    comp['sem_label'], comp['sem_safety'], comp['is_pattern'], comp['sem_confidence'] = lbl, safety, is_pattern, confidence
+
+# Components with no sufficiently-overlapping knowledge bbox were returned as
+# (None, None, False) above -- drop them now rather than forcing them into a
+# semantic region or letting a `None` label leak into grouping/output.
+raw_components = [c for c in raw_components if c['sem_label'] is not None]
 
 
 # ==========================================
@@ -205,10 +263,20 @@ overlay = img.copy()
 
 rng = np.random.default_rng(42)
 
+# Visualization colors, one per label in the standardized image_01.json taxonomy.
 sem_colors = {
-    'sky_and_clouds': [100, 150, 250], 'city_skyline': [150, 150, 150], 'midground_foliage': [50, 200, 50],
-    'road_and_traffic': [250, 50, 50], 'foreground_structure': [50, 50, 100], 'rain_streaks': [200, 255, 255],
-    'city_windows': [255, 255, 100], 'power_lines': [200, 100, 255]
+    'sky_and_clouds': [100, 150, 250],
+    'distant_cityscape': [150, 150, 150],
+    'midground_trees': [50, 200, 50],
+    'highway_traffic': [250, 50, 50],
+    'overhang_roof': [90, 60, 30],
+    'bus_shelter_left': [50, 50, 100],
+    'horizontal_railing': [180, 120, 60],
+    'foreground_foliage': [30, 120, 30],
+    'character_silhouette': [200, 200, 0],
+    'rain_streaks': [200, 255, 255],
+    'city_windows': [255, 255, 100],
+    'power_lines': [200, 100, 255],
 }
 
 report_data = []
@@ -242,17 +310,19 @@ for root, members in groups.items():
         'bbox': [round(xs.min()/w, 4), round(ys.min()/h, 4), round(xs.max()/w, 4), round(ys.max()/h, 4)],
         'centroid': [round(np.mean(xs)/w, 4), round(np.mean(ys)/h, 4)],
         'dominant_colors': [f"#{int(comp_dict[members[0]]['mean_rgb'][0]):02x}{int(comp_dict[members[0]]['mean_rgb'][1]):02x}{int(comp_dict[members[0]]['mean_rgb'][2]):02x}"],
-        'confidence': 0.85,
+        'confidence': comp_dict[members[0]]['sem_confidence'],
         'mutation_safety': comp_dict[members[0]]['sem_safety'],
     })
     region_counter += 1
 
-Image.fromarray(merged_map).save(OUT / 'image_01_merged_regions.png')
-Image.fromarray(sem_map).save(OUT / 'image_01_semantic_regions.png')
-Image.fromarray(overlay).save(OUT / 'image_01_region_overlay.png')
+image_id = json_data.get('image_id', 'image_01')
 
-with open(OUT / 'image_01_regions.json', 'w') as f:
+Image.fromarray(merged_map).save(OUT / f'{image_id}_merged_regions.png')
+Image.fromarray(sem_map).save(OUT / f'{image_id}_semantic_regions.png')
+Image.fromarray(overlay).save(OUT / f'{image_id}_region_overlay.png')
+
+with open(OUT / f'{image_id}_regions.json', 'w') as f:
     json.dump(report_data, f, indent=2)
 
-pd.DataFrame(report_data).to_csv(OUT / 'image_01_regions.csv', index=False)
+pd.DataFrame(report_data).to_csv(OUT / f'{image_id}_regions.csv', index=False)
 print(f"Step 4 Fix Complete. Files saved to {OUT}/")
