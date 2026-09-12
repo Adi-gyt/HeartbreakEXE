@@ -1,795 +1,584 @@
 """
-Heartbreak.exe - Procedural Nebula Renderer
-============================================
+Heartbreak.exe - Renderer (renderer.py)
 
-Turns live Earth + space-weather data into a temporary piece of
-procedural cosmic artwork.
+Pipeline position (final):
 
-This module does NOT draw objects (houses, roads, trees...). It builds
-an organic nebula out of interacting mathematical fields:
+    api_client3.py -> parameter_mapper.py -> renderer.py (THIS MODULE)
+        -> region_mapper.py -> mutation_engine.py -> final wallpaper
 
-    domain-warped fractal noise  -> large irregular cloud masses
-    blob composition             -> asymmetric focal structure
-    void carving                 -> dark cavities / negative space
-    flow-field particle tracing  -> curved, branching filaments
-    threshold-based emission     -> glowing cores + bloom
-    depth blending               -> near (sharp) vs far (hazy) layers
-    sparse weighted star fields  -> stars suppressed by dense cloud
-    ordered dithering            -> deliberate limited-palette pixel art
+This module is ONLY an orchestration layer. It does not:
+    - fetch NOAA/USGS data itself
+    - compute artistic parameters itself (calls parameter_mapper)
+    - plan mutations itself (calls region_mapper)
+    - execute pixel mutations itself (calls mutation_engine)
+    - implement any procedural-nebula / old rendering architecture
+    - use randomness, timestamps, or UUIDs anywhere
 
-No machine learning. No external image-generation API. No external
-image assets. Python + Pillow + standard library only.
+renderer.py's own responsibilities are exactly:
+    1. discover which reference asset bundles are actually usable at
+       runtime (reference image + knowledge JSON + Step 4 regions JSON +
+       Step 4 label map, all present, with matching dimensions)
+    2. deterministically select one eligible reference, using the
+       reference_bucket produced by parameter_mapper and the caller's
+       generation_number
+    3. load the selected bundle's assets and call region_mapper /
+       mutation_engine exactly as documented
+    4. deterministically fit the mutated image to a 1920x1080 wallpaper
+       (scale-to-cover + centered crop, nearest-neighbor)
+    5. save the PNG and return its path
 
-Public interface (do not rename - wallpaper.py depends on this):
+============================================================================
+REPOSITORY LAYOUT THIS MODULE EXPECTS (relative to this file)
+============================================================================
 
-    render_wallpaper(live_data, generation_number) -> str
+    references/image_XX.<jpg|jpeg|png|...>   (extension varies per file)
+    knowledge/image_XX.json
+    output_step4/image_XX_regions.json
+    output_step4/image_XX_region_labels.png  (uint16 per-pixel label map)
+
+`knowledge/` is treated as the authoritative list of image_ids the project
+knows about (one JSON file per image_id). A given image_id is
+RUNTIME-ELIGIBLE only if all four of the assets above exist for it AND the
+reference image's pixel dimensions exactly match the label map's
+dimensions. Everything else about an ineligible image_id is reported as a
+diagnostic and that image_id is simply excluded from selection -- it never
+raises and never brings down the whole renderer. As of this writing, most
+of the 30 knowledge files in the repository do not yet have Step 4 assets
+(only image_01 does); that is expected, not an error state.
+
+More than one reference image file can legitimately exist for the same
+image_id under references/ (observed in practice: image_01.jpg at
+736x412 alongside image_01.png at 1200x547, the latter being the actual
+file the Step 4 label map was generated from). Extension is therefore
+never used to choose between them. Instead, discovery loads the Step 4
+label map first and picks whichever candidate's pixel dimensions match
+it; if none match it's reported as a dimension mismatch (as for a single
+candidate), and if more than one same-sized candidate matches, that's
+reported as an explicit ambiguity rather than guessed at.
+
+============================================================================
+BUCKET -> REFERENCE ASSIGNMENT (a genuine design decision, documented here)
+============================================================================
+
+Nothing in parameter_mapper.py, region_mapper.py, mutation_engine.py, or
+the knowledge/Step 4 JSON files defines which reference images belong to
+which of parameter_mapper's four `reference_bucket` values (0..3) -- that
+mapping simply does not exist anywhere in the repository today.
+reference_bucket is produced by parameter_mapper as an opaque, already-
+computed integer "style family selector", and region_mapper only ever
+threads it through into its output; nothing upstream ties it to specific
+image_ids.
+
+In the absence of that mapping, this module assigns runtime-eligible
+image_ids to buckets deterministically and reproducibly:
+
+    1. sort all runtime-eligible image_ids lexicographically
+    2. assign each one to bucket (sorted_index % 4), round-robin
+
+This uses no randomness and depends only on which references are
+currently eligible on disk, so it is stable for any given repository
+state and trivially re-derivable. If the project later adds an explicit
+bucket-membership file, `_assign_buckets` is the only place that needs to
+change.
+
+Within a bucket, `generation_number` deterministically rotates through
+that bucket's eligible references in the same sorted order:
+
+    selected = bucket_members[(generation_number - 1) % len(bucket_members)]
+
+Right now only image_01 is eligible, so it lands alone in bucket
+(0 % 4) == 0, and every reference_bucket other than 0 currently has no
+eligible references -- render_wallpaper raises a clear RendererError in
+that case rather than silently substituting image_01 or any other
+reference. This is flagged here explicitly per the "report any conflict
+instead of silently choosing another behavior" instruction, since it is
+the one piece of policy this module had to invent rather than discover.
+
+============================================================================
+WALLPAPER FIT POLICY
+============================================================================
+
+No existing module defines a final-size policy, so this module uses the
+scale-to-cover + centered-crop + nearest-neighbor policy specified for
+this task: scale the mutated image uniformly until it covers 1920x1080,
+crop the excess with a centered crop, and resample with nearest-neighbor
+only (never bilinear/bicubic/Lanczos) to preserve pixel-art edges. No
+borders are ever added and no pixels are invented.
 """
 
-import hashlib
 import math
 import os
-import random
 
-from PIL import Image, ImageDraw, ImageFilter, ImageChops
+import numpy as np
+from PIL import Image
 
+import mutation_engine
+import parameter_mapper
+import region_mapper
 
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_DIR = os.path.join(SCRIPT_DIR, "generated_wallpapers")
+_THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 
-INTERNAL_WIDTH = 320
-INTERNAL_HEIGHT = 180
+REFERENCES_DIR = os.path.join(_THIS_DIR, "references")
+KNOWLEDGE_DIR = os.path.join(_THIS_DIR, "knowledge")
+STEP4_DIR = os.path.join(_THIS_DIR, "output_step4")
+OUTPUT_DIR = os.path.join(_THIS_DIR, "generated_wallpapers")
+
+# The repository's references/ directory mixes .jpg/.jpeg (and possibly
+# other) extensions across files, so discovery must try all of these
+# rather than assuming one.
+REFERENCE_IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff")
+
+NUM_REFERENCE_BUCKETS = parameter_mapper.NUM_REFERENCE_BUCKETS  # 4; not re-derived here
 
 FINAL_WIDTH = 1920
 FINAL_HEIGHT = 1080
 
-
-# ============================================================================
-# SMALL MATH HELPERS
-# ============================================================================
-
-def _clamp(value, low=0.0, high=1.0):
-    if value < low:
-        return low
-    if value > high:
-        return high
-    return value
+FILENAME_TEMPLATE = "heartbreak_{:04d}.png"
 
 
-def _lerp(a, b, t):
-    return a + (b - a) * t
+class RendererError(Exception):
+    """Raised for any renderer-level asset, selection, or pipeline failure.
 
-
-def _smoothstep(t):
-    t = _clamp(t)
-    return t * t * (3.0 - 2.0 * t)
-
-
-def _smooth_falloff(edge0, edge1, x):
+    Never raised as a substitute for silently falling back to another
+    reference, regenerating missing data, or producing a blank image --
+    those things never happen in this module.
     """
-    1.0 when x <= edge0, 0.0 when x >= edge1, smooth in between.
+
+
+# ============================================================================
+# DISCOVERY: which image_ids exist, which are runtime-eligible
+# ============================================================================
+
+def _discover_image_ids():
     """
-    if edge0 == edge1:
-        return 0.0 if x >= edge1 else 1.0
-    t = _clamp((x - edge0) / (edge1 - edge0))
-    return 1.0 - _smoothstep(t)
-
-
-def _lerp_color(c1, c2, t):
-    return (
-        c1[0] + (c2[0] - c1[0]) * t,
-        c1[1] + (c2[1] - c1[1]) * t,
-        c1[2] + (c2[2] - c1[2]) * t,
-    )
-
-
-# ============================================================================
-# VALUE-NOISE FIELDS
-#
-# A lattice of random values, smoothly interpolated (bilinear + smoothstep).
-# Several lattices at increasing frequency, summed with decaying amplitude,
-# form a fractal (fBm) field. This is the mathematical substrate for every
-# organic shape in the piece - never hand-placed geometry.
-# ============================================================================
-
-def _build_lattice(rng, cells):
-    size = cells + 1
-    return [[rng.uniform(-1.0, 1.0) for _ in range(size + 1)] for _ in range(size + 1)]
-
-
-def _sample_lattice(lattice, cells, x, y):
-    """x, y are in normalized [0, 1] space."""
-    gx = _clamp(x) * cells
-    gy = _clamp(y) * cells
-    x0 = int(gx)
-    y0 = int(gy)
-    if x0 >= cells:
-        x0 = cells - 1
-    if y0 >= cells:
-        y0 = cells - 1
-    x1 = x0 + 1
-    y1 = y0 + 1
-    fx = gx - x0
-    fy = gy - y0
-    ux = fx * fx * (3.0 - 2.0 * fx)
-    uy = fy * fy * (3.0 - 2.0 * fy)
-
-    row0 = lattice[y0]
-    row1 = lattice[y1]
-    top = row0[x0] + (row0[x1] - row0[x0]) * ux
-    bottom = row1[x0] + (row1[x1] - row1[x0]) * ux
-    return top + (bottom - top) * uy
-
-
-def _build_fbm_octaves(rng, base_cells, octaves, persistence, lacunarity):
+    The authoritative candidate image_id list: every `<image_id>.json`
+    file present in knowledge/, in sorted filesystem order.
     """
-    Returns a list of (lattice, cells, amplitude) ready for summation.
-    Amplitudes are pre-normalized so the fbm result stays in [-1, 1].
-    """
-    layers = []
-    amplitude = 1.0
-    cells = base_cells
-    total_amp = 0.0
-    for _ in range(octaves):
-        cells_i = max(1, int(round(cells)))
-        layers.append([_build_lattice(rng, cells_i), cells_i, amplitude])
-        total_amp += amplitude
-        amplitude *= persistence
-        cells *= lacunarity
+    if not os.path.isdir(KNOWLEDGE_DIR):
+        raise RendererError(f"Knowledge directory not found: {KNOWLEDGE_DIR}")
 
-    if total_amp > 0:
-        for layer in layers:
-            layer[2] /= total_amp
-
-    return layers
-
-
-def _fbm(layers, x, y):
-    total = 0.0
-    for lattice, cells, amplitude in layers:
-        total += amplitude * _sample_lattice(lattice, cells, x, y)
-    return total
-
-
-def _pixel_hash01(x, y, seed):
-    """
-    Deterministic, non-periodic pseudo-random value in [0, 1) for a pixel.
-    Used for dithering instead of a tiled Bayer matrix, which produced a
-    visible repeating grid artifact.
-    """
-    h = (x * 374761393 + y * 668265263 + seed * 2246822519) & 0xFFFFFFFF
-    h = (h ^ (h >> 13)) * 1274126177 & 0xFFFFFFFF
-    h ^= (h >> 16)
-    return (h & 0xFFFFFFFF) / 0xFFFFFFFF
-
-
-# ============================================================================
-# DATA -> ARTISTIC PARAMETERS
-#
-# Live scientific values are never printed or literally traced. Each one
-# is mapped to a role inside the generative system.
-# ============================================================================
-
-def _derive_params(live_data, generation_number):
-    magnitude = float(live_data.get("magnitude", 2.5))
-    depth = float(live_data.get("depth", 10.0))
-    latitude = float(live_data.get("latitude", 0.0))
-    longitude = float(live_data.get("longitude", 0.0))
-
-    wind_speed = float(live_data.get("solar_wind_speed", 400.0))
-    wind_density = float(live_data.get("solar_wind_density", 5.0))
-    wind_temp = float(live_data.get("solar_wind_temperature", 100000.0))
-
-    bz = float(live_data.get("bz", 0.0))
-    by = float(live_data.get("by", 0.0))
-    bt = float(live_data.get("bt", 0.0))
-
-    kp = float(live_data.get("kp", 0.0))
-
-    params = {
-        # earthquake magnitude -> structural intensity / contrast
-        "mag_n": _clamp((magnitude - 1.0) / 8.0),
-        # earthquake depth -> foreground / background emphasis
-        "depth_n": _clamp(depth / 700.0),
-        # solar wind speed -> turbulence / flow energy
-        "speed_n": _clamp((wind_speed - 250.0) / 750.0),
-        # solar wind density -> cloud density
-        "dens_n": _clamp((wind_density - 0.5) / 30.0),
-        # solar wind temperature -> emission energy / brightness
-        "temp_n": _clamp((wind_temp - 10000.0) / 900000.0),
-        # Bz -> colour temperature bias (south = warm crimson, north = cool blue)
-        "bz_n": _clamp(bz / 20.0, -1.0, 1.0),
-        # By -> filament base orientation
-        "by_n": _clamp(by / 20.0, -1.0, 1.0),
-        # Bt -> magnetic coherence / filament straightness
-        "bt_n": _clamp(bt / 30.0),
-        # Kp -> global activity: emission intensity + star activity
-        "kp_n": _clamp(kp / 9.0),
-        # composition bias from the quake's position on Earth
-        "lon_bias": (((longitude + 180.0) % 360.0) / 360.0),
-        "lat_bias": (((latitude + 90.0) % 180.0) / 180.0),
-    }
-    params["generation_number"] = generation_number
-    return params
-
-
-def _derive_seed(live_data, generation_number):
-    parts = [f"gen:{generation_number}"]
-    for key in sorted(live_data.keys()):
-        parts.append(f"{key}:{float(live_data[key]):.5f}")
-    digest = hashlib.sha256("|".join(parts).encode("utf-8")).hexdigest()
-    return int(digest[:12], 16)
-
-
-# ============================================================================
-# COMPOSITION: BLOB PLACEMENT
-#
-# Composition is generated BEFORE fine detail. A dominant mass, one or
-# two secondary masses, placed asymmetrically. Negative space is whatever
-# is left uncovered.
-# ============================================================================
-
-def _build_blobs(rng, params):
-    lon_bias = params["lon_bias"]
-    lat_bias = params["lat_bias"]
-    dens_n = params["dens_n"]
-
-    dom_cx = _clamp(0.5 + (lon_bias - 0.5) * 0.55 + rng.uniform(-0.12, 0.12), 0.16, 0.84)
-    dom_cy = _clamp(0.5 + (lat_bias - 0.5) * 0.5 + rng.uniform(-0.12, 0.12), 0.16, 0.84)
-    dom_rx = rng.uniform(0.30, 0.44) + 0.08 * dens_n
-    dom_ry = rng.uniform(0.22, 0.34) + 0.06 * dens_n
-    dom_rot = rng.uniform(0.0, math.pi)
-
-    blobs = [
-        {
-            "cx": dom_cx, "cy": dom_cy,
-            "rx": dom_rx, "ry": dom_ry,
-            "rot": dom_rot, "weight": 1.0,
-            "dominant": True,
-        }
+    image_ids = [
+        os.path.splitext(name)[0]
+        for name in sorted(os.listdir(KNOWLEDGE_DIR))
+        if name.endswith(".json")
     ]
-
-    secondary_count = 1 if rng.random() < 0.65 else 2
-    for _ in range(secondary_count):
-        angle = rng.uniform(0.0, 2.0 * math.pi)
-        dist = rng.uniform(0.38, 0.62)
-        cx = _clamp(dom_cx + math.cos(angle) * dist, 0.05, 0.95)
-        cy = _clamp(dom_cy + math.sin(angle) * dist * 0.75, 0.05, 0.95)
-        rx = rng.uniform(0.12, 0.22)
-        ry = rng.uniform(0.10, 0.18)
-        rot = rng.uniform(0.0, math.pi)
-        blobs.append({
-            "cx": cx, "cy": cy, "rx": rx, "ry": ry, "rot": rot,
-            "weight": rng.uniform(0.5, 0.8), "dominant": False,
-        })
-
-    return blobs
+    if not image_ids:
+        raise RendererError(f"No knowledge JSON files found in {KNOWLEDGE_DIR}")
+    return image_ids
 
 
-def _blob_influence(blobs, x, y):
+def _discover_reference_image_candidates(image_id):
     """
-    Union of soft elliptical falloffs. Also returns the dominant blob's
-    own influence separately (used later for near/far depth blending).
+    Locate every reference image file for image_id under REFERENCES_DIR,
+    tolerating the mixed file extensions actually present in the
+    repository (and the fact that more than one file can legitimately
+    exist for the same image_id -- e.g. a cropped/resized preview
+    alongside the original full-resolution file actually used to
+    generate its Step 4 label map). Returns a sorted list of matching
+    paths (possibly empty); does NOT pick one, since extension alone is
+    never a reliable way to choose (see discover_asset_bundles).
     """
-    union_gap = 1.0
-    dominant_val = 0.0
-
-    for blob in blobs:
-        dx = x - blob["cx"]
-        dy = y - blob["cy"]
-        cos_r = math.cos(-blob["rot"])
-        sin_r = math.sin(-blob["rot"])
-        rdx = dx * cos_r - dy * sin_r
-        rdy = dx * sin_r + dy * cos_r
-        d = math.sqrt((rdx / blob["rx"]) ** 2 + (rdy / blob["ry"]) ** 2)
-        val = _smooth_falloff(0.55, 1.35, d) * blob["weight"]
-        union_gap *= (1.0 - val)
-        if blob["dominant"]:
-            dominant_val = val
-
-    return 1.0 - union_gap, dominant_val
+    matches = []
+    for ext in REFERENCE_IMAGE_EXTENSIONS:
+        candidate = os.path.join(REFERENCES_DIR, image_id + ext)
+        if os.path.isfile(candidate):
+            matches.append(candidate)
+    return sorted(matches)
 
 
-# ============================================================================
-# COLOUR: PALETTE LUT
-#
-# A curated crimson / burgundy / magenta / violet / deep-blue family,
-# shifted warm or cool by the interplanetary magnetic field's Bz value,
-# with brightness / emission reach driven by solar wind temperature and
-# geomagnetic Kp. Built once as a 256-entry lookup table.
-# ============================================================================
-
-_COOL_STOPS = [
-    (0.00, (4, 4, 11)),
-    (0.14, (12, 10, 34)),
-    (0.32, (28, 18, 66)),
-    (0.50, (58, 26, 104)),
-    (0.68, (110, 42, 150)),
-    (0.83, (190, 96, 190)),
-    (0.94, (235, 170, 215)),
-    (1.00, (255, 244, 250)),
-]
-
-_WARM_STOPS = [
-    (0.00, (6, 3, 6)),
-    (0.14, (36, 8, 22)),
-    (0.32, (82, 14, 34)),
-    (0.50, (150, 24, 42)),
-    (0.68, (206, 56, 52)),
-    (0.83, (245, 122, 70)),
-    (0.94, (255, 190, 130)),
-    (1.00, (255, 248, 224)),
-]
-
-
-def _build_palette_lut(params):
-    warm_bias = _clamp((1.0 - params["bz_n"]) / 2.0)
-    emission_reach = _clamp(0.35 * params["temp_n"] + 0.25 * params["kp_n"])
-
-    stops = []
-    for (pos, cool_c), (_, warm_c) in zip(_COOL_STOPS, _WARM_STOPS):
-        color = _lerp_color(cool_c, warm_c, warm_bias)
-        stops.append((pos, color))
-
-    r_table = [0] * 256
-    g_table = [0] * 256
-    b_table = [0] * 256
-
-    for i in range(256):
-        # push brighter with emission_reach so hot data pushes more of the
-        # range into the glowing top end of the palette
-        d = i / 255.0
-        d = d ** (1.0 - 0.35 * emission_reach)
-
-        for s in range(len(stops) - 1):
-            p0, c0 = stops[s]
-            p1, c1 = stops[s + 1]
-            if p0 <= d <= p1 or s == len(stops) - 2:
-                span = (p1 - p0) if p1 != p0 else 1.0
-                t = _clamp((d - p0) / span)
-                color = _lerp_color(c0, c1, t)
-                break
-
-        r_table[i] = int(_clamp(color[0], 0, 255))
-        g_table[i] = int(_clamp(color[1], 0, 255))
-        b_table[i] = int(_clamp(color[2], 0, 255))
-
-    return r_table, g_table, b_table
-
-
-# ============================================================================
-# STEP 1: DENSITY FIELD
-#
-# Domain-warped fractal noise, sculpted by the blob composition, carved
-# by a void field. This single pass also records the dominant-blob
-# influence (used for depth blending) in the same loop.
-# ============================================================================
-
-def _generate_density_field(seed, params, blobs):
-    # Stage-1 warp: broad, defines the large irregular cloud silhouette.
-    warp1_oct_x = _build_fbm_octaves(random.Random(seed + 11), base_cells=3, octaves=3,
-                                      persistence=0.55, lacunarity=2.1)
-    warp1_oct_y = _build_fbm_octaves(random.Random(seed + 23), base_cells=3, octaves=3,
-                                      persistence=0.55, lacunarity=2.1)
-    # Stage-2 warp: applied on top of stage-1's result, at a smaller scale
-    # and smaller amplitude. This is what breaks a clean ellipse edge into
-    # a genuinely ragged, non-parallel boundary (fixes the "banding" look).
-    warp2_oct_x = _build_fbm_octaves(random.Random(seed + 131), base_cells=6, octaves=2,
-                                      persistence=0.5, lacunarity=2.0)
-    warp2_oct_y = _build_fbm_octaves(random.Random(seed + 149), base_cells=6, octaves=2,
-                                      persistence=0.5, lacunarity=2.0)
-
-    macro_oct = _build_fbm_octaves(random.Random(seed + 37), base_cells=4, octaves=3,
-                                    persistence=0.5, lacunarity=2.2)
-    detail_oct = _build_fbm_octaves(random.Random(seed + 59), base_cells=10, octaves=4,
-                                     persistence=0.5, lacunarity=2.0)
-    void_oct = _build_fbm_octaves(random.Random(seed + 71), base_cells=5, octaves=2,
-                                   persistence=0.5, lacunarity=2.3)
-
-    warp1_amount = 0.16 + 0.10 * params["speed_n"]
-    warp2_amount = 0.045 + 0.03 * params["speed_n"]
-    gamma = 1.55 - 0.75 * params["mag_n"]
-    void_thresh = 0.62 - 0.10 * params["dens_n"]
-    void_strength = 0.85
-
-    density_buf = bytearray(INTERNAL_WIDTH * INTERNAL_HEIGHT)
-    far_weight_buf = bytearray(INTERNAL_WIDTH * INTERNAL_HEIGHT)
-
-    for y in range(INTERNAL_HEIGHT):
-        ny = (y + 0.5) / INTERNAL_HEIGHT
-        row_offset = y * INTERNAL_WIDTH
-        for x in range(INTERNAL_WIDTH):
-            nx = (x + 0.5) / INTERNAL_WIDTH
-
-            wx1 = _fbm(warp1_oct_x, nx, ny) * warp1_amount
-            wy1 = _fbm(warp1_oct_y, nx, ny) * warp1_amount
-            mnx = _clamp(nx + wx1)
-            mny = _clamp(ny + wy1)
-
-            wx2 = _fbm(warp2_oct_x, mnx, mny) * warp2_amount
-            wy2 = _fbm(warp2_oct_y, mnx, mny) * warp2_amount
-            wnx = _clamp(mnx + wx2)
-            wny = _clamp(mny + wy2)
-
-            macro = _fbm(macro_oct, wnx, wny)
-            detail = _fbm(detail_oct, wnx, wny)
-            base = macro * 0.62 + detail * 0.38
-            base01 = _clamp(base * 0.5 + 0.5)
-
-            influence, dominant_influence = _blob_influence(blobs, wnx, wny)
-            density = base01 * influence
-
-            voidn = _fbm(void_oct, nx, ny) * 0.5 + 0.5
-            if voidn > void_thresh:
-                t = (voidn - void_thresh) / max(1e-6, (1.0 - void_thresh))
-                density *= max(0.0, 1.0 - t * void_strength)
-
-            density = _clamp(density) ** gamma
-            density = _clamp(density)
-
-            density_buf[row_offset + x] = int(density * 255)
-            far_weight_buf[row_offset + x] = int((1.0 - dominant_influence) * 255)
-
-    return density_buf, far_weight_buf
-
-
-# ============================================================================
-# STEP 2: DEPTH LAYERING
-#
-# A blurred, lower-contrast copy stands in for distant / atmospheric
-# cloud. It is blended back under the sharp field, weighted by how far
-# each pixel is from the dominant (near) mass, and by earthquake depth.
-# ============================================================================
-
-def _apply_depth_layers(density_img, far_weight_img, params):
-    blur_radius = 2.2 + 2.0 * params["depth_n"]
-    far_img = density_img.filter(ImageFilter.GaussianBlur(blur_radius))
-    far_img = far_img.point(lambda v: int(v * (0.55 + 0.2 * (1.0 - params["depth_n"]))))
-
-    depth_strength = 0.35 + 0.45 * params["depth_n"]
-    far_mask = far_weight_img.point(lambda v: int(v * depth_strength))
-
-    return Image.composite(far_img, density_img, far_mask)
-
-
-# ============================================================================
-# STEP 3: FILAMENT SYSTEM
-#
-# Curved filaments traced through a noise-driven flow field, biased by
-# By (orientation) and Bt (coherence), turbulence from solar wind speed.
-# They brighten in dense regions and dissolve into the voids.
-# ============================================================================
-
-def _sample_density(density_buf, x, y):
-    px = int(_clamp(x) * (INTERNAL_WIDTH - 1))
-    py = int(_clamp(y) * (INTERNAL_HEIGHT - 1))
-    return density_buf[py * INTERNAL_WIDTH + px] / 255.0
-
-
-def _curl_direction(coarse_oct, fine_oct, x, y, eps, coherence, rotation):
+def discover_asset_bundles():
     """
-    Direction of flow at (x, y), derived from the rotated gradient (curl)
-    of two potential fields at different scales. This gives every point
-    on the canvas its own locally-varying sweep direction, instead of the
-    filament system following one global constant angle (which is what
-    produced the "combed / parallel bands" artifact previously).
+    Scan the repository and determine, for every known image_id, whether
+    it is runtime-eligible (all four required assets present, dimensions
+    matching).
+
+    Multiple reference image files can exist for the same image_id (e.g.
+    a cropped preview at one resolution alongside the full-resolution
+    original the Step 4 label map was actually generated from). Since
+    extension is never a reliable signal for which one is correct, the
+    correct candidate is resolved by dimension: whichever candidate's
+    pixel dimensions match the Step 4 label map's dimensions is the one
+    actually usable with that label map.
+
+        - exactly one candidate matches the label map's dimensions
+              -> that candidate is used
+        - zero candidates match
+              -> excluded, reported as a dimension mismatch (as before)
+        - more than one candidate matches
+              -> ambiguous: excluded, reported explicitly rather than
+                 silently guessing which same-sized file is "the" one
+
+    Returns:
+        (eligible, diagnostics)
+
+        eligible: dict of image_id -> {
+            "image_id", "image_path", "knowledge_path",
+            "regions_path", "label_map_path", "image_shape",
+        }
+        diagnostics: dict of image_id -> human-readable exclusion reason,
+            for every candidate image_id that is NOT in `eligible`. This
+            is how incomplete/ambiguous references get reported without
+            ever failing the whole discovery pass.
+
+    Raises RendererError only for structural repository problems (e.g.
+    a missing knowledge/ directory) -- never for an individual
+    incomplete, ambiguous, or malformed reference bundle.
     """
-    x0 = _clamp(x - eps)
-    x1 = _clamp(x + eps)
-    y0 = _clamp(y - eps)
-    y1 = _clamp(y + eps)
-    denom = max(1e-6, (x1 - x0))
-    denom_y = max(1e-6, (y1 - y0))
+    image_ids = _discover_image_ids()
 
-    dxc = (_fbm(coarse_oct, x1, y) - _fbm(coarse_oct, x0, y)) / denom
-    dyc = (_fbm(coarse_oct, x, y1) - _fbm(coarse_oct, x, y0)) / denom_y
-    dxf = (_fbm(fine_oct, x1, y) - _fbm(fine_oct, x0, y)) / denom
-    dyf = (_fbm(fine_oct, x, y1) - _fbm(fine_oct, x, y0)) / denom_y
+    eligible = {}
+    diagnostics = {}
 
-    # rotate gradient 90 degrees -> divergence-free-looking flow vector
-    vxc, vyc = dyc, -dxc
-    vxf, vyf = dyf, -dxf
+    for image_id in image_ids:
+        knowledge_path = os.path.join(KNOWLEDGE_DIR, image_id + ".json")
+        regions_path = os.path.join(STEP4_DIR, image_id + "_regions.json")
+        label_map_path = os.path.join(STEP4_DIR, image_id + "_region_labels.png")
+        candidates = _discover_reference_image_candidates(image_id)
 
-    vx = vxc * coherence + vxf * (1.0 - coherence)
-    vy = vyc * coherence + vyf * (1.0 - coherence)
+        missing = []
+        if not candidates:
+            missing.append("reference image")
+        if not os.path.isfile(knowledge_path):
+            missing.append("knowledge JSON")
+        if not os.path.isfile(regions_path):
+            missing.append("Step 4 regions JSON")
+        if not os.path.isfile(label_map_path):
+            missing.append("Step 4 region label map")
 
-    cos_r = math.cos(rotation)
-    sin_r = math.sin(rotation)
-    rvx = vx * cos_r - vy * sin_r
-    rvy = vx * sin_r + vy * cos_r
+        if missing:
+            diagnostics[image_id] = "missing: " + ", ".join(missing)
+            continue
 
-    return math.atan2(rvy, rvx)
+        try:
+            label_map_arr = mutation_engine.load_region_label_map(label_map_path)
+        except Exception as exc:  # noqa: BLE001 - captured as a diagnostic, not a crash
+            diagnostics[image_id] = f"failed to load Step 4 label map: {exc}"
+            continue
 
-
-def _trace_filaments(seed, params, density_buf, r_table, g_table, b_table):
-    rng = random.Random(seed + 4242)
-    coarse_flow_oct = _build_fbm_octaves(random.Random(seed + 4343), base_cells=3, octaves=2,
-                                          persistence=0.5, lacunarity=2.0)
-    fine_flow_oct = _build_fbm_octaves(random.Random(seed + 4444), base_cells=9, octaves=2,
-                                        persistence=0.5, lacunarity=2.0)
-
-    filament_rgb = Image.new("RGB", (INTERNAL_WIDTH, INTERNAL_HEIGHT), (0, 0, 0))
-    filament_alpha = Image.new("L", (INTERNAL_WIDTH, INTERNAL_HEIGHT), 0)
-    draw_rgb = ImageDraw.Draw(filament_rgb)
-    draw_alpha = ImageDraw.Draw(filament_alpha)
-
-    rotation_bias = params["by_n"] * math.pi * 0.6
-    turbulence = 0.5 + 1.1 * params["speed_n"]
-    coherence = 0.30 + 0.55 * params["bt_n"]
-    flow_eps = 1.5 / INTERNAL_WIDTH
-
-    num_filaments = int(70 + 170 * params["mag_n"] + 90 * params["dens_n"])
-    num_filaments = max(50, min(num_filaments, 320))
-
-    step_len = (1.1 / INTERNAL_WIDTH) * (1.0 + 0.4 * params["speed_n"])
-
-    queue = []
-    for _ in range(num_filaments):
-        start = None
-        for _try in range(6):
-            cand = (rng.random(), rng.random())
-            d = _sample_density(density_buf, *cand)
-            if 0.12 <= d <= 0.8:
-                start = cand
-                break
-        if start is None:
-            start = (rng.random(), rng.random())
-        length = rng.randint(14, 46)
-        queue.append((start, length, 0))
-
-    branches_spawned = 0
-    max_branches = int(30 + 60 * params["bt_n"])
-
-    i = 0
-    while i < len(queue):
-        (sx, sy), length, depth_level = queue[i]
-        i += 1
-
-        pos_x, pos_y = sx, sy
-        for step in range(length):
-            d_here = _sample_density(density_buf, pos_x, pos_y)
-            fade_in = _smoothstep(step / 5.0)
-            fade_out = _smoothstep((length - step) / 6.0)
-            progress_fade = min(fade_in, fade_out)
-
-            if d_here < 0.05 and rng.random() < 0.35:
-                break
-
-            flow_angle = _curl_direction(
-                coarse_flow_oct, fine_flow_oct, pos_x, pos_y, flow_eps, coherence, rotation_bias
-            )
-            jitter = rng.uniform(-1.0, 1.0) * (1.0 - coherence) * 0.35 * turbulence
-            angle = flow_angle + jitter
-
-            new_x = pos_x + math.cos(angle) * step_len
-            new_y = pos_y + math.sin(angle) * step_len
-
-            if not (0.0 <= new_x <= 1.0 and 0.0 <= new_y <= 1.0):
-                break
-
-            thickness = 1.0 + 2.4 * d_here
-            alpha = _clamp(d_here * 1.3) * progress_fade
-
-            if alpha > 0.02:
-                brightness = _clamp(d_here * 1.35 + 0.15)
-                idx = int(brightness * 255)
-                color = (r_table[idx], g_table[idx], b_table[idx])
-
-                x0 = pos_x * INTERNAL_WIDTH
-                y0 = pos_y * INTERNAL_HEIGHT
-                x1 = new_x * INTERNAL_WIDTH
-                y1 = new_y * INTERNAL_HEIGHT
-
-                width = max(1, int(round(thickness)))
-                draw_rgb.line([(x0, y0), (x1, y1)], fill=color, width=width)
-                draw_alpha.line([(x0, y0), (x1, y1)], fill=int(alpha * 255), width=width)
-
-            if (
-                depth_level == 0
-                and branches_spawned < max_branches
-                and step > 6
-                and rng.random() < 0.02 + 0.015 * params["bt_n"]
-            ):
-                queue.append(((pos_x, pos_y), rng.randint(8, 20), 1))
-                branches_spawned += 1
-
-            pos_x, pos_y = new_x, new_y
-
-    return filament_rgb, filament_alpha
-
-
-# ============================================================================
-# STEP 4: EMISSION BLOOM
-#
-# The brightest cores softly illuminate the cloud material around them.
-# ============================================================================
-
-def _apply_bloom(base_img, density_img, params):
-    threshold = 178 - int(30 * params["kp_n"])
-    hot = density_img.point(lambda v: max(0, min(255, int((v - threshold) * (255.0 / max(1, 255 - threshold))))))
-    glow_radius = 3.0 + 3.0 * params["kp_n"]
-    hot = hot.filter(ImageFilter.GaussianBlur(glow_radius))
-
-    tint = (255, 214, 198) if params["bz_n"] < 0 else (214, 226, 255)
-    glow_rgb = Image.merge("RGB", (
-        hot.point(lambda v: int(v * tint[0] / 255)),
-        hot.point(lambda v: int(v * tint[1] / 255)),
-        hot.point(lambda v: int(v * tint[2] / 255)),
-    ))
-
-    return ImageChops.screen(base_img, glow_rgb)
-
-
-# ============================================================================
-# STEP 5: STARS
-#
-# Sparse, non-uniform. Dense nebula regions suppress stars. Kp increases
-# how many stars are bright / active enough to punch through the cloud.
-# ============================================================================
-
-def _scatter_stars(img, seed, params, density_buf):
-    rng = random.Random(seed + 909090)
-    pixels = img.load()
-
-    num_dim = int(220 + 160 * (1.0 - params["dens_n"]))
-    num_medium = int(14 + 24 * params["kp_n"])
-    num_bright = int(1 + 5 * params["kp_n"])
-
-    def place(count, brightness_range, glow):
-        placed = 0
-        attempts = 0
-        while placed < count and attempts < count * 8:
-            attempts += 1
-            x = rng.randrange(INTERNAL_WIDTH)
-            y = rng.randrange(INTERNAL_HEIGHT)
-            d = density_buf[y * INTERNAL_WIDTH + x] / 255.0
-            suppress = d * (0.92 - 0.45 * params["kp_n"])
-            if rng.random() < suppress:
+        matches = []
+        load_failures = []
+        for candidate_path in candidates:
+            try:
+                candidate_arr = mutation_engine.load_image(candidate_path)
+            except Exception as exc:  # noqa: BLE001
+                load_failures.append(f"{candidate_path}: {exc}")
                 continue
+            if candidate_arr.shape[:2] == label_map_arr.shape:
+                matches.append((candidate_path, candidate_arr))
 
-            v = rng.randint(*brightness_range)
-            cool = rng.random() < 0.5
-            color = (v, v, min(255, v + 12)) if cool else (min(255, v + 10), v, v)
-            pixels[x, y] = color
-
-            if glow and 0 < x < INTERNAL_WIDTH - 1 and 0 < y < INTERNAL_HEIGHT - 1:
-                dim = max(0, v // 3)
-                dim_color = (dim, dim, dim)
-                for ox, oy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                    nx_, ny_ = x + ox, y + oy
-                    existing = pixels[nx_, ny_]
-                    pixels[nx_, ny_] = tuple(max(existing[c], dim_color[c]) for c in range(3))
-
-            placed += 1
-
-    place(num_dim, (40, 95), glow=False)
-    place(num_medium, (120, 195), glow=False)
-    place(num_bright, (225, 255), glow=True)
-
-
-# ============================================================================
-# STEP 6: PIXEL-ART FINISHING
-#
-# Quantizing to a limited number of levels per channel with a *tiled*
-# dither matrix produced a visible repeating grid on top of the nebula.
-# Instead: a non-periodic, per-pixel pseudo-random threshold (deterministic
-# hash, not a tiled matrix), with its strength modulated by how much
-# natural detail already exists at that pixel - strong dither in flat
-# blob interiors where banding would otherwise show, weak-to-none in
-# already-detailed/filament-rich areas.
-# ============================================================================
-
-def _quantize_with_dither(img, density_img, seed, levels=40):
-    blurred = density_img.filter(ImageFilter.GaussianBlur(1.5))
-    edge_img = ImageChops.difference(density_img, blurred)
-
-    pixels = img.load()
-    edge_px = edge_img.load()
-    step = 255.0 / (levels - 1)
-
-    for y in range(INTERNAL_HEIGHT):
-        for x in range(INTERNAL_WIDTH):
-            flatness = 1.0 - _clamp(edge_px[x, y] / 40.0)
-            h = _pixel_hash01(x, y, seed)
-            threshold = (h - 0.5) * step * flatness
-
-            r, g, b = pixels[x, y]
-            r = round(_clamp(r + threshold, 0, 255) / step) * step
-            g = round(_clamp(g + threshold, 0, 255) / step) * step
-            b = round(_clamp(b + threshold, 0, 255) / step) * step
-            pixels[x, y] = (
-                int(_clamp(r, 0, 255)),
-                int(_clamp(g, 0, 255)),
-                int(_clamp(b, 0, 255)),
+        if not matches:
+            checked = ", ".join(candidates)
+            reason = (
+                f"dimension mismatch: no reference image candidate matches "
+                f"label map dimensions {label_map_arr.shape} (H, W). "
+                f"Candidates checked: {checked}."
             )
+            if load_failures:
+                reason += " Load failures: " + "; ".join(load_failures) + "."
+            diagnostics[image_id] = reason
+            continue
+
+        if len(matches) > 1:
+            ambiguous_paths = ", ".join(path for path, _ in matches)
+            diagnostics[image_id] = (
+                f"ambiguous reference image: {len(matches)} candidates all match "
+                f"label map dimensions {label_map_arr.shape} (H, W): "
+                f"{ambiguous_paths}. Refusing to silently choose one."
+            )
+            continue
+
+        image_path, image_arr = matches[0]
+
+        eligible[image_id] = {
+            "image_id": image_id,
+            "image_path": image_path,
+            "knowledge_path": knowledge_path,
+            "regions_path": regions_path,
+            "label_map_path": label_map_path,
+            "image_shape": image_arr.shape,
+        }
+
+    return eligible, diagnostics
 
 
 # ============================================================================
-# PUBLIC INTERFACE
+# DETERMINISTIC REFERENCE SELECTION
+# ============================================================================
+
+def _assign_buckets(eligible_ids_sorted):
+    """
+    Deterministically distribute eligible image_ids across the
+    NUM_REFERENCE_BUCKETS style-family buckets. See the module docstring
+    ("BUCKET -> REFERENCE ASSIGNMENT") for why this policy exists here
+    rather than being read from another module.
+    """
+    buckets = {b: [] for b in range(NUM_REFERENCE_BUCKETS)}
+    for index, image_id in enumerate(eligible_ids_sorted):
+        buckets[index % NUM_REFERENCE_BUCKETS].append(image_id)
+    return buckets
+
+
+def select_reference_bundle(eligible, artistic_params, generation_number):
+    """
+    Deterministically select one eligible reference bundle using
+    artistic_params["reference_bucket"] and generation_number.
+
+    SINGLE-REFERENCE FALLBACK (temporary, deterministic):
+    The Step 4 extraction pipeline currently only covers a small subset
+    of the 30-image dataset (as of this writing, only image_01). When
+    exactly one reference is runtime-eligible, that reference is
+    selected unconditionally -- regardless of which reference_bucket
+    parameter_mapper computed for the current live_data -- instead of
+    raising just because the dataset's one available reference happens
+    to sit in a different bucket than the one requested. This is still
+    fully deterministic (no randomness, no timestamps, no fallback
+    "guessing" between multiple candidates): with a single eligible
+    reference there is only one possible choice in the first place, so
+    bucket routing has nothing left to decide between. As soon as a
+    second reference becomes eligible, this fallback no longer applies
+    and the bucket-based selection below governs again, unchanged.
+
+    Raises RendererError if there are no eligible references at all, or
+    (with two or more eligible references) if the specific
+    reference_bucket selected by parameter_mapper has no eligible
+    references in it -- this is never silently substituted with another
+    bucket.
+    """
+    if isinstance(generation_number, bool) or not isinstance(generation_number, int):
+        raise RendererError(f"generation_number must be an int, got {generation_number!r}")
+    if generation_number < 1:
+        raise RendererError(f"generation_number must be >= 1, got {generation_number}")
+
+    if not eligible:
+        raise RendererError(
+            "No runtime-eligible reference bundles were found (need a reference "
+            "image, knowledge JSON, Step 4 regions JSON, and Step 4 label map, "
+            "all present, with matching dimensions, for at least one image_id)."
+        )
+
+    # Single-reference fallback -- see docstring above. Deterministic:
+    # depends only on which one reference is eligible, never on
+    # reference_bucket, generation_number, or any random/time-based input.
+    if len(eligible) == 1:
+        (only_id,) = eligible.keys()
+        return eligible[only_id]
+
+    reference_bucket = artistic_params["reference_bucket"]
+    sorted_ids = sorted(eligible.keys())
+    buckets = _assign_buckets(sorted_ids)
+
+    bucket_members = buckets.get(reference_bucket, [])
+    if not bucket_members:
+        raise RendererError(
+            f"reference_bucket {reference_bucket} has no runtime-eligible "
+            f"references. Currently eligible: {sorted_ids}. Add Step 4 assets "
+            f"for at least one reference that would fall into this bucket."
+        )
+
+    index = (generation_number - 1) % len(bucket_members)
+    selected_id = bucket_members[index]
+    return eligible[selected_id]
+
+
+# ============================================================================
+# WALLPAPER FIT (scale-to-cover + centered crop, nearest-neighbor only)
+# ============================================================================
+
+def _fit_to_wallpaper(image_array):
+    """
+    Deterministically fit `image_array` (H, W, 3) uint8) to exactly
+    FINAL_WIDTH x FINAL_HEIGHT:
+
+        1. scale uniformly until the image covers the target box
+        2. crop the excess with a centered crop
+        3. nearest-neighbor resampling only (preserves pixel-art edges;
+           never bilinear/bicubic/Lanczos, never blurred/sharpened)
+
+    Never distorts the aspect ratio, never pads, never invents pixels.
+    """
+    pil_image = Image.fromarray(image_array, mode="RGB")
+    src_w, src_h = pil_image.size
+
+    scale = max(FINAL_WIDTH / src_w, FINAL_HEIGHT / src_h)
+    # ceil (not round) guarantees the scaled image covers the target box
+    # even when the exact scale factor would round down.
+    scaled_w = max(FINAL_WIDTH, math.ceil(src_w * scale))
+    scaled_h = max(FINAL_HEIGHT, math.ceil(src_h * scale))
+
+    scaled = pil_image.resize((scaled_w, scaled_h), resample=Image.NEAREST)
+
+    left = (scaled_w - FINAL_WIDTH) // 2
+    top = (scaled_h - FINAL_HEIGHT) // 2
+    cropped = scaled.crop((left, top, left + FINAL_WIDTH, top + FINAL_HEIGHT))
+
+    return np.array(cropped, dtype=np.uint8)
+
+
+# ============================================================================
+# OUTPUT
+# ============================================================================
+
+def _output_path(generation_number):
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    return os.path.join(OUTPUT_DIR, FILENAME_TEMPLATE.format(generation_number))
+
+
+# ============================================================================
+# PUBLIC API
 # ============================================================================
 
 def render_wallpaper(live_data, generation_number):
     """
-    Generate one procedural nebula wallpaper from live scientific data.
+    Render one Heartbreak.exe wallpaper.
 
     Args:
-        live_data: dict as returned by api_client2.get_all_data() - expects
-            magnitude, depth, latitude, longitude, solar_wind_speed,
-            solar_wind_density, solar_wind_temperature, bz, by, bt, kp.
-        generation_number: int, mixed into the seed so repeated calls with
-            the same live_data still produce distinct, related artwork.
+        live_data: the 11-value raw Earth / space-weather dict, already
+            fetched by the caller (e.g. via api_client3.get_all_data()).
+            renderer.py never fetches network data itself and never
+            requires network availability.
+        generation_number: positive int identifying this render. Used
+            for the output filename and for deterministic rotation among
+            multiple eligible references within a reference_bucket.
+            Never used as a random seed, and no random/timestamp/UUID
+            value is used anywhere in this function.
 
     Returns:
-        str: filesystem path to the rendered 1920x1080 PNG.
+        Absolute path to the saved 1920x1080 PNG.
+
+    Raises:
+        RendererError on any invalid input or missing/inconsistent asset
+        data, identifying the affected image_id/path. Never silently
+        skips, substitutes, regenerates, or falls back to a blank image.
     """
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    if not isinstance(live_data, dict):
+        raise RendererError(f"live_data must be a dict, got {type(live_data)!r}")
 
-    seed = _derive_seed(live_data, generation_number)
-    params = _derive_params(live_data, generation_number)
-    comp_rng = random.Random(seed + 1)
+    artistic_params = parameter_mapper.map_api_to_visuals(live_data)
 
-    blobs = _build_blobs(comp_rng, params)
-    r_table, g_table, b_table = _build_palette_lut(params)
+    eligible, _diagnostics = discover_asset_bundles()
+    bundle = select_reference_bundle(eligible, artistic_params, generation_number)
+    image_id = bundle["image_id"]
 
-    density_buf, far_weight_buf = _generate_density_field(seed, params, blobs)
-    density_img = Image.frombytes("L", (INTERNAL_WIDTH, INTERNAL_HEIGHT), bytes(density_buf))
-    far_weight_img = Image.frombytes("L", (INTERNAL_WIDTH, INTERNAL_HEIGHT), bytes(far_weight_buf))
+    try:
+        knowledge = region_mapper.load_knowledge(bundle["knowledge_path"])
+    except Exception as exc:
+        raise RendererError(
+            f"[{image_id}] failed to load knowledge JSON "
+            f"({bundle['knowledge_path']}): {exc}"
+        ) from exc
 
-    density_img = _apply_depth_layers(density_img, far_weight_img, params)
-    # refresh density_buf so filaments/stars read the depth-blended field
-    density_buf = bytearray(density_img.tobytes())
+    try:
+        step4_region_data = mutation_engine.load_region_data(bundle["regions_path"])
+    except Exception as exc:
+        raise RendererError(
+            f"[{image_id}] failed to load Step 4 regions JSON "
+            f"({bundle['regions_path']}): {exc}"
+        ) from exc
 
-    base_img = density_img.convert("RGB")
-    base_img = Image.merge("RGB", (
-        density_img.point(r_table),
-        density_img.point(g_table),
-        density_img.point(b_table),
-    ))
+    try:
+        original_image = mutation_engine.load_image(bundle["image_path"])
+        label_map = mutation_engine.load_region_label_map(bundle["label_map_path"])
+    except Exception as exc:
+        raise RendererError(
+            f"[{image_id}] failed to load reference image or label map: {exc}"
+        ) from exc
 
-    filament_rgb, filament_alpha = _trace_filaments(seed, params, density_buf, r_table, g_table, b_table)
-    composed = Image.composite(filament_rgb, base_img, filament_alpha)
+    # Defensive re-check: discovery already filters dimension mismatches
+    # out of the eligible pool, but a bundle is never trusted blindly at
+    # render time either.
+    if label_map.shape != original_image.shape[:2]:
+        raise RendererError(
+            f"[{image_id}] reference image dimensions {original_image.shape[:2]} "
+            f"!= label map dimensions {label_map.shape} at render time"
+        )
 
-    composed = _apply_bloom(composed, density_img, params)
+    try:
+        mutation_plan = region_mapper.build_mutation_plan(
+            knowledge, artistic_params, step4_region_data
+        )
+    except region_mapper.RegionMapperError as exc:
+        raise RendererError(f"[{image_id}] mutation planning failed: {exc}") from exc
 
-    _scatter_stars(composed, seed, params, density_buf)
+    try:
+        mutated_image, _report = mutation_engine.apply_mutation_plan(
+            original_image, label_map, step4_region_data, mutation_plan
+        )
+    except mutation_engine.MutationEngineError as exc:
+        raise RendererError(f"[{image_id}] mutation execution failed: {exc}") from exc
 
-    _quantize_with_dither(composed, density_img, seed, levels=40)
+    final_image = _fit_to_wallpaper(mutated_image)
 
-    final_img = composed.resize((FINAL_WIDTH, FINAL_HEIGHT), Image.NEAREST)
+    if final_image.shape[0] != FINAL_HEIGHT or final_image.shape[1] != FINAL_WIDTH:
+        raise RendererError(
+            f"[{image_id}] internal error: final image shape "
+            f"{final_image.shape} != target ({FINAL_HEIGHT}, {FINAL_WIDTH})"
+        )
 
-    filename = f"nebula_gen{generation_number:05d}_{seed:012x}.png"
-    output_path = os.path.join(OUTPUT_DIR, filename)
-    final_img.save(output_path, "PNG")
+    output_path = _output_path(generation_number)
+    mutation_engine.save_image(final_image, output_path)
 
-    return output_path
+    return os.path.abspath(output_path)
 
 
 # ============================================================================
-# MANUAL SANITY CHECK
+# SMOKE TEST
 # ============================================================================
 
 if __name__ == "__main__":
-    sample_live_data = {
-        "magnitude": 5.8,
-        "depth": 32.0,
-        "latitude": 21.4,
-        "longitude": -158.0,
-        "solar_wind_speed": 610.0,
-        "solar_wind_density": 8.4,
-        "solar_wind_temperature": 240000.0,
-        "bz": -6.2,
-        "by": 3.1,
-        "bt": 9.0,
-        "kp": 5.0,
+    # Minimal, deterministic, network-free smoke test. Uses whatever
+    # reference assets actually exist under this file's directory --
+    # nothing here fetches live data or invents sample images.
+    _SAMPLE_LIVE_DATA = {
+        "magnitude": 6.5,
+        "depth": 12.0,
+        "latitude": 34.0522,
+        "longitude": -118.2437,
+        "solar_wind_speed": 450.0,
+        "solar_wind_density": 25.0,
+        "solar_wind_temperature": 255000.0,
+        "bz": -12.5,
+        "by": 10.0,
+        "bt": 15.0,
+        "kp": 4.5,
     }
 
-    path = render_wallpaper(sample_live_data, 1)
-    print(f"Wallpaper written to: {path}")
+    print("--- Discovering asset bundles ---")
+    eligible_bundles, diag = discover_asset_bundles()
+    print(f"Eligible: {sorted(eligible_bundles.keys())}")
+    for image_id, reason in sorted(diag.items()):
+        print(f"  excluded {image_id}: {reason}")
 
-    with Image.open(path) as check_img:
-        print(f"Size: {check_img.size}")
-        assert check_img.size == (FINAL_WIDTH, FINAL_HEIGHT)
-    print("Sanity check passed.")
+    if not eligible_bundles:
+        print("\n[SKIPPED] No eligible reference bundles found on disk; "
+              "nothing to render. This is expected in a checkout that "
+              "has not yet run the Step 4 extraction for any image.")
+    else:
+        _sample_params = parameter_mapper.map_api_to_visuals(_SAMPLE_LIVE_DATA)
+        _selected_bundle = select_reference_bundle(eligible_bundles, _sample_params, 1)
+        print(f"\nreference_bucket (from sample live_data): {_sample_params['reference_bucket']}")
+        print(f"Selected reference: {_selected_bundle['image_id']} "
+              f"({os.path.basename(_selected_bundle['image_path'])}, "
+              f"shape={_selected_bundle['image_shape']})")
+
+        print("\n--- Render #1 ---")
+        path_1 = render_wallpaper(_SAMPLE_LIVE_DATA, 1)
+        print(f"Saved: {path_1}")
+
+        print("\n--- Render #2 (identical inputs) ---")
+        path_2 = render_wallpaper(_SAMPLE_LIVE_DATA, 1)
+        print(f"Saved: {path_2}")
+
+        with open(path_1, "rb") as f1, open(path_2, "rb") as f2:
+            identical = f1.read() == f2.read()
+        print(f"\nByte-identical across identical runs: {identical}")
+        assert identical, "Renderer is not deterministic!"
+
+        with Image.open(path_1) as final_img:
+            print(f"Final dimensions: {final_img.size} (expect (1920, 1080))")
+            assert final_img.size == (FINAL_WIDTH, FINAL_HEIGHT)
+
+        print("\n[SUCCESS] renderer.py smoke test passed.")

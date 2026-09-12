@@ -11,3 +11,8 @@ output_step4/
 output_step5/
 
 gemini_analysis.json.py
+
+check_live_pipeline.py
+diagnose_mutation_pipeline.py
+diagnostic_temp/
+.wallpaper_original_path
